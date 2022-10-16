@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mmb_marginBottom">15dp</dimen>
+    <dimen name="mmb_marginBottomVert">20dp</dimen>
+    <dimen name="ssm_banner_padding">5dp</dimen>
+</resources>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/the_iceberg_splash" >
+
+    <TextView
+        android:text="@string/mmt_titleC"
+        style="@style/main_menu_title"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttone4"
+        android:text="@string/mmb_start_button"
+        style="@style/main_menu_button"
+
+        android:layout_marginBottom="@dimen/mmb_marginBottom"
+        app:layout_constraintStart_toStartOf="@id/buttone3"
+        app:layout_constraintBottom_toTopOf="@id/buttone3"
+        />
+
+    <Button
+        android:id="@+id/buttone3"
+        android:text="@string/mmb_achievement_button"
+        style="@style/main_menu_button"
+
+        android:layout_marginBottom="@dimen/mmb_marginBottom"
+        app:layout_constraintStart_toStartOf="@id/buttone2"
+        app:layout_constraintBottom_toTopOf="@id/buttone2"
+        />
+
+    <Button
+        android:id="@+id/buttone2"
+        android:text="@string/mmb_costumes_button"
+        style="@style/main_menu_button"
+
+        android:layout_marginBottom="@dimen/mmb_marginBottom"
+        app:layout_constraintStart_toStartOf="@id/buttone1"
+        app:layout_constraintBottom_toTopOf="@id/buttone1"
+        />
+
+    <Button
+        android:id="@+id/buttone1"
+        android:text="@string/mmb_settings_button"
+        style="@style/main_menu_button"
+
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

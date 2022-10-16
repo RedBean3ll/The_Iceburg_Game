@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">The_Iceburg</string>
+    <string name="mmb_start_button">Start</string>
+    <string name="mmb_achievement_button">Achievements</string>
+    <string name="mmb_costumes_button">Costumes</string>
+    <string name="mmb_settings_button">Settings</string>
+    <string name="mmt_titleA">The</string>
+    <string name="mmt_titleB">Iceberg</string>
+    <string name="mmt_titleC">The Iceberg</string>
+    <string name="ssm_sound_effect_label">SFX:</string>
+    <string name="ssm_settings_label">Settings</string>
+    <string name="ssm_clear_save_button">Delete Save</string>
+    <string name="ssm_sound_icon_descr">sound_bars</string>
+</resources>
