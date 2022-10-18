@@ -62,6 +62,7 @@
         android:text="@string/mmb_settings_button"
         style="@style/main_menu_button"
 
+        android:onClick="onSettingsClick"
         android:layout_marginStart="50dp"
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -11,4 +11,5 @@
     <string name="ssm_settings_label">Settings</string>
     <string name="ssm_clear_save_button">Delete Save</string>
     <string name="ssm_sound_icon_descr">sound_bars</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 </resources>

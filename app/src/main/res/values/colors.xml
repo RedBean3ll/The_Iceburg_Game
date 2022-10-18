@@ -11,4 +11,5 @@
     <color name="ice_acidblue_washed">#91B0FF</color>
     <color name="menu_sub_background">#55000000</color>
     <color name="shaded_ice_blue">#215878</color>
+    <color name="button_press">#00bbff</color>
 </resources>
