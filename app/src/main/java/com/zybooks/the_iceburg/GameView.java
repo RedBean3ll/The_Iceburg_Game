@@ -24,9 +24,9 @@ public class GameView extends SurfaceView implements Runnable {
         screenRatioY = 1080f /screenY;
 
         background1 = new GameBackground(screenX,screenY, getResources());
-       // background2 = new GameBackground(screenX,screenY, getResources());
+        background2 = new GameBackground(screenX,screenY, getResources());
 
-        //background2.x = screenX;
+        background2.x = screenX;
 
         paint = new Paint();
     }
@@ -42,22 +42,22 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void update () {
         background1.x -= 10 * screenRatioX; //affects screen background movement!!!
-        //background2.x -= 10 * screenRatioY;
+        background2.x -= 10 * screenRatioX;
 
         if(background1.x + background1.background.getWidth() < screenRatioX) {
-            background1.x = 0;
+            background1.x = screenX;
         }
 
-       /* if(background2.x + background2.background.getWidth() < 0) {
-            background1.x = screenX;
-        }*/
+       if(background2.x + background2.background.getWidth() < 0) {
+            background2.x = screenX;
+       }
     }
 
     private void draw () {
         if(getHolder().getSurface().isValid()) {
             Canvas canvas = getHolder().lockCanvas();
-            canvas.drawBitmap(background1.background, background1.x + 50, background1.y, paint);
-           // canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
+            canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
+            canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
             getHolder().unlockCanvasAndPost(canvas);
         }
@@ -79,6 +79,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void pause () {
         try {
+            isPlaying = false;
             thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
