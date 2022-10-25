@@ -16,62 +16,144 @@ public class GameView extends SurfaceView implements Runnable {
     private float screenRatioX, screenRatioY;
     private Paint paint;
     private GameBackground background1, background2;
-    private int dir;
+    public int screenDir;
+    private long envCountX;
+    private long envCountY;
+    private long envLoopCountX;
 
-    public GameView(Context context, int screenX, int screenY) {
+
+    //debug
+    public String TAG = "GameView";
+    private boolean hold = false;
+    final long minCount = -1000000000;
+    final long maxCount = 1000000000;
+
+    public GameView(Context context, int screenX, int screenY, int direction) {
         super(context);
 
         this.screenX = screenX;
         this.screenY = screenY;
         screenRatioX = 1920 / screenX;
-        screenRatioY = 1080 /screenY;
+        screenRatioY = 1080 / screenY;
+        envCountX = 0;
+        envLoopCountX = 0;
+        envCountY = 0;
+        screenDir = direction;
 
-        background1 = new GameBackground(screenX ,screenY, getResources());
-        background2 = new GameBackground(screenX ,screenY, getResources());
+
+        background1 = new GameBackground(screenX,screenY, getResources());
+        background2 = new GameBackground(screenX,screenY, getResources());
 
         background2.x = screenX;
 
         paint = new Paint();
     }
 
+    public void setDirection(int direction) {
+        screenDir = direction;
+    }
+
     @Override
     public void run() {
-      while (isPlaying) {
-          draw ();
-          if(dir == 1) {
-              update();
-              sleep();
-          }
+        while (isPlaying) {
+            //collision
+            backgroundMovement(); //update ();
+            draw ();
+            sleep();
         }
     }
 
-    public void backgroundMovement (int direction) {
-        dir = direction;
-        if (direction == 0) {
-                background1.x -= 0 * screenRatioX; //affects screen background movement!!!
-                background2.x -= 0 * screenRatioX;
+    public void backgroundMovement () {
+        //screenDir = direction;
 
-                if(background1.x + background1.background.getWidth() < screenRatioX) {
-                    background1.x = screenX;
-                }
+        if (screenDir == 0) {
 
-                if(background2.x + background2.background.getWidth() < 0) {
-                    background2.x = screenX;
+            if(envCountX < minCount) {
+                envCountX = 0;
+                envLoopCountX -= 1;
+            }
+
+            background1.x -= 10 * screenRatioX; //affects screen background movement!!!
+            background2.x -= 10 * screenRatioX;
+            envCountX -= 10; //monitored by above check to avoid overflow
+
+            //Log.i(TAG, "Inc: "+10 * screenRatioX);
+
+            /*Log.i(TAG, "Scroll Left >> back1.x: "+background1.x+" back2.x: "
+                    +background2.x + " dir: "+screenDir + " envCountX: " + envCountX+" scrollCalcA: "
+                    +(background1.x + background1.background.getWidth())
+                    +" scrollCalcB: "+(background2.x + background2.background.getWidth()));
+            */
+
+            if(background1.x + background1.background.getWidth() < 0) {
+                Log.i(TAG, "SCL LEFTAA >> CalcA(): "+(background1.x + background1.background.getWidth()));
+                Log.i(TAG, "SCL LEFTAA >> background1.x: "+background1.x);
+                Log.i(TAG, "SCL LEFTAA >> background1.background: "+background1.background.getWidth());
+                //Log.i(TAG, "SCL LEFTAA >> screenX: "+ screenX);
+                background1.x = screenX;
+            }
+
+            if(background2.x + background2.background.getWidth() < 0) {
+                Log.i(TAG, "SCL LEFTBB >>"+" CalcB(): "+(background2.x + background2.background.getWidth()));
+                Log.i(TAG, "SCL LEFTBB >> background2.x: "+background2.x);
+                Log.i(TAG, "SCL LEFTBB >> background2.background: "+background2.background.getWidth());
+                //Log.i(TAG, "SCL LEFTBB >> screenX: "+screenX);
+                background2.x = screenX;
+            }
+        }
+        else {
+            if (envCountX > maxCount) {
+                envCountX = 0;
+                envLoopCountX += 1;
+            }
+
+            background1.x += 10 * screenRatioX; //affects screen background movement!!!
+            background2.x += 10 * screenRatioX;
+            envCountX += 10;
+
+            //Log.i(TAG, "Dec: "+10 * screenRatioX);
+            /*Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "
+                    +background2.x + " dir: "+screenDir + " envCountX: " + envCountX+" scrollCalcA: "
+                    +(background1.x + background1.background.getWidth())
+                    +" scrollCalcB: "+(background2.x + background2.background.getWidth()));
+            */
+
+            if((background1.x - background1.background.getWidth()) > 0) {
+                //Log.i(TAG, "SCL RIGHTAA >> CalcA(): "+(background1.x - background1.background.getWidth()));
+                //Log.i(TAG, "SCL RIGHTAA >> background1.background: "+background1.background.getWidth());
+                //Log.i(TAG, "SCL RIGHTAA >> screenX: "+ screenX);
+                background1.x = -1080;
+            }
+
+            if((background2.x - background2.background.getWidth()) > 0) {
+                //Log.i(TAG, "SCL RIGHTBB >>"+" CalcB(): "+(background2.x - background2.background.getWidth()));
+                //Log.i(TAG, "SCL RIGHTBB >> background2.background: "+background2.background.getWidth());
+                //Log.i(TAG, "SCL RIGHTBB >> screenX: "+screenX);
+                background2.x = -1080;
             }
         }
     }
+
     private void update () {
         background1.x -= 10 * screenRatioX; //affects screen background movement!!!
         background2.x -= 10 * screenRatioX;
+        envCountX -= 10;
+        //envCountY = 0;
 
-        if(background1.x + background1.background.getWidth() < screenRatioX) {
+        Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "+background2.x);
+
+        if(background1.x + background1.background.getWidth() < 0) {
             background1.x = screenX;
+            Log.i(TAG, "back1.x = screenX: "+screenX);
         }
 
         if(background2.x + background2.background.getWidth() < 0) {
             background2.x = screenX;
+            Log.i(TAG, "back2.x = screenX: "+screenX);
         }
     }
+
+
 
     private void draw () {
         if(getHolder().getSurface().isValid()) {
@@ -87,6 +169,8 @@ public class GameView extends SurfaceView implements Runnable {
             Drawable left_arrow = getResources().getDrawable(R.drawable.arrow_button, null);
             left_arrow.setBounds((screenX) - 230,(screenY) -230, (screenX) - 30,(screenY) -30);
             left_arrow.draw(canvas);
+
+
 
             getHolder().unlockCanvasAndPost(canvas);
         }
@@ -114,9 +198,6 @@ public class GameView extends SurfaceView implements Runnable {
             e.printStackTrace();
         }
     }
-
-
-
 
 }
 
