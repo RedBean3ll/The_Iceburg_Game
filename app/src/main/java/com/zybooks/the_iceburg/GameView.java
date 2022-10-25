@@ -86,17 +86,17 @@ public class GameView extends SurfaceView implements Runnable {
             */
 
             if(background1.x + background1.background.getWidth() < 0) {
-                Log.i(TAG, "SCL LEFTAA >> CalcA(): "+(background1.x + background1.background.getWidth()));
-                Log.i(TAG, "SCL LEFTAA >> background1.x: "+background1.x);
-                Log.i(TAG, "SCL LEFTAA >> background1.background: "+background1.background.getWidth());
+                //Log.i(TAG, "SCL LEFTAA >> CalcA(): "+(background1.x + background1.background.getWidth()));
+                //Log.i(TAG, "SCL LEFTAA >> background1.x: "+background1.x);
+                //Log.i(TAG, "SCL LEFTAA >> background1.background: "+background1.background.getWidth());
                 //Log.i(TAG, "SCL LEFTAA >> screenX: "+ screenX);
                 background1.x = screenX;
             }
 
             if(background2.x + background2.background.getWidth() < 0) {
-                Log.i(TAG, "SCL LEFTBB >>"+" CalcB(): "+(background2.x + background2.background.getWidth()));
-                Log.i(TAG, "SCL LEFTBB >> background2.x: "+background2.x);
-                Log.i(TAG, "SCL LEFTBB >> background2.background: "+background2.background.getWidth());
+                //Log.i(TAG, "SCL LEFTBB >>"+" CalcB(): "+(background2.x + background2.background.getWidth()));
+                //Log.i(TAG, "SCL LEFTBB >> background2.x: "+background2.x);
+                //Log.i(TAG, "SCL LEFTBB >> background2.background: "+background2.background.getWidth());
                 //Log.i(TAG, "SCL LEFTBB >> screenX: "+screenX);
                 background2.x = screenX;
             }
@@ -140,16 +140,16 @@ public class GameView extends SurfaceView implements Runnable {
         envCountX -= 10;
         //envCountY = 0;
 
-        Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "+background2.x);
+        //Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "+background2.x);
 
         if(background1.x + background1.background.getWidth() < 0) {
             background1.x = screenX;
-            Log.i(TAG, "back1.x = screenX: "+screenX);
+            //Log.i(TAG, "back1.x = screenX: "+screenX);
         }
 
         if(background2.x + background2.background.getWidth() < 0) {
             background2.x = screenX;
-            Log.i(TAG, "back2.x = screenX: "+screenX);
+            //Log.i(TAG, "back2.x = screenX: "+screenX);
         }
     }
 
