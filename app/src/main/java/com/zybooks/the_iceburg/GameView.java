@@ -16,144 +16,79 @@ public class GameView extends SurfaceView implements Runnable {
     private float screenRatioX, screenRatioY;
     private Paint paint;
     private GameBackground background1, background2;
-    public int screenDir;
-    private long envCountX;
-    private long envCountY;
-    private long envLoopCountX;
+    private int dir;
 
-
-    //debug
-    public String TAG = "GameView";
-    private boolean hold = false;
-    final long minCount = -1000000000;
-    final long maxCount = 1000000000;
-
-    public GameView(Context context, int screenX, int screenY, int direction) {
+    public GameView(Context context, int screenX, int screenY) {
         super(context);
 
         this.screenX = screenX;
         this.screenY = screenY;
         screenRatioX = 1920 / screenX;
-        screenRatioY = 1080 / screenY;
-        envCountX = 0;
-        envLoopCountX = 0;
-        envCountY = 0;
-        screenDir = direction;
+        screenRatioY = 1080 /screenY;
 
-
-        background1 = new GameBackground(screenX,screenY, getResources());
-        background2 = new GameBackground(screenX,screenY, getResources());
+        background1 = new GameBackground(screenX ,screenY, getResources());
+        background2 = new GameBackground(screenX ,screenY, getResources());
 
         background2.x = screenX;
 
         paint = new Paint();
     }
 
-    public void setDirection(int direction) {
-        screenDir = direction;
-    }
-
     @Override
     public void run() {
-        while (isPlaying) {
-            //collision
-            backgroundMovement(); //update ();
-            draw ();
-            sleep();
+      while (isPlaying) {
+          draw ();
+          if(dir == 1) {
+              right();
+              sleep();
+          }
+          if(dir == -1) {
+              left();
+              sleep();
+          }
         }
     }
 
-    public void backgroundMovement () {
-        //screenDir = direction;
+    public void backgroundMovement (int direction) {
+        dir = direction;
+        if (direction == 0) {
+                background1.x -= 0 * screenRatioX; //affects screen background movement!!!
+                background2.x -= 0 * screenRatioX;
 
-        if (screenDir == 0) {
+                if(background1.x + background1.background.getWidth() < screenRatioX) {
+                    background1.x = screenX;
+                }
 
-            if(envCountX < minCount) {
-                envCountX = 0;
-                envLoopCountX -= 1;
-            }
-
-            background1.x -= 10 * screenRatioX; //affects screen background movement!!!
-            background2.x -= 10 * screenRatioX;
-            envCountX -= 10; //monitored by above check to avoid overflow
-
-            //Log.i(TAG, "Inc: "+10 * screenRatioX);
-
-            /*Log.i(TAG, "Scroll Left >> back1.x: "+background1.x+" back2.x: "
-                    +background2.x + " dir: "+screenDir + " envCountX: " + envCountX+" scrollCalcA: "
-                    +(background1.x + background1.background.getWidth())
-                    +" scrollCalcB: "+(background2.x + background2.background.getWidth()));
-            */
-
-            if(background1.x + background1.background.getWidth() < 0) {
-                Log.i(TAG, "SCL LEFTAA >> CalcA(): "+(background1.x + background1.background.getWidth()));
-                Log.i(TAG, "SCL LEFTAA >> background1.x: "+background1.x);
-                Log.i(TAG, "SCL LEFTAA >> background1.background: "+background1.background.getWidth());
-                //Log.i(TAG, "SCL LEFTAA >> screenX: "+ screenX);
-                background1.x = screenX;
-            }
-
-            if(background2.x + background2.background.getWidth() < 0) {
-                Log.i(TAG, "SCL LEFTBB >>"+" CalcB(): "+(background2.x + background2.background.getWidth()));
-                Log.i(TAG, "SCL LEFTBB >> background2.x: "+background2.x);
-                Log.i(TAG, "SCL LEFTBB >> background2.background: "+background2.background.getWidth());
-                //Log.i(TAG, "SCL LEFTBB >> screenX: "+screenX);
-                background2.x = screenX;
-            }
-        }
-        else {
-            if (envCountX > maxCount) {
-                envCountX = 0;
-                envLoopCountX += 1;
-            }
-
-            background1.x += 10 * screenRatioX; //affects screen background movement!!!
-            background2.x += 10 * screenRatioX;
-            envCountX += 10;
-
-            //Log.i(TAG, "Dec: "+10 * screenRatioX);
-            /*Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "
-                    +background2.x + " dir: "+screenDir + " envCountX: " + envCountX+" scrollCalcA: "
-                    +(background1.x + background1.background.getWidth())
-                    +" scrollCalcB: "+(background2.x + background2.background.getWidth()));
-            */
-
-            if((background1.x - background1.background.getWidth()) > 0) {
-                //Log.i(TAG, "SCL RIGHTAA >> CalcA(): "+(background1.x - background1.background.getWidth()));
-                //Log.i(TAG, "SCL RIGHTAA >> background1.background: "+background1.background.getWidth());
-                //Log.i(TAG, "SCL RIGHTAA >> screenX: "+ screenX);
-                background1.x = -1080;
-            }
-
-            if((background2.x - background2.background.getWidth()) > 0) {
-                //Log.i(TAG, "SCL RIGHTBB >>"+" CalcB(): "+(background2.x - background2.background.getWidth()));
-                //Log.i(TAG, "SCL RIGHTBB >> background2.background: "+background2.background.getWidth());
-                //Log.i(TAG, "SCL RIGHTBB >> screenX: "+screenX);
-                background2.x = -1080;
+                if(background2.x + background2.background.getWidth() < 0) {
+                    background2.x = screenX;
             }
         }
     }
-
-    private void update () {
+    private void right () {
         background1.x -= 10 * screenRatioX; //affects screen background movement!!!
         background2.x -= 10 * screenRatioX;
-        envCountX -= 10;
-        //envCountY = 0;
-
-        Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "+background2.x);
 
         if(background1.x + background1.background.getWidth() < 0) {
             background1.x = screenX;
-            Log.i(TAG, "back1.x = screenX: "+screenX);
         }
 
-        if(background2.x + background2.background.getWidth() < 0) {
+        if(background2.x + background2.background.getWidth() < screenRatioX) {
             background2.x = screenX;
-            Log.i(TAG, "back2.x = screenX: "+screenX);
         }
     }
 
+    private void left() {
+        background1.x += 10 * screenRatioX; //affects screen background movement!!!
+        background2.x += 10 * screenRatioX;
 
+        if(background1.x - background1.background.getWidth() > 0) {
+            background1.x = -screenX;
+        }
+
+        if(background2.x - background2.background.getWidth() > 0) {
+            background2.x = -screenX;
+        }
+    }
 
     private void draw () {
         if(getHolder().getSurface().isValid()) {
@@ -166,11 +101,13 @@ public class GameView extends SurfaceView implements Runnable {
             player.setBounds((screenX/2) -200,((screenY/2)-200) +200,(screenX/2)+200,((screenY/2)+200) +200);
             player.draw(canvas);
 
-            Drawable left_arrow = getResources().getDrawable(R.drawable.arrow_button, null);
-            left_arrow.setBounds((screenX) - 230,(screenY) -230, (screenX) - 30,(screenY) -30);
+            Drawable left_arrow = getResources().getDrawable(R.drawable.left_arrow, null);
+            left_arrow.setBounds(30,(screenY) -230, 230,(screenY) -30);
             left_arrow.draw(canvas);
 
-
+            Drawable right_arrow = getResources().getDrawable(R.drawable.right_arrow, null);
+            right_arrow.setBounds(260,(screenY) -230, 460,(screenY) -30);
+            right_arrow.draw(canvas);
 
             getHolder().unlockCanvasAndPost(canvas);
         }
@@ -198,6 +135,9 @@ public class GameView extends SurfaceView implements Runnable {
             e.printStackTrace();
         }
     }
+
+
+
 
 }
 

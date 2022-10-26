@@ -27,7 +27,7 @@ public class GameActivity extends AppCompatActivity {
         Point point = new Point();
         getWindowManager().getDefaultDisplay().getSize(point);
 
-        gameView = new GameView(this, point.x, point.y, dirBool);
+        gameView = new GameView(this, point.x, point.y);
 
         setContentView(gameView);
     }
@@ -54,14 +54,14 @@ public class GameActivity extends AppCompatActivity {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if((x < (gameView.screenX - 30) && x > (gameView.screenX - 230)) &&
+                if((x > 30 && x < 230) &&
                 (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
-
-                    dirBool = (dirBool == 0) ? 1 : 0;
-
-                    gameView.setDirection(dirBool);
-                Log.i(TAG, "Change dir to: " + dirBool);
-            }
+                    gameView.backgroundMovement(-1);
+                }
+                if((x > 260 && x < 460) &&
+                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
+                    gameView.backgroundMovement(1);
+                }
                 action = "ACTION_DOWN";
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -69,7 +69,7 @@ public class GameActivity extends AppCompatActivity {
                 break;
             case MotionEvent.ACTION_UP:
                 action = "ACTION_UP";
-                //gameView.backgroundMovement(0);
+                gameView.backgroundMovement(0);
                 break;
             case MotionEvent.ACTION_CANCEL:
                 action = "ACTION_CANCEL";
