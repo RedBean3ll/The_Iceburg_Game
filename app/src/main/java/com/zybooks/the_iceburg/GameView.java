@@ -69,7 +69,6 @@ public class GameView extends SurfaceView implements Runnable {
     }
     private void right () {
         progress+=15;
-        Log.d("Progress", String.valueOf(progress));
         background1.x -= 10 * screenRatioX; //affects screen background movement!!!
         background2.x -= 10 * screenRatioX;
 
@@ -85,7 +84,6 @@ public class GameView extends SurfaceView implements Runnable {
     private void left() {
         if(progress > 0) {
             progress -= 15;
-            Log.d("Progress", String.valueOf(progress));
             background1.x += 10 * screenRatioX; //affects screen background movement!!!
             background2.x += 10 * screenRatioX;
 
@@ -105,38 +103,63 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
             canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
-            /*Drawable testFloor = getResources().getDrawable(R.drawable.floor_1,null);
-            testFloor.setBounds(2000 - progress,screenY - 600, 5000 - progress,screenY);
-            testFloor.draw(canvas);*/
 
+            //---------------------------------- Scenery Loader ----------------------------------
             LevelOneEnvironment env = new LevelOneEnvironment(contx, canvas, screenX, screenY);
             env.progress = progress;
-            env.drawFloor();
-
-            //initial floor
-            Drawable ds = env.ice_floor;
-            ds.setBounds(0 - progress, screenY - 600, 2000 - progress, screenY);
-            ds.draw(canvas);
 
             //for loop that makes everything chain together WIP!!!
-            for (int i = progress; i >= 200; i = 0) {
-                Drawable d = env.ice_floor;
-                d.setBounds(2000 - progress, screenY - 600, 4000 - progress, screenY);
-                d.draw(canvas);
+            for (int i = 0; i < env.layout.length; i++) {
+                Drawable d;
+                switch (env.layout[i]) {
+                    case 0:
+                        d = getResources().getDrawable(R.drawable.floor_1);
+                        break;
+                    case 1:
+                        d = getResources().getDrawable(R.drawable.floor_cliff_left);
+                        break;
+                    case 2:
+                        d = getResources().getDrawable(R.drawable.floor_cliff_right);
+                        break;
+                    default:
+                        d = getResources().getDrawable(R.drawable.floor_1);
+                }
+                d.setBounds((i * 2000) - progress, screenY - 600, (i * 2000) + 2000 - progress, screenY);
+                if(d.getBounds().left < screenX && d.getBounds().right > 0) {
+                    d.draw(canvas);
+                }
             }
 
             //Draw everything UI and player here, icons, player
+
+            //---------------------------------- Player ----------------------------------
             Drawable player = getResources().getDrawable(R.drawable.moyaifast, null);
-            player.setBounds((screenX/2) -200,((screenY/2)-200) +200,(screenX/2)+200,((screenY/2)+200) +200);
+            player.setBounds((screenX/2) -200,screenY -550,(screenX/2)+200,screenY -150);
             player.draw(canvas);
 
-            Drawable left_arrow = getResources().getDrawable(R.drawable.left_arrow, null);
-            left_arrow.setBounds(30,(screenY) -230, 230,(screenY) -30);
-            left_arrow.draw(canvas);
+            //---------------------------------- Left Arrow ----------------------------------
+            if(dir == 0 || dir == 1) {
+                Drawable left_arrow = getResources().getDrawable(R.drawable.left_arrow, null);
+                left_arrow.setBounds(30, (screenY) - 230, 230, (screenY) - 30);
+                left_arrow.draw(canvas);
+            }
+            else if (dir == -1) {
+                Drawable left_arrow = getResources().getDrawable(R.drawable.left_arrow_pressed, null);
+                left_arrow.setBounds(30, (screenY) - 230, 230, (screenY) - 30);
+                left_arrow.draw(canvas);
+            }
 
-            Drawable right_arrow = getResources().getDrawable(R.drawable.right_arrow, null);
-            right_arrow.setBounds(260,(screenY) -230, 460,(screenY) -30);
-            right_arrow.draw(canvas);
+            //---------------------------------- Right Arrow ----------------------------------
+            if(dir == 0 || dir == -1) {
+                Drawable right_arrow = getResources().getDrawable(R.drawable.right_arrow, null);
+                right_arrow.setBounds(260, (screenY) - 230, 460, (screenY) - 30);
+                right_arrow.draw(canvas);
+            }
+            else if (dir == 1) {
+                Drawable right_arrow = getResources().getDrawable(R.drawable.right_arrow_pressed, null);
+                right_arrow.setBounds(260, (screenY) - 230, 460, (screenY) - 30);
+                right_arrow.draw(canvas);
+            }
 
             getHolder().unlockCanvasAndPost(canvas);
         }

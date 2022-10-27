@@ -13,9 +13,9 @@ public class LevelOneEnvironment extends SurfaceView{
     private int screen_x, screen_y;
 
     public int progress = 0;
-    public Drawable[] levelElement = new Drawable[3];
-    public int[] layout = new int[100];
-    public Drawable ice_floor, ice_cliff_left, water;
+    public Drawable[] levelElement = new Drawable[4];
+    public int[] layout = {0,1,2,0,0,0,0};
+    public Drawable ice_floor, ice_cliff_left, ice_cliff_right, water;
 
     public LevelOneEnvironment(Context context, Canvas canvas, int screenX, int screenY) {
         super(context);
@@ -25,15 +25,17 @@ public class LevelOneEnvironment extends SurfaceView{
 
         ice_floor = getResources().getDrawable(R.drawable.floor_1,null);
         ice_cliff_left = getResources().getDrawable(R.drawable.floor_cliff_left,null);
+        ice_cliff_right = getResources().getDrawable(R.drawable.floor_cliff_right, null);
         water = getResources().getDrawable(R.drawable.water,null);
 
         levelElement[0] = ice_floor;
         levelElement[1] = ice_cliff_left;
-        levelElement[2] = water;
+        levelElement[2] = ice_cliff_right;
+        levelElement[3] = water;
     }
 
     public void drawFloor () {
-        ice_floor.setBounds(2000 - progress,screen_y - 600, 5000 - progress,screen_y);
+
     }
 
 
