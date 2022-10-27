@@ -31,6 +31,7 @@
         android:text="@string/mmb_achievement_button"
         style="@style/main_menu_button"
 
+        android:onClick="onAchievementsClick"
         android:layout_marginBottom="@dimen/mmb_marginBottom"
         app:layout_constraintStart_toStartOf="@id/buttone2"
         app:layout_constraintBottom_toTopOf="@id/buttone2"
