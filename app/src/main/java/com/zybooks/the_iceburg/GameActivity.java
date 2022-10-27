@@ -14,10 +14,6 @@ public class GameActivity extends AppCompatActivity {
 
     private GameView gameView;
 
-    //debug
-    private String TAG = "GameActivity";
-    private int dirBool = 0;
-
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);

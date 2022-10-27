@@ -12,15 +12,18 @@ public class GameView extends SurfaceView implements Runnable {
 
     private Thread thread;
     private boolean isPlaying;
-    public int screenX, screenY;
     private float screenRatioX, screenRatioY;
     private Paint paint;
     private GameBackground background1, background2;
     private int dir;
+    private int progress = 0;
+
+    public int screenX, screenY;
+    public Context contx;
 
     public GameView(Context context, int screenX, int screenY) {
         super(context);
-
+        contx = context;
         this.screenX = screenX;
         this.screenY = screenY;
         screenRatioX = 1920 / screenX;
@@ -65,6 +68,8 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
     private void right () {
+        progress+=15;
+        Log.d("Progress", String.valueOf(progress));
         background1.x -= 10 * screenRatioX; //affects screen background movement!!!
         background2.x -= 10 * screenRatioX;
 
@@ -78,15 +83,19 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void left() {
-        background1.x += 10 * screenRatioX; //affects screen background movement!!!
-        background2.x += 10 * screenRatioX;
+        if(progress > 0) {
+            progress -= 15;
+            Log.d("Progress", String.valueOf(progress));
+            background1.x += 10 * screenRatioX; //affects screen background movement!!!
+            background2.x += 10 * screenRatioX;
 
-        if(background1.x - background1.background.getWidth() > 0) {
-            background1.x = -screenX;
-        }
+            if (background1.x - background1.background.getWidth() > 0) {
+                background1.x = -screenX;
+            }
 
-        if(background2.x - background2.background.getWidth() > 0) {
-            background2.x = -screenX;
+            if (background2.x - background2.background.getWidth() > 0) {
+                background2.x = -screenX;
+            }
         }
     }
 
@@ -95,6 +104,26 @@ public class GameView extends SurfaceView implements Runnable {
             Canvas canvas = getHolder().lockCanvas();
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
             canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
+
+            /*Drawable testFloor = getResources().getDrawable(R.drawable.floor_1,null);
+            testFloor.setBounds(2000 - progress,screenY - 600, 5000 - progress,screenY);
+            testFloor.draw(canvas);*/
+
+            LevelOneEnvironment env = new LevelOneEnvironment(contx, canvas, screenX, screenY);
+            env.progress = progress;
+            env.drawFloor();
+
+            //initial floor
+            Drawable ds = env.ice_floor;
+            ds.setBounds(0 - progress, screenY - 600, 2000 - progress, screenY);
+            ds.draw(canvas);
+
+            //for loop that makes everything chain together WIP!!!
+            for (int i = progress; i >= 200; i = 0) {
+                Drawable d = env.ice_floor;
+                d.setBounds(2000 - progress, screenY - 600, 4000 - progress, screenY);
+                d.draw(canvas);
+            }
 
             //Draw everything UI and player here, icons, player
             Drawable player = getResources().getDrawable(R.drawable.moyaifast, null);
