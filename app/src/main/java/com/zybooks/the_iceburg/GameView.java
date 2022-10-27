@@ -21,6 +21,7 @@ public class GameView extends SurfaceView implements Runnable {
     private int progress = 0;
 
     public int screenX, screenY;
+    public boolean jump, invoke_interaction;
     public Context contx;
 
     public GameView(Context context, int screenX, int screenY) {
@@ -166,6 +167,30 @@ public class GameView extends SurfaceView implements Runnable {
                 right_arrow.draw(canvas);
             }
 
+            //---------------------------------- Jump Arrow ----------------------------------
+            Drawable jump_arrow;
+            if(!jump) {
+                jump_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.jump_arrow, null);
+            }
+            else {
+                jump_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.jump_arrow_pressed, null);
+            }
+            assert jump_arrow != null;
+            jump_arrow.setBounds((screenX) - 230,(screenY) -230, (screenX) - 30,(screenY) -30);
+            jump_arrow.draw(canvas);
+
+            //---------------------------------- Interact Icon ----------------------------------
+            Drawable interact;
+            if(!invoke_interaction) {
+                interact = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.interact_button, null);
+            }
+            else {
+                interact = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.interact_button_pressed, null);
+            }
+            assert interact != null;
+            interact.setBounds((screenX) - 460,(screenY) -230, (screenX) - 260,(screenY) -30);
+            interact.draw(canvas);
+
             getHolder().unlockCanvasAndPost(canvas);
         }
     }
@@ -193,8 +218,13 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    public void setJump (boolean j) {
+        jump = j;
+    }
 
 
-
+    public void setInteract(boolean b) {
+        invoke_interaction = b;
+    }
 }
 
