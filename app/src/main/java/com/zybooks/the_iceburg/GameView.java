@@ -20,6 +20,7 @@ public class GameView extends SurfaceView implements Runnable {
     private int dir;
     private int progress = 0;
 
+    public int costumeNum = 0;
     public int screenX, screenY;
     public boolean jump, invoke_interaction;
     public Context contx;
@@ -137,11 +138,12 @@ public class GameView extends SurfaceView implements Runnable {
 
             //---------------------------------- Player ----------------------------------
             Drawable player;
+            Player playClass = new Player(contx, costumeNum);
             if(dir == 1) {
-                player = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai_t, null);
+                player = playClass.costume[1];
             }
             else {
-                player = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai, null);
+                player = playClass.costume[0];
             }
             assert player != null;
             player.setBounds((screenX/2) -200,screenY -550,(screenX/2)+200,screenY -150);

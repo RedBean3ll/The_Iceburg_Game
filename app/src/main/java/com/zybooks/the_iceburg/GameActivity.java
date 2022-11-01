@@ -14,6 +14,8 @@ public class GameActivity extends AppCompatActivity {
 
     private GameView gameView;
 
+    public boolean canJump = true;
+
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -58,6 +60,16 @@ public class GameActivity extends AppCompatActivity {
                         (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
                     gameView.backgroundMovement(1);
                 }
+
+                if(((x < (gameView.screenX - 30) && x > (gameView.screenX - 230)) &&
+                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) && canJump) {
+                    gameView.setJump(true);
+                }
+
+                if((x < (gameView.screenX - 260) && x > (gameView.screenX - 460)) &&
+                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
+                    gameView.setInteract(true);
+                }
                 action = "ACTION_DOWN";
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -66,6 +78,8 @@ public class GameActivity extends AppCompatActivity {
             case MotionEvent.ACTION_UP:
                 action = "ACTION_UP";
                 gameView.backgroundMovement(0);
+                gameView.setJump(false);
+                gameView.setInteract(false);
                 break;
             case MotionEvent.ACTION_CANCEL:
                 action = "ACTION_CANCEL";
