@@ -106,23 +106,25 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
             canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
-
-            //---------------------------------- Scenery Loader ----------------------------------
-            LevelOneEnvironment env = new LevelOneEnvironment(contx, canvas, screenX, screenY);
+    //----------------------------------------- Scenery Loader --------------------------------------------------
+            LevelOneEnvironment env = new LevelOneEnvironment(contx, screenX, screenY);
             env.progress = progress;
 
-            //for loop that makes everything chain together
+            //---------------------------------- Floor Loader ----------------------------------
             for (int i = 0; i < env.layout.length; i++) {
                 Drawable d;
                 switch (env.layout[i]) {
                     case 1:
-                        d = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.floor_cliff_left, null);
+                        d = env.ice_floor;
                         break;
                     case 2:
-                        d = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.floor_cliff_right, null);
+                        d = env.ice_cliff_left;
+                        break;
+                    case 3:
+                        d = env.ice_cliff_right;
                         break;
                     default:
-                        d = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.floor_1, null);
+                        d = env.empty;
                 }
                 assert d != null;
                 d.setBounds((i * 2000) - progress, screenY - 600, (i * 2000) + 2000 - progress, screenY);
@@ -134,7 +136,13 @@ public class GameView extends SurfaceView implements Runnable {
             //Draw everything UI and player here, icons, player
 
             //---------------------------------- Player ----------------------------------
-            Drawable player = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyaifast, null);
+            Drawable player;
+            if(dir == 1) {
+                player = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai_t, null);
+            }
+            else {
+                player = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai, null);
+            }
             assert player != null;
             player.setBounds((screenX/2) -200,screenY -550,(screenX/2)+200,screenY -150);
             player.draw(canvas);
