@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.SurfaceView;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -17,10 +18,10 @@ public class GameView extends SurfaceView implements Runnable {
     private final float SCREEN_RATIO_X, SCREEN_RATIO_Y;
     private final Paint paint;
     private final GameBackground background1, background2;
-    private int dir;
+    private int dir, lastDir = 1;
     private int progress = 0;
 
-    public int costumeNum = 0;
+    public int costumeNum = 2;
     public int screenX, screenY;
     public boolean jump, invoke_interaction;
     public Context contx;
@@ -72,7 +73,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
     private void right () {
-        progress+=15;
+        progress+=21;
         background1.x -= 5 * SCREEN_RATIO_X; //affects screen background movement!!!
         background2.x -= 5 * SCREEN_RATIO_X;
 
@@ -87,7 +88,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void left() {
         if(progress > 0) {
-            progress -= 15;
+            progress -= 21;
             background1.x += 5 * SCREEN_RATIO_X; //affects screen background movement!!!
             background2.x += 5 * SCREEN_RATIO_X;
 
@@ -139,12 +140,46 @@ public class GameView extends SurfaceView implements Runnable {
             //---------------------------------- Player ----------------------------------
             Drawable player;
             Player playClass = new Player(contx, costumeNum);
-            if(dir == 1) {
-                player = playClass.costume[1];
-            }
-            else {
-                player = playClass.costume[0];
-            }
+            int frame = (progress%4)+1;
+
+            switch (dir) {
+                case 1:
+                    lastDir = 1;
+                    switch (frame) {
+                        case 1:
+                            player = playClass.costume[3];
+                            break;
+                        case 2:
+                            player = playClass.costume[4];
+                            break;
+                        default:
+                            player = playClass.costume[2];
+                    }
+                    break;
+                case -1:
+                    lastDir = -1;
+                    switch (frame) {
+                        case 1:
+                            player = playClass.costume[7];
+                            break;
+                        case 2:
+                            player = playClass.costume[8];
+                            break;
+                        default:
+                            player = playClass.costume[6];
+                    }
+                    break;
+
+                default:
+                    if(lastDir == 1) {
+                        player = playClass.costume[0];
+                    }
+                    else {
+                        player = playClass.costume[1];
+                    }
+                    break;
+                }
+
             assert player != null;
             player.setBounds((screenX/2) -200,screenY -550,(screenX/2)+200,screenY -150);
             player.draw(canvas);
