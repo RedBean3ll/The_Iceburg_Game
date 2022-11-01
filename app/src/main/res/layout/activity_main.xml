@@ -44,6 +44,7 @@
         android:text="@string/mmb_achievement_button"
         style="@style/main_menu_button"
 
+        android:onClick="onAchievementsClick"
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
         app:layout_constraintStart_toStartOf="@id/buttone2"
         app:layout_constraintBottom_toTopOf="@id/buttone2"
@@ -54,6 +55,7 @@
         android:text="@string/mmb_costumes_button"
         style="@style/main_menu_button"
 
+        android:onClick="onCostumesClick"
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
         app:layout_constraintStart_toStartOf="@id/buttone1"
         app:layout_constraintBottom_toTopOf="@id/buttone1"
