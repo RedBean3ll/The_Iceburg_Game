@@ -15,6 +15,10 @@
         tools:targetApi="31">
 
         <activity
+            android:name=".SoundActivityTEST"
+            android:exported="false" />
+        
+        <activity
             android:name=".GameActivity"
             android:exported="false" />
 

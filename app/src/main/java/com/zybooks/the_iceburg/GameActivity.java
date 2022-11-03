@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if((x > 30 && x < 230) &&
-                (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
+                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
                     gameView.backgroundMovement(-1);
                 }
                 if((x > 260 && x < 460) &&

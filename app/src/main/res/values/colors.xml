@@ -12,4 +12,5 @@
     <color name="menu_sub_background">#55000000</color>
     <color name="shaded_ice_blue">#215878</color>
     <color name="button_press">#00bbff</color>
+    <color name="transparent">#00000000</color>
 </resources>

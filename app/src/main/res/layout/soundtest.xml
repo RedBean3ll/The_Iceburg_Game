@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="45sp"
+        android:text="Sound Text"
+        android:textStyle="bold"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/currentTrack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Currently playing: "
+        android:layout_marginStart="40dp"
+
+        />
+
+    <Button
+        android:id="@+id/playsound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ice_acidblue_washed"
+        android:layout_marginTop="10dp"
+        android:text="Play"
+
+        />
+
+    <Button
+        android:id="@+id/pausesound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ice_acidblue_washed"
+        android:layout_marginTop="10dp"
+        android:text="Pause"
+        />
+
+    <Button
+        android:id="@+id/stopsound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ice_acidblue_washed"
+        android:layout_marginTop="10dp"
+        android:text="Stop"
+        />
+
+    <Button
+        android:id="@+id/changesound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/ice_acidblue_washed"
+        android:text="Change Track"
+        />
+
+
+</LinearLayout>

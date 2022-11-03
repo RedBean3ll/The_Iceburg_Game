@@ -25,4 +25,9 @@ public class MainActivity extends AppCompatActivity {
         Intent settings = new Intent(this, SettingsActivity.class);
         startActivity(settings);
     }
+
+    public void onSoundClick (View view) {
+        Intent sound = new Intent(this, SoundActivityTEST.class);
+        startActivity(sound);
+    }
 }
