@@ -21,7 +21,7 @@ public class GameView extends SurfaceView implements Runnable {
     private int dir, lastDir = 1;
     private int progress = 0;
 
-    public int costumeNum = 2;
+    public int costumeNum = 0;
     public int screenX, screenY;
     public boolean jump, invoke_interaction;
     public Context contx;
@@ -134,6 +134,15 @@ public class GameView extends SurfaceView implements Runnable {
                     d.draw(canvas);
                 }
             }
+            //---------------------------------- Interactables ----------------------------------
+
+            Interacables intables = new Interacables(contx, screenX, screenY);
+            Drawable itr = intables.interacts[0];
+
+            itr.setBounds(2000 - progress, screenY - 400, 2200 - progress, screenY - 200);
+            if(itr.getBounds().left < screenX && itr.getBounds().right > 0) {
+                itr.draw(canvas);
+            }
 
             //Draw everything UI and player here, icons, player
 
@@ -183,6 +192,19 @@ public class GameView extends SurfaceView implements Runnable {
             assert player != null;
             player.setBounds((screenX/2) -200,screenY -550,(screenX/2)+200,screenY -150);
             player.draw(canvas);
+
+            // ----- Handles interactions ------
+
+            if((player.getBounds().left <= itr.getBounds().right && player.getBounds().right >= itr.getBounds().right - 200) ||
+                    (player.getBounds().right >= itr.getBounds().left && player.getBounds().left <= itr.getBounds().left + 200)) {
+                if(invoke_interaction) {
+                    if(costumeNum < 3)
+                        costumeNum++;
+                    else
+                        costumeNum = 0;
+                    //intables.getInteraction(0);
+                }
+            }
 
             //---------------------------------- Left Arrow ----------------------------------
             if(dir == 0 || dir == 1) {
