@@ -14,8 +14,6 @@ public class GameActivity extends AppCompatActivity {
 
     private GameView gameView;
 
-    public boolean canJump = true;
-
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -62,7 +60,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 if(((x < (gameView.screenX - 30) && x > (gameView.screenX - 230)) &&
-                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) && canJump) {
+                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30))) {
                     gameView.setJump(true);
                 }
 

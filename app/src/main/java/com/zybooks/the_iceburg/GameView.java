@@ -21,6 +21,9 @@ public class GameView extends SurfaceView implements Runnable {
     private int dir, lastDir = 1;
     private int progress = 0;
 
+    public float gravity = 0;
+    public boolean grounded = true;
+
     public int costumeNum = 0;
     public int screenX, screenY;
     public boolean jump, invoke_interaction;
@@ -29,6 +32,7 @@ public class GameView extends SurfaceView implements Runnable {
     public GameView(Context context, int screenX, int screenY) {
         super(context);
         contx = context;
+
         this.screenX = screenX;
         this.screenY = screenY;
         SCREEN_RATIO_X = 1920 / screenX;
@@ -46,6 +50,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
       while (isPlaying) {
           draw ();
+          applyGravity();
           if(dir == 1) {
               right();
               sleep();
@@ -139,7 +144,7 @@ public class GameView extends SurfaceView implements Runnable {
             Interacables intables = new Interacables(contx, screenX, screenY);
             Drawable itr = intables.interacts[0];
 
-            itr.setBounds(2000 - progress, screenY - 400, 2200 - progress, screenY - 200);
+            itr.setBounds(2000 - progress, (int) ((screenY - 400) - gravity), 2200 - progress, screenY - 200);
             if(itr.getBounds().left < screenX && itr.getBounds().right > 0) {
                 itr.draw(canvas);
             }
@@ -286,12 +291,26 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void setJump (boolean j) {
+        //handles icon
         jump = j;
+
+        //handles actual jumping
+        if(grounded) {
+
+        }
+        else {
+
+        }
     }
 
 
     public void setInteract(boolean b) {
         invoke_interaction = b;
+    }
+
+    public void applyGravity () {
+        gravity *= 1.1;
+        Log.e("gravity", String.valueOf(gravity));
     }
 }
 
