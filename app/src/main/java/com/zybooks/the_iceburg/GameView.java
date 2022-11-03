@@ -1,159 +1,106 @@
 package com.zybooks.the_iceburg;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.SurfaceView;
+import androidx.core.content.res.ResourcesCompat;
 
 
+@SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
 
     private Thread thread;
     private boolean isPlaying;
+    private final float SCREEN_RATIO_X, SCREEN_RATIO_Y;
+    private final Paint paint;
+    private final GameBackground background1, background2;
+    private int dir, lastDir = 1;
+    private int progress = 0;
+
+    public int costumeNum = 0;
     public int screenX, screenY;
-    private float screenRatioX, screenRatioY;
-    private Paint paint;
-    private GameBackground background1, background2;
-    public int screenDir;
-    private long envCountX;
-    private long envCountY;
-    private long envLoopCountX;
+    public boolean jump, invoke_interaction;
+    public Context contx;
 
-
-    //debug
-    public String TAG = "GameView";
-    private boolean hold = false;
-    final long minCount = -1000000000;
-    final long maxCount = 1000000000;
-
-    public GameView(Context context, int screenX, int screenY, int direction) {
+    public GameView(Context context, int screenX, int screenY) {
         super(context);
-
+        contx = context;
         this.screenX = screenX;
         this.screenY = screenY;
-        screenRatioX = 1920 / screenX;
-        screenRatioY = 1080 / screenY;
-        envCountX = 0;
-        envLoopCountX = 0;
-        envCountY = 0;
-        screenDir = direction;
+        SCREEN_RATIO_X = 1920 / screenX;
+        SCREEN_RATIO_Y = 1080 /screenY;
 
-
-        background1 = new GameBackground(screenX,screenY, getResources());
-        background2 = new GameBackground(screenX,screenY, getResources());
+        background1 = new GameBackground(screenX ,screenY, getResources());
+        background2 = new GameBackground(screenX ,screenY, getResources());
 
         background2.x = screenX;
 
         paint = new Paint();
     }
 
-    public void setDirection(int direction) {
-        screenDir = direction;
-    }
-
     @Override
     public void run() {
-        while (isPlaying) {
-            //collision
-            backgroundMovement(); //update ();
-            draw ();
-            sleep();
+      while (isPlaying) {
+          draw ();
+          if(dir == 1) {
+              right();
+              sleep();
+          }
+          if(dir == -1) {
+              left();
+              sleep();
+          }
         }
     }
 
-    public void backgroundMovement () {
-        //screenDir = direction;
+    public void backgroundMovement (int direction) {
+        dir = direction;
+        if (direction == 0) {
+                background1.x -= 0 * SCREEN_RATIO_X; //affects screen background movement!!!
+                background2.x -= 0 * SCREEN_RATIO_X;
 
-        if (screenDir == 0) {
+                if(background1.x + background1.background.getWidth() < SCREEN_RATIO_X) {
+                    background1.x = screenX;
+                }
 
-            if(envCountX < minCount) {
-                envCountX = 0;
-                envLoopCountX -= 1;
-            }
-
-            background1.x -= 10 * screenRatioX; //affects screen background movement!!!
-            background2.x -= 10 * screenRatioX;
-            envCountX -= 10; //monitored by above check to avoid overflow
-
-            //Log.i(TAG, "Inc: "+10 * screenRatioX);
-
-            /*Log.i(TAG, "Scroll Left >> back1.x: "+background1.x+" back2.x: "
-                    +background2.x + " dir: "+screenDir + " envCountX: " + envCountX+" scrollCalcA: "
-                    +(background1.x + background1.background.getWidth())
-                    +" scrollCalcB: "+(background2.x + background2.background.getWidth()));
-            */
-
-            if(background1.x + background1.background.getWidth() < 0) {
-                //Log.i(TAG, "SCL LEFTAA >> CalcA(): "+(background1.x + background1.background.getWidth()));
-                //Log.i(TAG, "SCL LEFTAA >> background1.x: "+background1.x);
-                //Log.i(TAG, "SCL LEFTAA >> background1.background: "+background1.background.getWidth());
-                //Log.i(TAG, "SCL LEFTAA >> screenX: "+ screenX);
-                background1.x = screenX;
-            }
-
-            if(background2.x + background2.background.getWidth() < 0) {
-                //Log.i(TAG, "SCL LEFTBB >>"+" CalcB(): "+(background2.x + background2.background.getWidth()));
-                //Log.i(TAG, "SCL LEFTBB >> background2.x: "+background2.x);
-                //Log.i(TAG, "SCL LEFTBB >> background2.background: "+background2.background.getWidth());
-                //Log.i(TAG, "SCL LEFTBB >> screenX: "+screenX);
-                background2.x = screenX;
-            }
-        }
-        else {
-            if (envCountX > maxCount) {
-                envCountX = 0;
-                envLoopCountX += 1;
-            }
-
-            background1.x += 10 * screenRatioX; //affects screen background movement!!!
-            background2.x += 10 * screenRatioX;
-            envCountX += 10;
-
-            //Log.i(TAG, "Dec: "+10 * screenRatioX);
-            /*Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "
-                    +background2.x + " dir: "+screenDir + " envCountX: " + envCountX+" scrollCalcA: "
-                    +(background1.x + background1.background.getWidth())
-                    +" scrollCalcB: "+(background2.x + background2.background.getWidth()));
-            */
-
-            if((background1.x - background1.background.getWidth()) > 0) {
-                //Log.i(TAG, "SCL RIGHTAA >> CalcA(): "+(background1.x - background1.background.getWidth()));
-                //Log.i(TAG, "SCL RIGHTAA >> background1.background: "+background1.background.getWidth());
-                //Log.i(TAG, "SCL RIGHTAA >> screenX: "+ screenX);
-                background1.x = -1080;
-            }
-
-            if((background2.x - background2.background.getWidth()) > 0) {
-                //Log.i(TAG, "SCL RIGHTBB >>"+" CalcB(): "+(background2.x - background2.background.getWidth()));
-                //Log.i(TAG, "SCL RIGHTBB >> background2.background: "+background2.background.getWidth());
-                //Log.i(TAG, "SCL RIGHTBB >> screenX: "+screenX);
-                background2.x = -1080;
+                if(background2.x + background2.background.getWidth() < 0) {
+                    background2.x = screenX;
             }
         }
     }
-
-    private void update () {
-        background1.x -= 10 * screenRatioX; //affects screen background movement!!!
-        background2.x -= 10 * screenRatioX;
-        envCountX -= 10;
-        //envCountY = 0;
-
-        //Log.i(TAG, "Scroll Right >> back1.x: "+background1.x+" back2.x: "+background2.x);
+    private void right () {
+        progress+=21;
+        background1.x -= 5 * SCREEN_RATIO_X; //affects screen background movement!!!
+        background2.x -= 5 * SCREEN_RATIO_X;
 
         if(background1.x + background1.background.getWidth() < 0) {
             background1.x = screenX;
-            //Log.i(TAG, "back1.x = screenX: "+screenX);
         }
 
-        if(background2.x + background2.background.getWidth() < 0) {
+        if(background2.x + background2.background.getWidth() < SCREEN_RATIO_X) {
             background2.x = screenX;
-            //Log.i(TAG, "back2.x = screenX: "+screenX);
         }
     }
 
+    private void left() {
+        if(progress > 0) {
+            progress -= 21;
+            background1.x += 5 * SCREEN_RATIO_X; //affects screen background movement!!!
+            background2.x += 5 * SCREEN_RATIO_X;
 
+            if (background1.x - background1.background.getWidth() > 0) {
+                background1.x = -screenX;
+            }
+
+            if (background2.x - background2.background.getWidth() > 0) {
+                background2.x = -screenX;
+            }
+        }
+    }
 
     private void draw () {
         if(getHolder().getSurface().isValid()) {
@@ -161,16 +108,155 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
             canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
+    //----------------------------------------- Scenery Loader --------------------------------------------------
+            LevelOneEnvironment env = new LevelOneEnvironment(contx, screenX, screenY);
+            env.progress = progress;
+
+            //---------------------------------- Floor Loader ----------------------------------
+            for (int i = 0; i < env.layout.length; i++) {
+                Drawable d;
+                switch (env.layout[i]) {
+                    case 1:
+                        d = env.ice_floor;
+                        break;
+                    case 2:
+                        d = env.ice_cliff_left;
+                        break;
+                    case 3:
+                        d = env.ice_cliff_right;
+                        break;
+                    default:
+                        d = env.empty;
+                }
+                assert d != null;
+                d.setBounds((i * 2000) - progress, screenY - 600, (i * 2000) + 2000 - progress, screenY);
+                if(d.getBounds().left < screenX && d.getBounds().right > 0) {
+                    d.draw(canvas);
+                }
+            }
+            //---------------------------------- Interactables ----------------------------------
+
+            Interacables intables = new Interacables(contx, screenX, screenY);
+            Drawable itr = intables.interacts[0];
+
+            itr.setBounds(2000 - progress, screenY - 400, 2200 - progress, screenY - 200);
+            if(itr.getBounds().left < screenX && itr.getBounds().right > 0) {
+                itr.draw(canvas);
+            }
+
             //Draw everything UI and player here, icons, player
-            Drawable player = getResources().getDrawable(R.drawable.moyaifast, null);
-            player.setBounds((screenX/2) -200,((screenY/2)-200) +200,(screenX/2)+200,((screenY/2)+200) +200);
+
+            //---------------------------------- Player ----------------------------------
+            Drawable player;
+            Player playClass = new Player(contx, costumeNum);
+            int frame = (progress%4)+1;
+
+            switch (dir) {
+                case 1:
+                    lastDir = 1;
+                    switch (frame) {
+                        case 1:
+                            player = playClass.costume[3];
+                            break;
+                        case 2:
+                            player = playClass.costume[4];
+                            break;
+                        default:
+                            player = playClass.costume[2];
+                    }
+                    break;
+                case -1:
+                    lastDir = -1;
+                    switch (frame) {
+                        case 1:
+                            player = playClass.costume[7];
+                            break;
+                        case 2:
+                            player = playClass.costume[8];
+                            break;
+                        default:
+                            player = playClass.costume[6];
+                    }
+                    break;
+
+                default:
+                    if(lastDir == 1) {
+                        player = playClass.costume[0];
+                    }
+                    else {
+                        player = playClass.costume[1];
+                    }
+                    break;
+                }
+
+            assert player != null;
+            player.setBounds((screenX/2) -200,screenY -550,(screenX/2)+200,screenY -150);
             player.draw(canvas);
 
-            Drawable left_arrow = getResources().getDrawable(R.drawable.arrow_button, null);
-            left_arrow.setBounds((screenX) - 230,(screenY) -230, (screenX) - 30,(screenY) -30);
-            left_arrow.draw(canvas);
+            // ----- Handles interactions ------
 
+            if((player.getBounds().left <= itr.getBounds().right && player.getBounds().right >= itr.getBounds().right - 200) ||
+                    (player.getBounds().right >= itr.getBounds().left && player.getBounds().left <= itr.getBounds().left + 200)) {
+                if(invoke_interaction) {
+                    if(costumeNum < 3)
+                        costumeNum++;
+                    else
+                        costumeNum = 0;
+                    //intables.getInteraction(0);
+                }
+            }
 
+            //---------------------------------- Left Arrow ----------------------------------
+            if(dir == 0 || dir == 1) {
+                Drawable left_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.left_arrow, null);
+                assert left_arrow != null;
+                left_arrow.setBounds(30, (screenY) - 230, 230, (screenY) - 30);
+                left_arrow.draw(canvas);
+            }
+            else if (dir == -1) {
+                Drawable left_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.left_arrow_pressed, null);
+                assert left_arrow != null;
+                left_arrow.setBounds(30, (screenY) - 230, 230, (screenY) - 30);
+                left_arrow.draw(canvas);
+            }
+
+            //---------------------------------- Right Arrow ----------------------------------
+            if(dir == 0 || dir == -1) {
+                Drawable right_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.right_arrow, null);
+                assert right_arrow != null;
+                right_arrow.setBounds(260, (screenY) - 230, 460, (screenY) - 30);
+                right_arrow.draw(canvas);
+            }
+            else if (dir == 1) {
+                Drawable right_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.right_arrow_pressed, null);
+                assert right_arrow != null;
+                right_arrow.setBounds(260, (screenY) - 230, 460, (screenY) - 30);
+                right_arrow.draw(canvas);
+            }
+
+            //---------------------------------- Jump Arrow ----------------------------------
+            Drawable jump_arrow;
+            if(!jump) {
+                jump_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.jump_arrow, null);
+            }
+            else {
+                jump_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.jump_arrow_pressed, null);
+            }
+            assert jump_arrow != null;
+            jump_arrow.setBounds((screenX) - 230,(screenY) -230, (screenX) - 30,(screenY) -30);
+            jump_arrow.draw(canvas);
+
+            //---------------------------------- Interact Icon ----------------------------------
+            Drawable interact;
+            if(!invoke_interaction) {
+                interact = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.interact_button, null);
+            }
+            else {
+                interact = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.interact_button_pressed, null);
+            }
+            assert interact != null;
+            interact.setBounds((screenX) - 460,(screenY) -230, (screenX) - 260,(screenY) -30);
+            interact.draw(canvas);
 
             getHolder().unlockCanvasAndPost(canvas);
         }
@@ -199,5 +285,13 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    public void setJump (boolean j) {
+        jump = j;
+    }
+
+
+    public void setInteract(boolean b) {
+        invoke_interaction = b;
+    }
 }
 
