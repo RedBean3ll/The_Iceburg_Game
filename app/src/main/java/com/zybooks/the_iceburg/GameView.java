@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -23,15 +24,14 @@ public class GameView extends SurfaceView implements Runnable {
     private int progress = 0;
 
     public float gravity = 0;
-    public int acceleration = 10;
+    public int acceleration = 50;
     public boolean grounded = true;
 
-    public int costumeNum = 0;
+    public int costumeNum, soundId = 0;
     public int screenX, screenY;
     public boolean jump, fall, invoke_interaction;
     public Context contx;
 
-    public SoundPool funnysoundmachine;
 
     public GameView(Context context, int screenX, int screenY) {
         super(context);
@@ -44,8 +44,6 @@ public class GameView extends SurfaceView implements Runnable {
         background1 = new GameBackground(screenX ,screenY, getResources());
         background2 = new GameBackground(screenX ,screenY, getResources());
 
-        //funnysoundmachine = SoundPoolBuilder
-
         background2.x = screenX;
 
         paint = new Paint();
@@ -55,7 +53,6 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
         while (isPlaying) {
             draw ();
-
             switch (dir) {
                 case 1:
                     right();
@@ -68,10 +65,8 @@ public class GameView extends SurfaceView implements Runnable {
                     break;
             }
 
-
             if(!grounded) {
                 if(jump && !fall) {
-
                     applyJump();
                 }
                 else if(!jump && !fall) {
@@ -81,29 +76,11 @@ public class GameView extends SurfaceView implements Runnable {
                     applyGravity();
                 }
             }
-
-
-
-            //else {
-            //    sleep();
-            //}
         }
     }
 
     public void backgroundMovement (int direction) {
         dir = direction;
-        if (direction == 0) {
-            background1.x -= 0 * SCREEN_RATIO_X; //affects screen background movement!!!
-            background2.x -= 0 * SCREEN_RATIO_X;
-
-            if(background1.x + background1.background.getWidth() < SCREEN_RATIO_X) {
-                background1.x = screenX;
-            }
-
-            if(background2.x + background2.background.getWidth() < 0) {
-                background2.x = screenX;
-            }
-        }
     }
     private void right () {
         progress+=21;
@@ -320,14 +297,6 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    private void sleepGoofy () {
-        try {
-            Thread.sleep(1000); // Speed at which elements are drawn !!! IMPORTANT !!! (larger is slower)
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void resume () {
         isPlaying = true;
         thread = new Thread(this);
@@ -351,7 +320,7 @@ public class GameView extends SurfaceView implements Runnable {
         if(gravity > -250 && !fall) {
 
             gravity = gravity - acceleration;
-            acceleration *= 1.1;
+            acceleration /= 1.1;
         } else {
             fall = true;
             acceleration = 10;
@@ -371,7 +340,7 @@ public class GameView extends SurfaceView implements Runnable {
         } else {
             grounded = true;
             fall = false;
-            acceleration = 10;
+            acceleration = 50;
         }
     }
 }
