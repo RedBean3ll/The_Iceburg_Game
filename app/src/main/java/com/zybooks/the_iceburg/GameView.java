@@ -50,7 +50,6 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
       while (isPlaying) {
           draw ();
-          applyGravity();
           if(dir == 1) {
               right();
               sleep();
@@ -58,6 +57,9 @@ public class GameView extends SurfaceView implements Runnable {
           if(dir == -1) {
               left();
               sleep();
+          }
+          if(!grounded) {
+              applyGravity();
           }
         }
     }
@@ -144,7 +146,7 @@ public class GameView extends SurfaceView implements Runnable {
             Interacables intables = new Interacables(contx, screenX, screenY);
             Drawable itr = intables.interacts[0];
 
-            itr.setBounds(2000 - progress, (int) ((screenY - 400) - gravity), 2200 - progress, screenY - 200);
+            itr.setBounds(2000 - progress, screenY - 400, 2200 - progress, screenY - 200);
             if(itr.getBounds().left < screenX && itr.getBounds().right > 0) {
                 itr.draw(canvas);
             }
@@ -194,8 +196,19 @@ public class GameView extends SurfaceView implements Runnable {
                     break;
                 }
 
+                if(!grounded) {
+                    switch(lastDir) {
+                        case 1:
+                            player = playClass.costume[10];
+                            break;
+                        case -1:
+                            player = playClass.costume[11];
+                            break;
+                    }
+                }
+
             assert player != null;
-            player.setBounds((screenX/2) -200,screenY -550,(screenX/2)+200,screenY -150);
+            player.setBounds((screenX/2) -200,(int) (screenY -550 + gravity),(screenX/2)+200,(int)(screenY -150 + gravity));
             player.draw(canvas);
 
             // ----- Handles interactions ------
@@ -245,6 +258,7 @@ public class GameView extends SurfaceView implements Runnable {
                 jump_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.jump_arrow, null);
             }
             else {
+                grounded = false;
                 jump_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.jump_arrow_pressed, null);
             }
             assert jump_arrow != null;
@@ -298,9 +312,6 @@ public class GameView extends SurfaceView implements Runnable {
         if(grounded) {
 
         }
-        else {
-
-        }
     }
 
 
@@ -309,7 +320,10 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void applyGravity () {
-        gravity *= 1.1;
+        if(gravity < 12000) {
+            gravity = gravity + 10;
+            gravity *= 1.1;
+        }
         Log.e("gravity", String.valueOf(gravity));
     }
 }
