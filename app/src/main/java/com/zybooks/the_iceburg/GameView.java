@@ -50,15 +50,20 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
       while (isPlaying) {
           draw ();
-          if(dir == 1) {
-              right();
-              sleep();
+
+          switch (dir) {
+              case 1:
+                  right();
+                  sleep();
+                  break;
+
+              case -1:
+                  left();
+                  sleep();
+                  break;
           }
-          if(dir == -1) {
-              left();
-              sleep();
-          }
-          if(!grounded) {
+
+          if (!grounded) {
               applyGravity();
           }
         }
@@ -324,7 +329,6 @@ public class GameView extends SurfaceView implements Runnable {
             gravity = gravity + 10;
             gravity *= 1.1;
         }
-        Log.e("gravity", String.valueOf(gravity));
     }
 }
 

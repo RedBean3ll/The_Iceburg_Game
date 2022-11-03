@@ -84,7 +84,7 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
 
-        Log.d("deez", action + " x = " + event.getX() +
+        Log.d("Touched Location: ", action + " x = " + event.getX() +
                 " y = " + event.getY());
         return true;
     }
