@@ -22,6 +22,9 @@ public class Player extends SurfaceView {
             case 2:
                 CostumeThree();
                 break;
+            case 3:
+                CostumeFour();
+                break;
             default:
                 CostumeOne();
                 break;
@@ -84,5 +87,24 @@ public class Player extends SurfaceView {
         //Jump
         costume[10] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai, null);
         costume[11] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai_m, null);
+    }
+
+    public void CostumeFour () {
+        // Idle
+        costume[0] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_idle, null);
+        costume[1] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_idle, null);
+        // Walk right
+        costume[2] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk, null);
+        costume[3] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk_1, null);
+        costume[4] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk_2, null);
+        costume[5] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk_1, null);
+        // Walk left
+        costume[6] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk_m, null);
+        costume[7] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk_1_m, null);
+        costume[8] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk_2_m, null);
+        costume[9] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_walk_1_m, null);
+        //Jump
+        costume[10] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_jump, null);
+        costume[11] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_jump_m, null);
     }
 }

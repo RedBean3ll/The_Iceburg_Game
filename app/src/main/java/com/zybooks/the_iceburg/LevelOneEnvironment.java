@@ -18,7 +18,7 @@ public class LevelOneEnvironment extends SurfaceView{
     public int progress = 0;
     public Drawable[] levelElement = new Drawable[4];
     public Drawable[] levelObstacle = new Drawable[1];
-    public int[] layout = {1,2,0,3,1,1,1};
+    public int[] layout = {1,2,0,3,1,1,1,1,1,2,0,0,0,3,1,1,1,1,2,0};
     public int[] obstacles = {};
 
     public Drawable empty,ice_floor, ice_cliff_left, ice_cliff_right, water;

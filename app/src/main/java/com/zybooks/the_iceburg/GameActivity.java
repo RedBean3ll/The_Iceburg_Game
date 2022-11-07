@@ -24,7 +24,6 @@ public class GameActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getSize(point);
 
         gameView = new GameView(this, point.x, point.y);
-
         setContentView(gameView);
     }
 
@@ -84,7 +83,7 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
 
-        Log.d("Touched Location: ", action + " x = " + event.getX() +
+        Log.d("Touched Location", action + " x = " + event.getX() +
                 " y = " + event.getY());
         return true;
     }
