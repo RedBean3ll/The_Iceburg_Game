@@ -295,6 +295,11 @@ public class GameView extends SurfaceView implements Runnable {
                         delay = 0;
                         grounded = true;
                     }
+                    else if(isJump && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && delay > 10) {
+                        applyGravity(0);
+                        delay = 0;
+                        grounded = true;
+                    }
             }
 
             // ----- Handles interactions ------
