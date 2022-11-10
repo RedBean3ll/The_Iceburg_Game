@@ -10,4 +10,8 @@ public class CostumesActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.costumes_menu);
     }
+
+    public void onCostumeSelected() {
+
+    }
 }

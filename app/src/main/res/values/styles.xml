@@ -90,6 +90,14 @@
         <item name="android:textSize">25sp</item>
         <item name="android:textColor">@color/shaded_ice_blue</item>
         <item name="android:textAlignment">center</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@drawable/border</item>
+    </style>
+
+    <style name="imagebutton_box">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:layout_margin">10dp</item>
         <item name="android:background">@drawable/border</item>
     </style>
 

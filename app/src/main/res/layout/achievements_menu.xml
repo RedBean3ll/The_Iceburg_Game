@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:useDefaultMargins="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="70dp"
 
         android:columnCount="2"
         android:rowCount="4"
@@ -29,7 +29,8 @@
 
         <TextView
             android:text="@string/complete_game"
-            style="@style/textview_box" />
+            style="@style/textview_box"
+            app:drawableTopCompat="" />
         <TextView
             android:text="@string/the_good_ending"
             style="@style/textview_box"/>
