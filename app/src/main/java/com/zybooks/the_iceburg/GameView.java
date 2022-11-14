@@ -2,6 +2,7 @@ package com.zybooks.the_iceburg;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -11,14 +12,13 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import androidx.core.content.res.ResourcesCompat;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 
 @SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
+
+    public int orientation = 1;
 
     private int isDrawn = 0;
 
@@ -36,11 +36,14 @@ public class GameView extends SurfaceView implements Runnable {
     private int acceleration = 0;
     private LevelOneEnvironment envi;
     private int colBelow = 1;
+    private int obstNear = 0;
+    private int currentCol = 1;
     public float deltaT = 0;
     public float delay = 0;
     public float gravity = 0;
+    public boolean onPlatform = false;
     public boolean grounded = true;
-    public int colBuffer;
+
 
     public boolean dead = false;
 
@@ -48,13 +51,13 @@ public class GameView extends SurfaceView implements Runnable {
     public int screenX, screenY;
     public boolean jump, invoke_interaction;
     public Context contx;
-    public ArrayList<Integer> colliders = new ArrayList<>();
 
     public float deathTimer = 0;
 
     public GameView(Context context, int screenX, int screenY) {
         super(context);
         contx = context;
+
 
         this.screenX = screenX;
         this.screenY = screenY;
@@ -72,14 +75,18 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     public void run() {
       while (isPlaying) {
-          Log.d("Dead", String.valueOf(dead));
+          if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+              orientation = 1;
+          }
+          else {
+              orientation = 2;
+          }
           draw();
           if(dead) {
               deathTimer += 0.1f;
               if (deathTimer >= 5){
                   Respawn();
               }
-              Log.d("Dead", String.valueOf(deathTimer));
           }
 
           switch (dir) {
@@ -108,6 +115,7 @@ public class GameView extends SurfaceView implements Runnable {
               isJump = true;
               if (grounded) {
                   acceleration = 15;
+                  onPlatform = false;
               }
               yDir = 1;
               deltaT = 3;
@@ -123,6 +131,10 @@ public class GameView extends SurfaceView implements Runnable {
               yDir = 1;
               deltaT = 3;
           }
+          if(colBelow !=0 && !isJump && obstNear == 0 && grounded) {
+              gravity = 0;
+          }
+
         }
     }
 
@@ -134,7 +146,9 @@ public class GameView extends SurfaceView implements Runnable {
         grounded = true;
         jump = false;
         isJump = false;
-
+        dir = 0;
+        background1.x = 0;
+        background2.x = screenX;
     }
 
     public void backgroundMovement (int direction) {
@@ -198,6 +212,41 @@ public class GameView extends SurfaceView implements Runnable {
                 envi = env;
                 env.progress = progress;
 
+                //---------------------------------- Obstacles -------------------------------------
+
+                for(int i = 0; i < env.obstacles.length; i++) {
+                    Drawable d;
+                    switch(env.obstacles[i]) {
+                        case 1:
+                            d = env.short_ledge;
+                            d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY);
+                            break;
+                        case 2:
+                            d = env.float_ledge;
+                            d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY - env.obstBuffer_vert[i] + 140);
+                            break;
+                        default:
+                            d = env.empty;
+                            d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + 0 - progress, screenY);
+                    }
+                    assert d != null;
+                    if (d.getBounds().left < screenX && d.getBounds().right > 0) {
+                        d.draw(canvas);
+                    }
+                }
+                Log.e("Obst", String.valueOf(obstNear));
+                for (int i = 0; i < env.obstacles.length; i++) {
+                    if(i + 1 * env.obstBuffer[i] - progress < screenX / 2 && (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress > screenX / 2) {
+                        obstNear = env.obstacles[i];
+                        currentCol = i;
+                        break;
+                    }
+                    else {
+                        currentCol = 0;
+                        obstNear = 0;
+                    }
+                }
+
                 //---------------------------------- Floor Loader ----------------------------------
                 for (int i = 0; i < env.layout.length; i++) {
                     Drawable d;
@@ -221,16 +270,14 @@ public class GameView extends SurfaceView implements Runnable {
 
                         //only applies to horizontal, make for both!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-                        if (screenX / 2 > d.getBounds().left + colBuffer) {
-                            //only activates between the middle of the screen passing the right
-                            //and then halfway in
+                        if (screenX / 2 > d.getBounds().left) {
                             colBelow = env.layout[i];
-                            // Log.d("The bound", String.valueOf(colBuffer));
-                            // Log.d("For", String.valueOf(env.layout[i]));
                         }
                     }
                 }
+
+
+
 
                 //---------------------------------- Interactables ----------------------------------
 
@@ -302,44 +349,95 @@ public class GameView extends SurfaceView implements Runnable {
 
 
                 //-------------------------------------------- COLLISION -------------------------------------------
-                //Log.d("buffer", String.valueOf(colBuffer));
-                //Log.d("colBelow", String.valueOf(colBelow));
-                switch (colBelow) {
-                    case 0:
-                        colBuffer = 0;
-                        grounded = false;
-                        break;
-                    case 1:
-                        colBuffer = 0;
-                        if (player.getBounds().bottom >= envi.levelElement[1].getBounds().top + 400 && delay > 10) {
-                            applyGravity(0);
-                            delay = 0;
-                            grounded = true;
-                        }
-                        break;
-                    case 2:
-                        colBuffer = -700;
-                        if (player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && player.getBounds().left + 200 > envi.levelElement[2].getBounds().right + colBuffer && delay > 10) {
-                            applyGravity(0);
-                            delay = 0;
-                            grounded = true;
-                        } else if (isJump && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && delay > 10) {
-                            applyGravity(0);
-                            delay = 0;
-                            grounded = true;
-                        }
+
+                //NOTE: Magic number for vertical orientation reduction is 0.5625
+
+                if(player.getBounds().bottom < screenY) {
+                    switch (obstNear) {
+                        case 1:
+                            if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && screenX / 2 > envi.levelObstacle[0].getBounds().right && delay > 4) {
+                                yDir =0;
+                                onPlatform = true;
+                                gravity = -310;
+                                delay = 0;
+                                grounded = true;
+                            } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 4) {
+                                yDir =0;
+                                onPlatform = true;
+                                gravity = -310;
+                                delay = 0;
+                                grounded = true;
+                            }
+                            break;
+                        case 2:
+                            if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && screenX / 2 > envi.levelObstacle[0].getBounds().right && delay > 4) {
+                                yDir =0;
+                                onPlatform = true;
+                                gravity = env.obstBuffer_vert[currentCol - 1] - 800;
+                                delay = 0;
+                                grounded = true;
+                            } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 4) {
+                                yDir =0;
+                                onPlatform = true;
+                                gravity = env.obstBuffer_vert[currentCol - 1] - 800;
+                                delay = 0;
+                                grounded = true;
+                            }
+                            break;
+                        default:
+                            if (gravity != 0 && !isJump) {
+                                grounded = false;
+                            }
+                            onPlatform = false;
+                            break;
+                    }
                 }
+                  if(!onPlatform) {
+                      switch (colBelow) {
+                          case 0:
+                              grounded = false;
+                              break;
+                          case 1:
+                              if (!grounded && player.getBounds().bottom >= envi.levelElement[1].getBounds().top + 400 && delay > 1) {
+                                  yDir =0;
+                                  delay = 0;
+                                  grounded = true;
+                              }
+                              break;
+                          case 2:
+                              if (!grounded && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && screenX / 2 > envi.levelElement[2].getBounds().right && delay > 1) {
+                                  yDir =0;
+                                  delay = 0;
+                                  grounded = true;
+                              } else if (!grounded && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && delay > 1) {
+                                  yDir =0;;
+                                  delay = 0;
+                                  grounded = true;
+                              }
+                              break;
+                          case 3:
+                              if (!grounded && player.getBounds().bottom >= envi.levelElement[3].getBounds().top + 400 && screenX / 2 > envi.levelElement[3].getBounds().right && delay > 1) {
+                                  yDir =0;
+                                  delay = 0;
+                                  grounded = true;
+                              } else if (!grounded && player.getBounds().bottom >= envi.levelElement[3].getBounds().top + 400 && delay > 1) {
+                                  yDir =0;;
+                                  delay = 0;
+                                  grounded = true;
+                              }
+                              break;
+                      }
+                  }
 
                 // ----- Handles interactions ------
 
                 if ((player.getBounds().left <= itr.getBounds().right && player.getBounds().right >= itr.getBounds().right - 200) ||
                         (player.getBounds().right >= itr.getBounds().left && player.getBounds().left <= itr.getBounds().left + 200)) {
                     if (invoke_interaction) {
-                        if (costumeNum < 4)
+                        if (costumeNum < 5)
                             costumeNum++;
                         else
                             costumeNum = 0;
-                        //intables.getInteraction(0);
                     }
                 }
 
@@ -446,8 +544,13 @@ public class GameView extends SurfaceView implements Runnable {
                 gravity -= acceleration * (deltaT * deltaT);
                 break;
             default:
-                gravity = 0;
-                deltaT = 0;
+                if (obstNear == 0) {
+                    deltaT = 0;
+                }
+                else if(colBelow != 0) {
+                    grounded = true;
+                    deltaT = 0;
+                }
                 break;
         }
     }

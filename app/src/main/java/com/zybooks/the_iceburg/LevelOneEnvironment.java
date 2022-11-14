@@ -13,13 +13,18 @@ public class LevelOneEnvironment extends SurfaceView{
     //This number will go up and down depending on the location from left to right
 
     private int screen_x, screen_y;
-    private Drawable short_ledge;
+    public Drawable short_ledge, float_ledge;
 
     public int progress = 0;
     public Drawable[] levelElement = new Drawable[4];
-    public Drawable[] levelObstacle = new Drawable[1];
+    public Drawable[] levelObstacle = new Drawable[2];
     public int[] layout = {1,2,0,3,1,1,1,1,1,2,0,0,0,3,1,1,1,1,2,0};
-    public int[] obstacles = {};
+
+    public int[] obstBuffer = {1200,3600,4400,5200};
+    public int[] obstWidth = {600,600,600,600};
+    public int[] obstBuffer_vert = {600,400,600,400};
+
+    public int[] obstacles = {1,2,2,2};
 
     public Drawable empty,ice_floor, ice_cliff_left, ice_cliff_right, water;
 
@@ -42,8 +47,10 @@ public class LevelOneEnvironment extends SurfaceView{
 
         //-------------------------------------------- Obstacles --------------------------------------------------
         short_ledge = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.ice_platform, null);
+        float_ledge = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.ice_platform_float, null);
 
         levelObstacle[0] = short_ledge;
+        levelObstacle[1] = float_ledge;
 
         //-------------------------------------------- Water --------------------------------------------------
         water = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.water, null);
