@@ -20,7 +20,7 @@ public class LevelOneEnvironment extends SurfaceView{
     public Drawable[] levelObstacle = new Drawable[2];
     public int[] layout = {1,2,0,3,1,1,1,1,1,2,0,0,0,3,1,1,1,1,2,0};
 
-    public int[] obstBuffer = {1200,3600,4400,5200};
+    public int[] obstBuffer = {1200,3600,4400,5100};
     public int[] obstWidth = {600,600,600,600};
     public int[] obstBuffer_vert = {600,400,600,400};
 

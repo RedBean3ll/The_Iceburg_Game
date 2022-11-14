@@ -23,6 +23,7 @@ public class GameView extends SurfaceView implements Runnable {
     private int isDrawn = 0;
 
     private Thread thread;
+    private Thread thread_secondary;
     private boolean isPlaying;
     private final float SCREEN_RATIO_X, SCREEN_RATIO_Y;
     private final Paint paint;
@@ -103,7 +104,7 @@ public class GameView extends SurfaceView implements Runnable {
 
           applyGravity(yDir);
 
-          if(gravity > 2500) {
+          if(gravity > 2100) {
               dead = true;
               gravity = 0;
           }
@@ -149,6 +150,9 @@ public class GameView extends SurfaceView implements Runnable {
         dir = 0;
         background1.x = 0;
         background2.x = screenX;
+        onPlatform = false;
+        yDir = 0;
+        delay = 0;
     }
 
     public void backgroundMovement (int direction) {
@@ -213,72 +217,9 @@ public class GameView extends SurfaceView implements Runnable {
                 env.progress = progress;
 
                 //---------------------------------- Obstacles -------------------------------------
-
-                for(int i = 0; i < env.obstacles.length; i++) {
-                    Drawable d;
-                    switch(env.obstacles[i]) {
-                        case 1:
-                            d = env.short_ledge;
-                            d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY);
-                            break;
-                        case 2:
-                            d = env.float_ledge;
-                            d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY - env.obstBuffer_vert[i] + 140);
-                            break;
-                        default:
-                            d = env.empty;
-                            d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + 0 - progress, screenY);
-                    }
-                    assert d != null;
-                    if (d.getBounds().left < screenX && d.getBounds().right > 0) {
-                        d.draw(canvas);
-                    }
-                }
-                Log.e("Obst", String.valueOf(obstNear));
-                for (int i = 0; i < env.obstacles.length; i++) {
-                    if(i + 1 * env.obstBuffer[i] - progress < screenX / 2 && (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress > screenX / 2) {
-                        obstNear = env.obstacles[i];
-                        currentCol = i;
-                        break;
-                    }
-                    else {
-                        currentCol = 0;
-                        obstNear = 0;
-                    }
-                }
-
+                drawObstacles(env,canvas);
                 //---------------------------------- Floor Loader ----------------------------------
-                for (int i = 0; i < env.layout.length; i++) {
-                    Drawable d;
-                    switch (env.layout[i]) {
-                        case 1:
-                            d = env.ice_floor;
-                            break;
-                        case 2:
-                            d = env.ice_cliff_left;
-                            break;
-                        case 3:
-                            d = env.ice_cliff_right;
-                            break;
-                        default:
-                            d = env.empty;
-                    }
-                    assert d != null;
-                    d.setBounds((i * 2000) - progress, screenY - 600, (i * 2000) + 2000 - progress, screenY);
-                    if (d.getBounds().left < screenX && d.getBounds().right > 0) {
-                        d.draw(canvas);
-
-                        //only applies to horizontal, make for both!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        if (screenX / 2 > d.getBounds().left) {
-                            colBelow = env.layout[i];
-                        }
-                    }
-                }
-
-
-
-
+                    drawFloor(env, canvas);
                 //---------------------------------- Interactables ----------------------------------
 
                 Interacables intables = new Interacables(contx, screenX, screenY);
@@ -292,142 +233,10 @@ public class GameView extends SurfaceView implements Runnable {
                 //Draw everything UI and player here, icons, player
 
                 //---------------------------------- Player ----------------------------------
-                Player playClass = new Player(contx, costumeNum);
-                int frame = (progress % 4) + 1;
-
-                switch (dir) {
-                    case 1:
-                        lastDir = 1;
-                        switch (frame) {
-                            case 1:
-                                player = playClass.costume[3];
-                                break;
-                            case 2:
-                                player = playClass.costume[4];
-                                break;
-                            default:
-                                player = playClass.costume[2];
-                        }
-                        break;
-                    case -1:
-                        lastDir = -1;
-                        switch (frame) {
-                            case 1:
-                                player = playClass.costume[7];
-                                break;
-                            case 2:
-                                player = playClass.costume[8];
-                                break;
-                            default:
-                                player = playClass.costume[6];
-                        }
-                        break;
-
-                    default:
-                        if (lastDir == 1) {
-                            player = playClass.costume[0];
-                        } else {
-                            player = playClass.costume[1];
-                        }
-                        break;
-                }
-
-                if (!grounded) {
-                    switch (lastDir) {
-                        case 1:
-                            player = playClass.costume[10];
-                            break;
-                        case -1:
-                            player = playClass.costume[11];
-                            break;
-                    }
-                }
-
-                assert player != null;
-                player.setBounds((screenX / 2) - 200, (int) (screenY - 550 + gravity), (screenX / 2) + 200, (int) (screenY - 150 + gravity));
-                player.draw(canvas);
-
-
+                drawPlayer(env,canvas);
                 //-------------------------------------------- COLLISION -------------------------------------------
 
-                //NOTE: Magic number for vertical orientation reduction is 0.5625
-
-                if(player.getBounds().bottom < screenY) {
-                    switch (obstNear) {
-                        case 1:
-                            if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && screenX / 2 > envi.levelObstacle[0].getBounds().right && delay > 4) {
-                                yDir =0;
-                                onPlatform = true;
-                                gravity = -310;
-                                delay = 0;
-                                grounded = true;
-                            } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 4) {
-                                yDir =0;
-                                onPlatform = true;
-                                gravity = -310;
-                                delay = 0;
-                                grounded = true;
-                            }
-                            break;
-                        case 2:
-                            if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && screenX / 2 > envi.levelObstacle[0].getBounds().right && delay > 4) {
-                                yDir =0;
-                                onPlatform = true;
-                                gravity = env.obstBuffer_vert[currentCol - 1] - 800;
-                                delay = 0;
-                                grounded = true;
-                            } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 4) {
-                                yDir =0;
-                                onPlatform = true;
-                                gravity = env.obstBuffer_vert[currentCol - 1] - 800;
-                                delay = 0;
-                                grounded = true;
-                            }
-                            break;
-                        default:
-                            if (gravity != 0 && !isJump) {
-                                grounded = false;
-                            }
-                            onPlatform = false;
-                            break;
-                    }
-                }
-                  if(!onPlatform) {
-                      switch (colBelow) {
-                          case 0:
-                              grounded = false;
-                              break;
-                          case 1:
-                              if (!grounded && player.getBounds().bottom >= envi.levelElement[1].getBounds().top + 400 && delay > 1) {
-                                  yDir =0;
-                                  delay = 0;
-                                  grounded = true;
-                              }
-                              break;
-                          case 2:
-                              if (!grounded && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && screenX / 2 > envi.levelElement[2].getBounds().right && delay > 1) {
-                                  yDir =0;
-                                  delay = 0;
-                                  grounded = true;
-                              } else if (!grounded && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && delay > 1) {
-                                  yDir =0;;
-                                  delay = 0;
-                                  grounded = true;
-                              }
-                              break;
-                          case 3:
-                              if (!grounded && player.getBounds().bottom >= envi.levelElement[3].getBounds().top + 400 && screenX / 2 > envi.levelElement[3].getBounds().right && delay > 1) {
-                                  yDir =0;
-                                  delay = 0;
-                                  grounded = true;
-                              } else if (!grounded && player.getBounds().bottom >= envi.levelElement[3].getBounds().top + 400 && delay > 1) {
-                                  yDir =0;;
-                                  delay = 0;
-                                  grounded = true;
-                              }
-                              break;
-                      }
-                  }
+                collision(env,canvas);
 
                 // ----- Handles interactions ------
 
@@ -504,9 +313,225 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    //======================================== DRAW METHOD START ==================================================
+
+    private void drawFloor(LevelOneEnvironment env, Canvas canvas) {
+        for (int i = 0; i < env.layout.length; i++) {
+            Drawable d;
+            switch (env.layout[i]) {
+                case 1:
+                    d = env.ice_floor;
+                    break;
+                case 2:
+                    d = env.ice_cliff_left;
+                    break;
+                case 3:
+                    d = env.ice_cliff_right;
+                    break;
+                default:
+                    d = env.empty;
+            }
+            assert d != null;
+            d.setBounds((i * 2000) - progress, screenY - 600, (i * 2000) + 2000 - progress, screenY);
+            if (d.getBounds().left < screenX && d.getBounds().right > 0) {
+                d.draw(canvas);
+
+                //only applies to horizontal, make for both!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                if (screenX / 2 > d.getBounds().left) {
+                    colBelow = env.layout[i];
+                }
+            }
+        }
+    }
+
+    private void drawObstacles(LevelOneEnvironment env, Canvas canvas) {
+        for(int i = 0; i < env.obstacles.length; i++) {
+            Drawable d;
+            switch(env.obstacles[i]) {
+                case 1:
+                    d = env.short_ledge;
+                    d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY);
+                    break;
+                case 2:
+                    d = env.float_ledge;
+                    d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY - env.obstBuffer_vert[i] + 140);
+                    break;
+                default:
+                    d = env.empty;
+                    d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + 0 - progress, screenY);
+            }
+            assert d != null;
+            if (d.getBounds().left < screenX && d.getBounds().right > 0) {
+                d.draw(canvas);
+            }
+        }
+        // Log.e("Obst", String.valueOf(delay));
+        for (int i = 0; i < env.obstacles.length; i++) {
+            if(i + 1 * env.obstBuffer[i] - progress < screenX / 2 && (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress > screenX / 2) {
+                obstNear = env.obstacles[i];
+                currentCol = i;
+                break;
+            }
+            else {
+                currentCol = 0;
+                obstNear = 0;
+            }
+        }
+
+    }
+
+    private void drawPlayer(LevelOneEnvironment env, Canvas canvas) {
+        Player playClass = new Player(contx, costumeNum);
+        int frame = (progress % 4) + 1;
+
+        switch (dir) {
+            case 1:
+                lastDir = 1;
+                switch (frame) {
+                    case 1:
+                        player = playClass.costume[3];
+                        break;
+                    case 2:
+                        player = playClass.costume[4];
+                        break;
+                    default:
+                        player = playClass.costume[2];
+                }
+                break;
+            case -1:
+                lastDir = -1;
+                switch (frame) {
+                    case 1:
+                        player = playClass.costume[7];
+                        break;
+                    case 2:
+                        player = playClass.costume[8];
+                        break;
+                    default:
+                        player = playClass.costume[6];
+                }
+                break;
+
+            default:
+                if (lastDir == 1) {
+                    player = playClass.costume[0];
+                } else {
+                    player = playClass.costume[1];
+                }
+                break;
+        }
+
+        if (!grounded) {
+            switch (lastDir) {
+                case 1:
+                    player = playClass.costume[10];
+                    break;
+                case -1:
+                    player = playClass.costume[11];
+                    break;
+            }
+        }
+
+        assert player != null;
+        player.setBounds((screenX / 2) - 200, (int) (screenY - 550 + gravity), (screenX / 2) + 200, (int) (screenY - 150 + gravity));
+        player.draw(canvas);
+    }
+
+    private void collision(LevelOneEnvironment env, Canvas canvas) {
+        //NOTE: Magic number for vertical orientation reduction is 0.5625
+        //Log.d("1", String.valueOf(player.getBounds().bottom <= screenY - envi.obstBuffer_vert[currentCol] + 180));
+        // Log.d("2", String.valueOf(player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50));
+        // Log.d("3", String.valueOf(envi.obstBuffer[currentCol] - progress < screenX / 2));
+        // Log.d("4", String.valueOf((envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2));
+        //  Log.d("5", String.valueOf( delay > 1));
+        if(player.getBounds().bottom < screenY) {
+            switch (obstNear) {
+                case 1:
+                    if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && envi.obstBuffer[currentCol] - progress < screenX / 2 && (envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2 && delay > 6) {
+                        yDir =0;
+                        onPlatform = true;
+                        gravity = -310;
+                        delay = 0;
+                        grounded = true;
+                    } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 6) {
+                        yDir =0;
+                        onPlatform = true;
+                        gravity = -310;
+                        delay = 0;
+                        grounded = true;
+                    }
+                    break;
+                case 2:
+                    if (player.getBounds().bottom <= screenY - envi.obstBuffer_vert[currentCol] + 180 &&
+                            player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50 &&
+                            envi.obstBuffer[currentCol] - progress < screenX / 2 &&
+                            (envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2 &&
+                            delay > 1) {
+                        yDir =0;
+                        onPlatform = true;
+                        gravity = env.obstBuffer_vert[currentCol - 1] - 800;
+                        delay = 0;
+                        grounded = true;
+                    } else if (isJump && player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50 && delay > 2) {
+                        yDir =0;
+                        onPlatform = true;
+                        gravity = env.obstBuffer_vert[currentCol - 1] - 800;
+                        delay = 0;
+                        grounded = true;
+                    }
+                    break;
+                default:
+                    if (gravity != 0 && !isJump) {
+                        grounded = false;
+                    }
+                    onPlatform = false;
+                    break;
+            }
+        }
+        if(!onPlatform) {
+            switch (colBelow) {
+                case 0:
+                    grounded = false;
+                    break;
+                case 1:
+                    if (!grounded && player.getBounds().bottom >= envi.levelElement[1].getBounds().top + 400 && delay > 1) {
+                        yDir =0;
+                        delay = 0;
+                        grounded = true;
+                    }
+                    break;
+                case 2:
+                    if (!grounded && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && screenX / 2 > envi.levelElement[2].getBounds().right && delay > 1) {
+                        yDir =0;
+                        delay = 0;
+                        grounded = true;
+                    } else if (!grounded && player.getBounds().bottom >= envi.levelElement[2].getBounds().top + 400 && delay > 1) {
+                        yDir =0;;
+                        delay = 0;
+                        grounded = true;
+                    }
+                    break;
+                case 3:
+                    if (!grounded && player.getBounds().bottom >= envi.levelElement[3].getBounds().top + 400 && screenX / 2 > envi.levelElement[3].getBounds().right && delay > 1) {
+                        yDir =0;
+                        delay = 0;
+                        grounded = true;
+                    } else if (!grounded && player.getBounds().bottom >= envi.levelElement[3].getBounds().top + 400 && delay > 1) {
+                        yDir =0;;
+                        delay = 0;
+                        grounded = true;
+                    }
+                    break;
+            }
+        }
+    }
+    //======================================== DRAW METHOD END ==================================================
+
     private void sleep () {
         try {
-            Thread.sleep(17); // Speed at which elements are drawn !!! IMPORTANT !!! (larger is slower)
+            thread.sleep(17); // Speed at which elements are drawn !!! IMPORTANT !!! (larger is slower)
+            thread_secondary.sleep(17);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -515,13 +540,16 @@ public class GameView extends SurfaceView implements Runnable {
     public void resume () {
         isPlaying = true;
         thread = new Thread(this);
+        thread_secondary = new Thread(this);
         thread.start();
+        thread_secondary.start();
     }
 
     public void pause () {
         try {
             isPlaying = false;
             thread.join();
+            thread_secondary.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
