@@ -45,6 +45,7 @@ public class GameView extends SurfaceView implements Runnable {
     public boolean onPlatform = false;
     public boolean grounded = true;
 
+    public Drawable currInt;
 
     public boolean dead = false;
 
@@ -223,13 +224,15 @@ public class GameView extends SurfaceView implements Runnable {
                 //---------------------------------- Interactables ----------------------------------
 
                 Interacables intables = new Interacables(contx, screenX, screenY);
-                Drawable itr = intables.interacts[0];
+                for(int i = 0; i < env.obstacles.length; i++) {
+                    Drawable itr = intables.interacts[0];
 
-                itr.setBounds(2000 - progress, screenY - 400, 2200 - progress, screenY - 200);
-                if (itr.getBounds().left < screenX && itr.getBounds().right > 0) {
-                    itr.draw(canvas);
+                    itr.setBounds(intables.offsetX[0] - progress, screenY - intables.offsetY[0], intables.offsetX[0] + 200 - progress, screenY - intables.offsetY[0] + 200);
+                    if (itr.getBounds().left < screenX && itr.getBounds().right > 0) {
+                        currInt = itr;
+                        itr.draw(canvas);
+                    }
                 }
-
                 //Draw everything UI and player here, icons, player
 
                 //---------------------------------- Player ----------------------------------
@@ -239,14 +242,18 @@ public class GameView extends SurfaceView implements Runnable {
                 collision(env,canvas);
 
                 // ----- Handles interactions ------
-
-                if ((player.getBounds().left <= itr.getBounds().right && player.getBounds().right >= itr.getBounds().right - 200) ||
-                        (player.getBounds().right >= itr.getBounds().left && player.getBounds().left <= itr.getBounds().left + 200)) {
-                    if (invoke_interaction) {
-                        if (costumeNum < 5)
-                            costumeNum++;
-                        else
-                            costumeNum = 0;
+                if(currInt != null) {
+                    if ((player.getBounds().left <= currInt.getBounds().right && player.getBounds().right >= currInt.getBounds().right - 200) ||
+                            (player.getBounds().right >= currInt.getBounds().left && player.getBounds().left <= currInt.getBounds().left + 200)) {
+                        if (invoke_interaction) {
+                            Drawable d =  intables.int_response[0];
+                            d.setBounds((screenX/2) - 400,(screenY/2) - 400,(screenX/2) + 400,(screenY/2) + 400);
+                            d.draw(canvas);
+                            /*if (costumeNum < 5)
+                                costumeNum++;
+                            else
+                                costumeNum = 0;*/
+                        }
                     }
                 }
 
@@ -448,13 +455,13 @@ public class GameView extends SurfaceView implements Runnable {
         if(player.getBounds().bottom < screenY) {
             switch (obstNear) {
                 case 1:
-                    if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && envi.obstBuffer[currentCol] - progress < screenX / 2 && (envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2 && delay > 6) {
+                    if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && envi.obstBuffer[currentCol] - progress < screenX / 2 && (envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2 && delay > 8) {
                         yDir =0;
                         onPlatform = true;
                         gravity = -310;
                         delay = 0;
                         grounded = true;
-                    } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 6) {
+                    } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 68) {
                         yDir =0;
                         onPlatform = true;
                         gravity = -310;
@@ -467,13 +474,13 @@ public class GameView extends SurfaceView implements Runnable {
                             player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50 &&
                             envi.obstBuffer[currentCol] - progress < screenX / 2 &&
                             (envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2 &&
-                            delay > 1) {
+                            delay > 8) {
                         yDir =0;
                         onPlatform = true;
                         gravity = env.obstBuffer_vert[currentCol - 1] - 800;
                         delay = 0;
                         grounded = true;
-                    } else if (isJump && player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50 && delay > 2) {
+                    } else if (isJump && player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50 && delay > 8) {
                         yDir =0;
                         onPlatform = true;
                         gravity = env.obstBuffer_vert[currentCol - 1] - 800;

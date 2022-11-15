@@ -13,8 +13,12 @@ public class Interacables extends SurfaceView {
 
     public int progress = 0;
     public Drawable[] interacts = new Drawable[1];
+    public Drawable[] int_response = new Drawable[1];
     public int[] layout = {0};
-    public Drawable sign;
+    public int[] offsetX = {2000};
+    public int[] offsetY = {400};
+    public Drawable sign_1;
+    public Drawable sign_response_1;
     public Context contx;
 
     public Interacables(Context context, int screenX, int screenY) {
@@ -24,9 +28,13 @@ public class Interacables extends SurfaceView {
         screen_x = screenX;
         screen_y = screenY;
 
-        sign = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign, null);
+        sign_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign, null);
 
-        interacts[0] = sign;
+        sign_response_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_tutorial, null);
+
+        interacts[0] = sign_1;
+
+        int_response[0] = sign_response_1;
     }
 
     public void getInteraction(int i) {
