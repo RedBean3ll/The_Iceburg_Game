@@ -84,6 +84,7 @@ public class GameView extends SurfaceView implements Runnable {
               orientation = 2;
           }
           draw();
+
           if(dead) {
               deathTimer += 0.1f;
               if (deathTimer >= 5){
@@ -110,33 +111,41 @@ public class GameView extends SurfaceView implements Runnable {
               gravity = 0;
           }
 
-          if (!grounded && delay < 20) {
-              delay += 1;
-          }
-          if (jump && grounded) {
-              isJump = true;
-              if (grounded) {
+          Log.e("Grounded", String.valueOf(yDir));
+          if (grounded) {
+              if (jump) {
+                  isJump = true;
                   acceleration = 15;
                   onPlatform = false;
+                  yDir = 1;
+                  deltaT = 3;
+                  grounded = false;
               }
-              yDir = 1;
-              deltaT = 3;
-              grounded = false;
-          }
-          else if(grounded) {
-              acceleration = 0;
-              yDir = 0;
-              isJump = false;
-          }
-
-          if(!jump && !grounded && delay > 0 && acceleration == 0) {
-              yDir = 1;
-              deltaT = 3;
-          }
-          if(colBelow !=0 && !isJump && obstNear == 0 && grounded) {
-              gravity = 0;
+              else {
+                  acceleration = 0;
+                  yDir = 0;
+                  isJump = false;
+              }
+              if(colBelow !=0 && !isJump && obstNear == 0 && gravity < 0) {
+                  onPlatform = false;
+                  grounded = false;
+                  yDir = 1;
+                  deltaT = 3;
+              }
+              else if(colBelow !=0 && !isJump && obstNear == 0) {
+                  gravity = 0;
+              }
           }
 
+          if(!grounded) {
+              if (delay < 20) {
+                  delay += 1;
+              }
+              if(!jump && delay > 0 && acceleration == 0) {
+                  yDir = 1;
+                  deltaT = 3;
+              }
+          }
         }
     }
 
@@ -249,10 +258,10 @@ public class GameView extends SurfaceView implements Runnable {
                             Drawable d =  intables.int_response[0];
                             d.setBounds((screenX/2) - 400,(screenY/2) - 400,(screenX/2) + 400,(screenY/2) + 400);
                             d.draw(canvas);
-                            /*if (costumeNum < 5)
+                            if (costumeNum < 5)
                                 costumeNum++;
                             else
-                                costumeNum = 0;*/
+                                costumeNum = 0;
                         }
                     }
                 }
@@ -461,7 +470,7 @@ public class GameView extends SurfaceView implements Runnable {
                         gravity = -310;
                         delay = 0;
                         grounded = true;
-                    } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 68) {
+                    } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 8) {
                         yDir =0;
                         onPlatform = true;
                         gravity = -310;

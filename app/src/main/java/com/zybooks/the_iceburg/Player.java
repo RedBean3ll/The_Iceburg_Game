@@ -114,7 +114,7 @@ public class Player extends SurfaceView {
     public void CostumeFive () {
         // Idle
         costume[0] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.mattmug_idle, null);
-        costume[1] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.mattmug_idle, null);
+        costume[1] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.mattmug_idle_m, null);
         // Walk right
         costume[2] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.mattmug_walk, null);
         costume[3] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.mattmug_walk_1, null);
