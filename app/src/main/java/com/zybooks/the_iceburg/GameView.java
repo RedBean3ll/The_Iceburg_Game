@@ -36,11 +36,12 @@ public class GameView extends SurfaceView implements Runnable {
     private int yDir = 0;
     private int acceleration = 0;
     private LevelOneEnvironment envi;
-    private int colBelow = 1;
+    private int floorColBelow = 1;
     private int obstNear = 0;
-    private int currentCol = 1;
+    private int currentObst = 1;
+    private int closestFloorHeight;
+
     public float deltaT = 0;
-    public float delay = 0;
     public float gravity = 0;
     public boolean onPlatform = false;
     public boolean grounded = true;
@@ -83,6 +84,7 @@ public class GameView extends SurfaceView implements Runnable {
           else {
               orientation = 2;
           }
+
           draw();
 
           if(dead) {
@@ -104,14 +106,18 @@ public class GameView extends SurfaceView implements Runnable {
                   break;
           }
 
-          applyGravity(yDir);
+          if(!dead) {
+              applyGravity(yDir);
+          }
 
-          if(gravity > 2100) {
+         // Log.e("JUMP???", String.valueOf(jump));
+
+          if(gravity > 700) {
               dead = true;
               gravity = 0;
           }
 
-          Log.e("Grounded", String.valueOf(yDir));
+         // Log.e("Grounded", String.valueOf(gravity));
           if (grounded) {
               if (jump) {
                   isJump = true;
@@ -126,22 +132,19 @@ public class GameView extends SurfaceView implements Runnable {
                   yDir = 0;
                   isJump = false;
               }
-              if(colBelow !=0 && !isJump && obstNear == 0 && gravity < 0) {
+              if(floorColBelow !=0 && !isJump && obstNear == 0 && gravity < 0) {
                   onPlatform = false;
                   grounded = false;
                   yDir = 1;
                   deltaT = 3;
               }
-              else if(colBelow !=0 && !isJump && obstNear == 0) {
+              else if(floorColBelow !=0 && !isJump && obstNear == 0) {
                   gravity = 0;
               }
           }
 
           if(!grounded) {
-              if (delay < 20) {
-                  delay += 1;
-              }
-              if(!jump && delay > 0 && acceleration == 0) {
+              if(!jump && acceleration == 0) {
                   yDir = 1;
                   deltaT = 3;
               }
@@ -162,7 +165,6 @@ public class GameView extends SurfaceView implements Runnable {
         background2.x = screenX;
         onPlatform = false;
         yDir = 0;
-        delay = 0;
     }
 
     public void backgroundMovement (int direction) {
@@ -355,7 +357,7 @@ public class GameView extends SurfaceView implements Runnable {
                 //only applies to horizontal, make for both!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 if (screenX / 2 > d.getBounds().left) {
-                    colBelow = env.layout[i];
+                    floorColBelow = env.layout[i];
                 }
             }
         }
@@ -382,19 +384,18 @@ public class GameView extends SurfaceView implements Runnable {
                 d.draw(canvas);
             }
         }
-        // Log.e("Obst", String.valueOf(delay));
-        for (int i = 0; i < env.obstacles.length; i++) {
-            if(i + 1 * env.obstBuffer[i] - progress < screenX / 2 && (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress > screenX / 2) {
+        for(int i = 0; i < env.obstacles.length; i++) {
+            if (i + 1 * env.obstBuffer[i] - progress < screenX / 2 &&
+                    (i + 1 * env.obstBuffer[i]) + env.obstWidth[i] - progress > screenX / 2) {
                 obstNear = env.obstacles[i];
-                currentCol = i;
+                currentObst = i;
                 break;
-            }
-            else {
-                currentCol = 0;
+            } else {
+                currentObst = 0;
                 obstNear = 0;
             }
         }
-
+        // Log.e("Obst", String.valueOf(delay));
     }
 
     private void drawPlayer(LevelOneEnvironment env, Canvas canvas) {
@@ -455,22 +456,49 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void collision(LevelOneEnvironment env, Canvas canvas) {
-        //NOTE: Magic number for vertical orientation reduction is 0.5625
-        //Log.d("1", String.valueOf(player.getBounds().bottom <= screenY - envi.obstBuffer_vert[currentCol] + 180));
-        // Log.d("2", String.valueOf(player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50));
-        // Log.d("3", String.valueOf(envi.obstBuffer[currentCol] - progress < screenX / 2));
-        // Log.d("4", String.valueOf((envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2));
-        //  Log.d("5", String.valueOf( delay > 1));
+        //============================== Sets where to land ==============================
+        Log.e("A", String.valueOf(closestFloorHeight));
+        if(floorColBelow != 0) {
+            if(obstNear == 0 || gravity == 0) {
+                closestFloorHeight = 230;
+            }
+            else if (obstNear != 0 && gravity != 0) {
+                closestFloorHeight = env.obstBuffer_vert[currentObst];
+            }
+        }
+        else if(floorColBelow == 0 && obstNear == 0 && acceleration == 0) {
+            closestFloorHeight = 0;
+        }
+
+        if(closestFloorHeight !=0) {
+            if (!grounded && player.getBounds().bottom >= screenY - closestFloorHeight && acceleration < 0) {
+                if(obstNear != 0) {
+                    Land(true);
+                }
+                else {
+                    Land(false);
+                }
+            }
+        }
+        else {
+            grounded = false;
+        }
+        /*
         if(player.getBounds().bottom < screenY) {
             switch (obstNear) {
                 case 1:
-                    if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && envi.obstBuffer[currentCol] - progress < screenX / 2 && (envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2 && delay > 8) {
+                    if (player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top &&
+                            envi.obstBuffer[currentObst] - progress < screenX / 2 &&
+                            (envi.obstBuffer[currentObst] - progress) + envi.obstWidth[currentObst] > screenX / 2 &&
+                            delay > 8) {
+                        Log.e("TopCase    1","Yes");
                         yDir =0;
                         onPlatform = true;
                         gravity = -310;
                         delay = 0;
                         grounded = true;
                     } else if (isJump && player.getBounds().bottom >= envi.levelObstacle[0].getBounds().top && delay > 8) {
+                        Log.e("BottomCase    1","Yes");
                         yDir =0;
                         onPlatform = true;
                         gravity = -310;
@@ -479,20 +507,21 @@ public class GameView extends SurfaceView implements Runnable {
                     }
                     break;
                 case 2:
-                    if (player.getBounds().bottom <= screenY - envi.obstBuffer_vert[currentCol] + 180 &&
-                            player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50 &&
-                            envi.obstBuffer[currentCol] - progress < screenX / 2 &&
-                            (envi.obstBuffer[currentCol] - progress) + envi.obstWidth[currentCol] > screenX / 2 &&
+
+                    if (player.getBounds().bottom <= screenY - envi.obstBuffer_vert[currentObst] + 180 &&
+                            player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentObst] + 50 &&
+                            envi.obstBuffer[currentObst] - progress < screenX / 2 &&
+                            (envi.obstBuffer[currentObst] - progress) + envi.obstWidth[currentObst] > screenX / 2 &&
                             delay > 8) {
                         yDir =0;
                         onPlatform = true;
-                        gravity = env.obstBuffer_vert[currentCol - 1] - 800;
+                        gravity = env.obstBuffer_vert[currentObst - 1] - 800;
                         delay = 0;
                         grounded = true;
-                    } else if (isJump && player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentCol] + 50 && delay > 8) {
+                    } else if (isJump && player.getBounds().bottom >= screenY - envi.obstBuffer_vert[currentObst] + 50 && delay > 8) {
                         yDir =0;
                         onPlatform = true;
-                        gravity = env.obstBuffer_vert[currentCol - 1] - 800;
+                        gravity = env.obstBuffer_vert[currentObst - 1] - 800;
                         delay = 0;
                         grounded = true;
                     }
@@ -506,7 +535,7 @@ public class GameView extends SurfaceView implements Runnable {
             }
         }
         if(!onPlatform) {
-            switch (colBelow) {
+            switch (floorColBelow) {
                 case 0:
                     grounded = false;
                     break;
@@ -540,7 +569,27 @@ public class GameView extends SurfaceView implements Runnable {
                     }
                     break;
             }
+        }*/
+    }
+
+    private void Land (boolean platform) {
+        grounded = true;
+        if(!platform) {
+            gravity = 0;
         }
+        else {
+            switch(obstNear) {
+                case 1:
+                    gravity = -envi.obstBuffer_vert[currentObst] + 300;
+                    break;
+                case 2:
+                    gravity = -envi.obstBuffer_vert[currentObst] + 200;
+                    break;
+            }
+        }
+        yDir = 0;
+        acceleration = 0;
+        deltaT = 0;
     }
     //======================================== DRAW METHOD END ==================================================
 
@@ -583,7 +632,6 @@ public class GameView extends SurfaceView implements Runnable {
     public void applyGravity (int dir) {
         switch (dir) {
             case 1:
-            case -1:
                 acceleration -= 1;
                 gravity -= acceleration * (deltaT * deltaT);
                 break;
@@ -591,7 +639,7 @@ public class GameView extends SurfaceView implements Runnable {
                 if (obstNear == 0) {
                     deltaT = 0;
                 }
-                else if(colBelow != 0) {
+                else if(floorColBelow != 0) {
                     grounded = true;
                     deltaT = 0;
                 }

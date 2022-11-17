@@ -20,11 +20,11 @@ public class LevelOneEnvironment extends SurfaceView{
     public Drawable[] levelObstacle = new Drawable[2];
     public int[] layout = {1,2,0,3,1,1,1,1,1,2,0,0,0,3,1,1,1,1,2,0};
 
-    public int[] obstBuffer = {1200,3600,4400,5100};
-    public int[] obstWidth = {600,600,600,600};
-    public int[] obstBuffer_vert = {600,400,600,400};
+    public int[] obstBuffer = {1200,1900,3400,4100,6666,7777};
+    public int[] obstWidth = {600,600,600,600,600,600};
+    public int[] obstBuffer_vert = {600,800,600,400,400,400};
 
-    public int[] obstacles = {1,2,2,2};
+    public int[] obstacles = {1,2,2,2,2,2};
 
     public Drawable empty,ice_floor, ice_cliff_left, ice_cliff_right, water;
 
