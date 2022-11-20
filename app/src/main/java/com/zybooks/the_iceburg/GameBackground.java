@@ -10,8 +10,20 @@ public class GameBackground {
     int x, y;
     Bitmap background;
 
-    GameBackground (int screenX, int screenY, Resources res) {
-        background = BitmapFactory.decodeResource(res,R.drawable.background_level_1);
-        background = Bitmap.createScaledBitmap(background,screenX,screenY, true);
+    GameBackground (int level,int screenX, int screenY, Resources res) {
+        switch(level) {
+            case 1:
+                background = BitmapFactory.decodeResource(res,R.drawable.background_level_1);
+                background = Bitmap.createScaledBitmap(background,screenX,screenY, true);
+                break;
+            case 5:
+                background = BitmapFactory.decodeResource(res,R.drawable.background_level_5);
+                background = Bitmap.createScaledBitmap(background,screenX,screenY, true);
+                break;
+            default:
+                background = BitmapFactory.decodeResource(res,R.drawable.background_level_2);
+                background = Bitmap.createScaledBitmap(background,screenX,screenY, true);
+                break;
+        }
     }
 }

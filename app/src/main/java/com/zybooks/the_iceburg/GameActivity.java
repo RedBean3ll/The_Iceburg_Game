@@ -1,5 +1,6 @@
 package com.zybooks.the_iceburg;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Point;
@@ -14,6 +15,9 @@ public class GameActivity extends AppCompatActivity {
 
     private GameView gameView;
 
+    private int savedProgress;
+    private final String CURRENT_PROGRESS = "currentProgress";
+
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -24,7 +28,17 @@ public class GameActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getSize(point);
 
         gameView = new GameView(this, point.x, point.y);
+        if(saveInstanceState != null && gameView != null) {
+            savedProgress = saveInstanceState.getInt(CURRENT_PROGRESS);
+            gameView.progress = savedProgress;
+        }
         setContentView(gameView);
+    }
+
+    @Override
+    public void onSaveInstanceState (@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_PROGRESS, gameView.progress);
     }
 
     @Override

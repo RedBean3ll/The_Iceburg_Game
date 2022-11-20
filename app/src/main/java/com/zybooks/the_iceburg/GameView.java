@@ -18,6 +18,10 @@ import java.util.Arrays;
 @SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
 
+    public int currentLevel = 1;
+
+    public int progress;
+
     public int orientation = 1;
 
     private int isDrawn = 0;
@@ -29,7 +33,6 @@ public class GameView extends SurfaceView implements Runnable {
     private final Paint paint;
     private final GameBackground background1, background2;
     private int dir, lastDir = 1;
-    private int progress = 0;
     private Drawable player;
 
     private boolean isJump = false;
@@ -40,6 +43,7 @@ public class GameView extends SurfaceView implements Runnable {
     private int obstNear = 0;
     private int currentObst = 1;
     private int closestFloorHeight;
+    public  boolean underplat;
 
     public float deltaT = 0;
     public float gravity = 0;
@@ -47,6 +51,8 @@ public class GameView extends SurfaceView implements Runnable {
     public boolean grounded = true;
 
     public Drawable currInt;
+    public int interact_num = 0;
+    public boolean int_draw = false;
 
     public boolean dead = false;
 
@@ -56,6 +62,7 @@ public class GameView extends SurfaceView implements Runnable {
     public Context contx;
 
     public float deathTimer = 0;
+    public float transitionTimer = 0;
 
     public GameView(Context context, int screenX, int screenY) {
         super(context);
@@ -67,8 +74,9 @@ public class GameView extends SurfaceView implements Runnable {
         SCREEN_RATIO_X = 1920 / screenX;
         SCREEN_RATIO_Y = 1080 /screenY;
 
-        background1 = new GameBackground(screenX ,screenY, getResources());
-        background2 = new GameBackground(screenX ,screenY, getResources());
+Log.e("CurrentLeve", String.valueOf(currentLevel));
+        background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+        background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
 
         background2.x = screenX;
 
@@ -112,12 +120,17 @@ public class GameView extends SurfaceView implements Runnable {
 
          // Log.e("JUMP???", String.valueOf(jump));
 
-          if(gravity > 700) {
+          if(gravity > 700 && progress < 37000) {
               dead = true;
               gravity = 0;
           }
+          else if(gravity > 700 && progress > 37000) {
+              TransitionLevel();
+          }
 
-         // Log.e("Grounded", String.valueOf(gravity));
+          //Log.e("CurrentLeve", String.valueOf(progress));
+
+          //Log.e("Grounded", String.valueOf(progress));
           if (grounded) {
               if (jump) {
                   isJump = true;
@@ -152,6 +165,17 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    private void TransitionLevel() {
+        if(transitionTimer <= 5) {
+            transitionTimer += 0.1f;
+        }
+        else {
+            currentLevel = currentLevel + 1;
+            transitionTimer = 0;
+            Respawn();
+        }
+    }
+
     private void Respawn() {
         deathTimer = 0;
         dead = false;
@@ -183,16 +207,18 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
     private void right () {
-        progress+=21;
-        background1.x -= 5 * SCREEN_RATIO_X; //affects screen background movement!!!
-        background2.x -= 5 * SCREEN_RATIO_X;
+        if(progress < 37700) {
+            progress += 21;
+            background1.x -= 5 * SCREEN_RATIO_X; //affects screen background movement!!!
+            background2.x -= 5 * SCREEN_RATIO_X;
 
-        if(background1.x + background1.background.getWidth() < 0) {
-            background1.x = screenX;
-        }
+            if (background1.x + background1.background.getWidth() < 0) {
+                background1.x = screenX;
+            }
 
-        if(background2.x + background2.background.getWidth() < SCREEN_RATIO_X) {
-            background2.x = screenX;
+            if (background2.x + background2.background.getWidth() < SCREEN_RATIO_X) {
+                background2.x = screenX;
+            }
         }
     }
 
@@ -231,41 +257,58 @@ public class GameView extends SurfaceView implements Runnable {
                 //---------------------------------- Obstacles -------------------------------------
                 drawObstacles(env,canvas);
                 //---------------------------------- Floor Loader ----------------------------------
-                    drawFloor(env, canvas);
+                drawFloor(env, canvas);
                 //---------------------------------- Interactables ----------------------------------
 
                 Interacables intables = new Interacables(contx, screenX, screenY);
-                for(int i = 0; i < env.obstacles.length; i++) {
-                    Drawable itr = intables.interacts[0];
+                for(int i = 0; i < intables.layout.length; i++) {
+                    Drawable itr;
+                    switch (intables.layout[i]) {
+                        case 1:
+                            itr = intables.interacts[1];
+                            break;
+                        default:
+                            itr = intables.interacts[0];
+                            break;
+                    }
 
-                    itr.setBounds(intables.offsetX[0] - progress, screenY - intables.offsetY[0], intables.offsetX[0] + 200 - progress, screenY - intables.offsetY[0] + 200);
+                    switch (intables.layout[i]) {
+                        case 1:
+                            itr.setBounds(intables.offsetX[i] - progress, screenY - intables.offsetY[i] - 110, intables.offsetX[i] + 200 - progress, screenY - intables.offsetY[i] + 200);
+                            break;
+                        default:
+                            itr.setBounds(intables.offsetX[i] - progress, screenY - intables.offsetY[i], intables.offsetX[i] + 200 - progress, screenY - intables.offsetY[i] + 200);
+                            break;
+                    }
                     if (itr.getBounds().left < screenX && itr.getBounds().right > 0) {
-                        currInt = itr;
                         itr.draw(canvas);
+                    }
+                    if(itr.getBounds().left < screenX / 2 && itr.getBounds().right > screenX / 2) {
+                        interact_num = intables.response[i];
+                        currInt = itr;
+                        if (invoke_interaction) {
+                            int_draw = true;
+                        }
+                    }
+                    else {
+                        currInt = null;
                     }
                 }
                 //Draw everything UI and player here, icons, player
 
                 //---------------------------------- Player ----------------------------------
                 drawPlayer(env,canvas);
+
+                //------------------------------------ Draws split elements ----------------------------
+
+                drawBridgeFront(env,canvas);
                 //-------------------------------------------- COLLISION -------------------------------------------
 
                 collision(env,canvas);
 
                 // ----- Handles interactions ------
-                if(currInt != null) {
-                    if ((player.getBounds().left <= currInt.getBounds().right && player.getBounds().right >= currInt.getBounds().right - 200) ||
-                            (player.getBounds().right >= currInt.getBounds().left && player.getBounds().left <= currInt.getBounds().left + 200)) {
-                        if (invoke_interaction) {
-                            Drawable d =  intables.int_response[0];
-                            d.setBounds((screenX/2) - 400,(screenY/2) - 400,(screenX/2) + 400,(screenY/2) + 400);
-                            d.draw(canvas);
-                            if (costumeNum < 5)
-                                costumeNum++;
-                            else
-                                costumeNum = 0;
-                        }
-                    }
+                if(int_draw) {
+                    drawIntResponse(env,canvas,intables);
                 }
 
                 //---------------------------------- Left Arrow ----------------------------------
@@ -309,6 +352,7 @@ public class GameView extends SurfaceView implements Runnable {
                 Drawable interact;
                 if (!invoke_interaction) {
                     interact = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.interact_button, null);
+                    int_draw = false;
                 } else {
                     interact = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.interact_button_pressed, null);
                 }
@@ -331,6 +375,8 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+
+
     //======================================== DRAW METHOD START ==================================================
 
     private void drawFloor(LevelOneEnvironment env, Canvas canvas) {
@@ -346,6 +392,9 @@ public class GameView extends SurfaceView implements Runnable {
                 case 3:
                     d = env.ice_cliff_right;
                     break;
+                case 4:
+                    d = env.bridge;
+                    break;
                 default:
                     d = env.empty;
             }
@@ -358,6 +407,29 @@ public class GameView extends SurfaceView implements Runnable {
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 if (screenX / 2 > d.getBounds().left) {
                     floorColBelow = env.layout[i];
+                }
+            }
+        }
+    }
+
+    private void drawBridgeFront(LevelOneEnvironment env, Canvas canvas) {
+        for (int i = 0; i < env.layout.length; i++) {
+            Drawable d;
+            boolean drawIt;
+            switch (env.layout[i]) {
+                case 4:
+                    drawIt = true;
+                    d = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.bridge_front, null);
+                    break;
+                default:
+                    drawIt = false;
+                    d = env.empty;
+            }
+            assert d != null;
+            if(drawIt) {
+                d.setBounds((i * 2000) - progress, screenY - 600, (i * 2000) + 2000 - progress, screenY);
+                if (d.getBounds().left < screenX && d.getBounds().right > 0) {
+                    d.draw(canvas);
                 }
             }
         }
@@ -455,9 +527,55 @@ public class GameView extends SurfaceView implements Runnable {
         player.draw(canvas);
     }
 
+    private void drawIntResponse(LevelOneEnvironment env, Canvas canvas, Interacables intables) {
+        Drawable d = intables.int_response[interact_num];
+        d.setBounds((screenX / 2) - 400, (screenY / 2) - 400, (screenX / 2) + 400, (screenY / 2) + 400);
+        d.draw(canvas);
+    }
+
     private void collision(LevelOneEnvironment env, Canvas canvas) {
+
+        if(obstNear != 0 && -(gravity - 230) <= closestFloorHeight) {
+            underplat = true;
+        }
+        else {
+            underplat = false;
+        }
+
         //============================== Sets where to land ==============================
-        Log.e("A", String.valueOf(closestFloorHeight));
+
+        if(floorColBelow != 0 || obstNear !=0) {
+            if(obstNear == 0){
+                closestFloorHeight = 230;
+            }
+            else if(obstNear != 0 && !underplat){
+                closestFloorHeight = env.obstBuffer_vert[currentObst];
+            }
+        }
+        else if(floorColBelow == 0 && obstNear == 0 && acceleration == 0) {
+            closestFloorHeight = 0;
+        }
+        //================================= True collision =====================================
+        if(floorColBelow !=0 || obstNear != 0) {
+            Log.e("FIRST STAEMENT", String.valueOf(-(gravity - 230)));
+            Log.e("SECOND STAEMENT", String.valueOf(closestFloorHeight));
+            Log.e("AAAAAAAAAAAAAAAAAA", String.valueOf(underplat));
+
+
+           if(-(gravity - 230) <= closestFloorHeight) {
+                if(acceleration < 0 && !grounded) {
+                    if (obstNear != 0 && underplat) {
+                        Land(true);
+                    } else {
+                        Land(false);
+                    }
+                }
+            }
+        }
+        else {
+            grounded = false;
+        }
+        /*
         if(floorColBelow != 0) {
             if(obstNear == 0 || gravity == 0) {
                 closestFloorHeight = 230;
@@ -469,6 +587,7 @@ public class GameView extends SurfaceView implements Runnable {
         else if(floorColBelow == 0 && obstNear == 0 && acceleration == 0) {
             closestFloorHeight = 0;
         }
+
 
         if(closestFloorHeight !=0) {
             if (!grounded && player.getBounds().bottom >= screenY - closestFloorHeight && acceleration < 0) {
@@ -646,5 +765,6 @@ public class GameView extends SurfaceView implements Runnable {
                 break;
         }
     }
+
 }
 
