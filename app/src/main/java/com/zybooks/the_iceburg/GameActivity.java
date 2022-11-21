@@ -3,6 +3,7 @@ package com.zybooks.the_iceburg;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Debug;
@@ -16,7 +17,13 @@ public class GameActivity extends AppCompatActivity {
     private GameView gameView;
 
     private int savedProgress;
+    private float currentGravity;
+    private int savedFloorCol;
+    private boolean savedGrounded;
+    private int savedObstacleNear;
+
     private final String CURRENT_PROGRESS = "currentProgress";
+    private final String CURRENT_GRAVITY = "currentGravity";
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -30,6 +37,8 @@ public class GameActivity extends AppCompatActivity {
         gameView = new GameView(this, point.x, point.y);
         if(saveInstanceState != null && gameView != null) {
             savedProgress = saveInstanceState.getInt(CURRENT_PROGRESS);
+            currentGravity = saveInstanceState.getFloat(CURRENT_GRAVITY);
+            gameView.gravity = currentGravity;
             gameView.progress = savedProgress;
         }
         setContentView(gameView);
@@ -38,7 +47,13 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState (@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_PROGRESS, gameView.progress);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            outState.putInt(CURRENT_PROGRESS, gameView.progress_portrait);
+        }
+        else {
+            outState.putInt(CURRENT_PROGRESS, gameView.progress_landscape);
+        }
+        outState.putFloat(CURRENT_GRAVITY, gameView.gravity);
     }
 
     @Override

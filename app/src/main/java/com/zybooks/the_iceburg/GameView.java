@@ -12,8 +12,6 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import androidx.core.content.res.ResourcesCompat;
 
-import java.util.Arrays;
-
 
 @SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
@@ -21,6 +19,8 @@ public class GameView extends SurfaceView implements Runnable {
     public int currentLevel = 1;
 
     public int progress;
+    public int progress_portrait;
+    public int progress_landscape;
 
     public int orientation = 1;
 
@@ -39,14 +39,14 @@ public class GameView extends SurfaceView implements Runnable {
     private int yDir = 0;
     private int acceleration = 0;
     private LevelOneEnvironment envi;
-    private int floorColBelow = 1;
-    private int obstNear = 0;
+    public int floorColBelow = 1;
+    public int obstNear = 0;
     private int currentObst = 1;
     private int closestFloorHeight;
     public  boolean underplat;
 
     public float deltaT = 0;
-    public float gravity = 0;
+    public float gravity;
     public boolean onPlatform = false;
     public boolean grounded = true;
 
@@ -86,6 +86,12 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
     @Override
     public void run() {
       while (isPlaying) {
+          Log.e("land", String.valueOf(progress_landscape));
+          Log.e("port", String.valueOf(progress_portrait));
+
+          progress_landscape = progress + 370;
+          progress_portrait = progress - 370;
+
           if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
               orientation = 1;
           }
@@ -545,7 +551,7 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
         //============================== Sets where to land ==============================
 
         if(floorColBelow != 0 || obstNear !=0) {
-            if(obstNear == 0){
+            if(obstNear == 0 && floorColBelow !=0){
                 closestFloorHeight = 230;
             }
             else if(obstNear != 0 && !underplat){
@@ -557,10 +563,9 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
         }
         //================================= True collision =====================================
         if(floorColBelow !=0 || obstNear != 0) {
-            Log.e("FIRST STAEMENT", String.valueOf(-(gravity - 230)));
+           /* Log.e("FIRST STAEMENT", String.valueOf(-(gravity - 230)));
             Log.e("SECOND STAEMENT", String.valueOf(closestFloorHeight));
-            Log.e("AAAAAAAAAAAAAAAAAA", String.valueOf(underplat));
-
+            Log.e("AAAAAAAAAAAAAAAAAA", String.valueOf(underplat));*/
 
            if(-(gravity - 230) <= closestFloorHeight) {
                 if(acceleration < 0 && !grounded) {
@@ -575,6 +580,7 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
         else {
             grounded = false;
         }
+
         /*
         if(floorColBelow != 0) {
             if(obstNear == 0 || gravity == 0) {
