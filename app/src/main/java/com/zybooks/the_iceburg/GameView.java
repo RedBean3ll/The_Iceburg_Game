@@ -18,7 +18,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     public int currentLevel = 1;
 
-    public int progress;
+    public int progress = 12000;
     public int progress_portrait;
     public int progress_landscape;
 
@@ -39,10 +39,10 @@ public class GameView extends SurfaceView implements Runnable {
     private int yDir = 0;
     private int acceleration = 0;
     private LevelOneEnvironment envi;
-    public int floorColBelow = 1;
-    public int obstNear = 0;
     private int currentObst = 1;
     private int closestFloorHeight;
+    public int floorColBelow = 1;
+    public int obstNear = 0;
     public  boolean underplat;
 
     public float deltaT = 0;
@@ -64,6 +64,10 @@ public class GameView extends SurfaceView implements Runnable {
     public float deathTimer = 0;
     public float transitionTimer = 0;
 
+    public Interacables intables;
+    public LevelOneEnvironment env;
+    public Player playClass;
+
     public GameView(Context context, int screenX, int screenY) {
         super(context);
         contx = context;
@@ -74,21 +78,21 @@ public class GameView extends SurfaceView implements Runnable {
         SCREEN_RATIO_X = 1920 / screenX;
         SCREEN_RATIO_Y = 1080 /screenY;
 
-Log.e("CurrentLeve", String.valueOf(currentLevel));
+        Log.e("CurrentLeve", String.valueOf(currentLevel));
         background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
         background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
 
         background2.x = screenX;
 
+        intables = new Interacables(contx, screenX, screenY);
+        env = new LevelOneEnvironment(contx, screenX, screenY);
+        playClass = new Player(contx, costumeNum);
         paint = new Paint();
     }
 
     @Override
     public void run() {
       while (isPlaying) {
-          Log.e("land", String.valueOf(progress_landscape));
-          Log.e("port", String.valueOf(progress_portrait));
-
           progress_landscape = progress + 370;
           progress_portrait = progress - 370;
 
@@ -136,7 +140,8 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
 
           //Log.e("CurrentLeve", String.valueOf(progress));
 
-          //Log.e("Grounded", String.valueOf(progress));
+          Log.e("Grounded", String.valueOf(progress_landscape));
+          Log.e("a", String.valueOf(progress_portrait));
           if (grounded) {
               if (jump) {
                   isJump = true;
@@ -167,6 +172,9 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
                   yDir = 1;
                   deltaT = 3;
               }
+          }
+          if(progress < 0) {
+              progress = 0;
           }
         }
     }
@@ -256,7 +264,6 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
                 canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
                 //----------------------------------------- Scenery Loader --------------------------------------------------
-                LevelOneEnvironment env = new LevelOneEnvironment(contx, screenX, screenY);
                 envi = env;
                 env.progress = progress;
 
@@ -265,13 +272,23 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
                 //---------------------------------- Floor Loader ----------------------------------
                 drawFloor(env, canvas);
                 //---------------------------------- Interactables ----------------------------------
-
-                Interacables intables = new Interacables(contx, screenX, screenY);
                 for(int i = 0; i < intables.layout.length; i++) {
                     Drawable itr;
                     switch (intables.layout[i]) {
                         case 1:
                             itr = intables.interacts[1];
+                            break;
+                        case 2:
+                            itr = intables.interacts[2];
+                            break;
+                        case 3:
+                            itr = intables.interacts[3];
+                            break;
+                        case 4:
+                            itr = intables.interacts[4];
+                            break;
+                        case 5:
+                            itr = intables.interacts[5];
                             break;
                         default:
                             itr = intables.interacts[0];
@@ -282,22 +299,78 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
                         case 1:
                             itr.setBounds(intables.offsetX[i] - progress, screenY - intables.offsetY[i] - 110, intables.offsetX[i] + 200 - progress, screenY - intables.offsetY[i] + 200);
                             break;
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            itr.setBounds(intables.offsetX[i] - progress, screenY - intables.offsetY[i] - 80, intables.offsetX[i] + 200 - progress, screenY - intables.offsetY[i] + 200);
+                            break;
                         default:
                             itr.setBounds(intables.offsetX[i] - progress, screenY - intables.offsetY[i], intables.offsetX[i] + 200 - progress, screenY - intables.offsetY[i] + 200);
                             break;
                     }
-                    if (itr.getBounds().left < screenX && itr.getBounds().right > 0) {
-                        itr.draw(canvas);
-                    }
                     if(itr.getBounds().left < screenX / 2 && itr.getBounds().right > screenX / 2) {
-                        interact_num = intables.response[i];
-                        currInt = itr;
-                        if (invoke_interaction) {
-                            int_draw = true;
+                        if(intables.response[i] != 0) {
+                            interact_num = intables.response[i];
+                            currInt = itr;
+                            if (invoke_interaction) {
+                                int_draw = true;
+                            }
+                        }
+                        else {
+                            currInt = itr;
+                            if (invoke_interaction) {
+                                if(intables.layout[i] == 4) {
+                                    boolean one,two,three;
+                                    if (intables.layout[i - 1] == 3) {
+                                        three = true;
+                                    }
+                                    else {
+                                        three = false;
+                                    }
+                                    if (intables.layout[i - 2] == 3) {
+                                        two = true;
+                                    }
+                                    else {
+                                        two = false;
+                                    }
+                                    if (intables.layout[i - 3] == 3) {
+                                        one = true;
+                                    }
+                                    else {
+                                        one = false;
+                                    }
+
+                                    boolean success = intables.leverPuzzle(currentLevel,one,two,three);
+                                    if(success) {
+                                        //applies just for level 1, set later ones with a statement
+                                        env.layout[7] = 4;
+                                    }
+                                    else {
+                                        dead = true;
+                                    }
+                                }
+                                intables.flip(i);
+                                int_draw = true;
+                            }
                         }
                     }
                     else {
                         currInt = null;
+                    }
+                    if (itr.getBounds().left < screenX && itr.getBounds().right > 0) {
+                        if(intables.layout[i] == 2 || intables.layout[i] == 3) {
+                            Drawable arrow;
+                            if(intables.solution1[i] == 1) {
+                                arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.arrow_down, null);
+                            }
+                            else {
+                                arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.arrow_up, null);
+                            }
+                            arrow.setBounds(itr.getBounds().left,itr.getBounds().top - 1000, itr.getBounds().right, itr.getBounds().bottom - 1100);
+                            arrow.draw(canvas);
+                        }
+                        itr.draw(canvas);
                     }
                 }
                 //Draw everything UI and player here, icons, player
@@ -477,7 +550,7 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
     }
 
     private void drawPlayer(LevelOneEnvironment env, Canvas canvas) {
-        Player playClass = new Player(contx, costumeNum);
+
         int frame = (progress % 4) + 1;
 
         switch (dir) {
@@ -557,15 +630,25 @@ Log.e("CurrentLeve", String.valueOf(currentLevel));
             else if(obstNear != 0 && !underplat){
                 closestFloorHeight = env.obstBuffer_vert[currentObst];
             }
+            else if(floorColBelow == 0 && obstNear !=0 && underplat && acceleration == 0) {
+                closestFloorHeight = 0;
+            }
         }
         else if(floorColBelow == 0 && obstNear == 0 && acceleration == 0) {
             closestFloorHeight = 0;
         }
+        else if(floorColBelow == 0 && underplat) {
+            closestFloorHeight = 0;
+        }
         //================================= True collision =====================================
-        if(floorColBelow !=0 || obstNear != 0) {
-           /* Log.e("FIRST STAEMENT", String.valueOf(-(gravity - 230)));
-            Log.e("SECOND STAEMENT", String.valueOf(closestFloorHeight));
-            Log.e("AAAAAAAAAAAAAAAAAA", String.valueOf(underplat));*/
+        if(floorColBelow == 0 && closestFloorHeight == 0) {
+            grounded = false;
+        }
+        else if(floorColBelow !=0 || obstNear != 0) {
+           /*Log.e("FIRST STAEMENT", String.valueOf(-(gravity - 230)));
+           Log.e("SECOND STAEMENT", String.valueOf(closestFloorHeight));
+           Log.e("AAAAAAAAAAAAAAAAAA", String.valueOf(underplat));
+           Log.e("FLOOOOOR!!!", String.valueOf(floorColBelow));*/
 
            if(-(gravity - 230) <= closestFloorHeight) {
                 if(acceleration < 0 && !grounded) {

@@ -16,6 +16,7 @@ public class GameActivity extends AppCompatActivity {
 
     private GameView gameView;
 
+    private int priorRotation;
     private int savedProgress;
     private float currentGravity;
     private int savedFloorCol;
@@ -24,9 +25,14 @@ public class GameActivity extends AppCompatActivity {
 
     private final String CURRENT_PROGRESS = "currentProgress";
     private final String CURRENT_GRAVITY = "currentGravity";
+    private final String LAST_ROTATION = "lastOrientation";
+    private final String SAVED_FLOOR_COLLIDER = "savedFloorCol";
+    private final String SAVED_GROUNDED_STATE = "savedGrounded";
+    private final String SAVED_OBSTACLE_NEARBY = "savedObstacleNear";
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
+
         super.onCreate(saveInstanceState);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -35,9 +41,17 @@ public class GameActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getSize(point);
 
         gameView = new GameView(this, point.x, point.y);
+        if(saveInstanceState == null) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && priorRotation == 2) {
+                priorRotation = 1;
+            } else {
+                priorRotation = 2;
+            }
+        }
         if(saveInstanceState != null && gameView != null) {
             savedProgress = saveInstanceState.getInt(CURRENT_PROGRESS);
             currentGravity = saveInstanceState.getFloat(CURRENT_GRAVITY);
+            priorRotation = saveInstanceState.getInt(LAST_ROTATION);
             gameView.gravity = currentGravity;
             gameView.progress = savedProgress;
         }
@@ -47,13 +61,14 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState (@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && priorRotation == 2) {
             outState.putInt(CURRENT_PROGRESS, gameView.progress_portrait);
         }
         else {
             outState.putInt(CURRENT_PROGRESS, gameView.progress_landscape);
         }
         outState.putFloat(CURRENT_GRAVITY, gameView.gravity);
+        outState.putInt(LAST_ROTATION, priorRotation);
     }
 
     @Override
