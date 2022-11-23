@@ -27,29 +27,32 @@
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/ssm_banner">
         <ImageButton
-            android:src="@drawable/moyaifast"
+            android:id="@+id/costume_defaulto"
+            android:src="@drawable/defaulto_idle"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/moyai_avatar"/>
+            android:contentDescription="@string/defaulto_avatar"
+            android:onClick="onCostumeSelected"/>
         <ImageButton
-            android:src=""
+            android:id="@+id/costume_animal"
+            android:src="@drawable/animal_idle"
+            style="@style/imagebutton_box"
+            android:contentDescription="@string/animal_avatar"
+            android:onClick="onCostumeSelected"/>
+        <ImageButton
+            android:id="@+id/costume_moyai"
+            android:src="@drawable/moyai"
+            style="@style/imagebutton_box"
+            android:contentDescription="@string/moyai_avatar"
+            android:onClick="onCostumeSelected"/>
+        <ImageButton
             style="@style/imagebutton_box"/>
         <ImageButton
-            android:src=""
             style="@style/imagebutton_box"/>
         <ImageButton
-            android:src=""
             style="@style/imagebutton_box"/>
         <ImageButton
-            android:src=""
             style="@style/imagebutton_box"/>
         <ImageButton
-            android:src=""
-            style="@style/imagebutton_box"/>
-        <ImageButton
-            android:src=""
-            style="@style/imagebutton_box"/>
-        <ImageButton
-            android:src=""
             style="@style/imagebutton_box"/>
     </GridLayout>
 

@@ -21,14 +21,15 @@ public class GameView extends SurfaceView implements Runnable {
     private int dir, lastDir = 1;
     private int progress = 0;
 
-    public int costumeNum = 0;
+    public int costumeNum;
     public int screenX, screenY;
     public boolean jump, invoke_interaction;
     public Context contx;
 
-    public GameView(Context context, int screenX, int screenY) {
+    public GameView(Context context, int screenX, int screenY, int mCostumeId) {
         super(context);
         contx = context;
+        costumeNum = mCostumeId;
         this.screenX = screenX;
         this.screenY = screenY;
         SCREEN_RATIO_X = 1920 / screenX;

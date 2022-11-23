@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(achievements);
     }
 
-    public void onCostumesClick (View view) {
+    public void onChangeCostumeClick (View view) {
         Intent costumes = new Intent(this, CostumesActivity.class);
         startActivity(costumes);
     }

@@ -37,6 +37,7 @@
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
         app:layout_constraintStart_toStartOf="@id/buttone3"
         app:layout_constraintBottom_toTopOf="@id/buttone3"
+        android:gravity="center_horizontal"
         />
 
     <Button
@@ -48,6 +49,7 @@
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
         app:layout_constraintStart_toStartOf="@id/buttone2"
         app:layout_constraintBottom_toTopOf="@id/buttone2"
+        android:gravity="center_horizontal"
         />
 
     <Button
@@ -55,10 +57,11 @@
         android:text="@string/mmb_costumes_button"
         style="@style/main_menu_button"
 
-        android:onClick="onCostumesClick"
+        android:onClick="onChangeCostumeClick"
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
         app:layout_constraintStart_toStartOf="@id/buttone1"
         app:layout_constraintBottom_toTopOf="@id/buttone1"
+        android:gravity="center_horizontal"
         />
 
     <Button
@@ -71,6 +74,7 @@
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center_horizontal"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

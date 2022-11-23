@@ -1,8 +1,17 @@
 package com.zybooks.the_iceburg;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
@@ -25,10 +34,33 @@ public class GameActivity extends AppCompatActivity {
         Point point = new Point();
         getWindowManager().getDefaultDisplay().getSize(point);
 
-        gameView = new GameView(this, point.x, point.y);
+        gameView = new GameView(this, point.x, point.y, mCostumeId);
 
         setContentView(gameView);
     }
+
+    private Drawable mCostume;
+    private int mCostumeId;
+
+    public void onChangeCostumeClick(View view) {
+        Intent intent = new Intent(this, CostumesActivity.class);
+        mCostumeResultLauncher.launch(intent);
+    }
+
+    ActivityResultLauncher<Intent> mCostumeResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            int costumeId = data.getIntExtra(CostumesActivity.EXTRA_COSTUME, R.drawable.defaulto_idle);
+                            mCostume = ContextCompat.getDrawable(GameActivity.this, costumeId);
+                        }
+                    }
+                }
+            });
 
     @Override
     protected void onPause() {
@@ -43,7 +75,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     @Override
-
     public boolean onTouchEvent(MotionEvent event){
         String action = "";
 

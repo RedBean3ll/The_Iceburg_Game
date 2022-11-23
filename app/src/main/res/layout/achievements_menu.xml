@@ -30,7 +30,7 @@
         <TextView
             android:text="@string/complete_game"
             style="@style/textview_box"
-            app:drawableTopCompat="" />
+            />
         <TextView
             android:text="@string/the_good_ending"
             style="@style/textview_box"/>
