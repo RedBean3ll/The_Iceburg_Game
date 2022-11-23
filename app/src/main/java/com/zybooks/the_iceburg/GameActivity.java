@@ -17,11 +17,6 @@ public class GameActivity extends AppCompatActivity {
     private GameView gameView;
 
     private int priorRotation;
-    private int savedProgress;
-    private float currentGravity;
-    private int savedFloorCol;
-    private boolean savedGrounded;
-    private int savedObstacleNear;
 
     private final String CURRENT_PROGRESS = "currentProgress";
     private final String CURRENT_GRAVITY = "currentGravity";
@@ -29,6 +24,9 @@ public class GameActivity extends AppCompatActivity {
     private final String SAVED_FLOOR_COLLIDER = "savedFloorCol";
     private final String SAVED_GROUNDED_STATE = "savedGrounded";
     private final String SAVED_OBSTACLE_NEARBY = "savedObstacleNear";
+
+    private final String SAVED_INTERACTS = "savedInteracts";
+    private final String SAVED_ENVIRONMENT= "savedEnvironment";
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -48,12 +46,16 @@ public class GameActivity extends AppCompatActivity {
                 priorRotation = 2;
             }
         }
+        Log.e("CRA", String.valueOf(gameView.gravity));
         if(saveInstanceState != null && gameView != null) {
-            savedProgress = saveInstanceState.getInt(CURRENT_PROGRESS);
-            currentGravity = saveInstanceState.getFloat(CURRENT_GRAVITY);
+            gameView.progress = saveInstanceState.getInt(CURRENT_PROGRESS);
             priorRotation = saveInstanceState.getInt(LAST_ROTATION);
-            gameView.gravity = currentGravity;
-            gameView.progress = savedProgress;
+            gameView.grounded = saveInstanceState.getBoolean(SAVED_GROUNDED_STATE);
+            gameView.intables.layout = saveInstanceState.getIntArray(SAVED_INTERACTS);
+            gameView.env.layout = saveInstanceState.getIntArray(SAVED_ENVIRONMENT);
+            gameView.gravity = saveInstanceState.getFloat(CURRENT_GRAVITY);
+            gameView.floorColBelow = saveInstanceState.getInt(SAVED_FLOOR_COLLIDER);
+            gameView.obstNear = saveInstanceState.getInt(SAVED_OBSTACLE_NEARBY);
         }
         setContentView(gameView);
     }
@@ -67,8 +69,14 @@ public class GameActivity extends AppCompatActivity {
         else {
             outState.putInt(CURRENT_PROGRESS, gameView.progress_landscape);
         }
+        outState.putBoolean(SAVED_GROUNDED_STATE,gameView.grounded);
         outState.putFloat(CURRENT_GRAVITY, gameView.gravity);
         outState.putInt(LAST_ROTATION, priorRotation);
+        outState.putIntArray(SAVED_INTERACTS,gameView.intables.layout);
+        outState.putIntArray(SAVED_ENVIRONMENT,gameView.env.layout);
+        outState.putInt(SAVED_FLOOR_COLLIDER, gameView.floorColBelow);
+        outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
+        Log.e("outgravi", String.valueOf(gameView.gravity));
     }
 
     @Override

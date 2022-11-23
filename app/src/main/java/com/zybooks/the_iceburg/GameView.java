@@ -18,7 +18,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     public int currentLevel = 1;
 
-    public int progress = 12000;
+    public int progress;
     public int progress_portrait;
     public int progress_landscape;
 
@@ -139,9 +139,6 @@ public class GameView extends SurfaceView implements Runnable {
           }
 
           //Log.e("CurrentLeve", String.valueOf(progress));
-
-          Log.e("Grounded", String.valueOf(progress_landscape));
-          Log.e("a", String.valueOf(progress_portrait));
           if (grounded) {
               if (jump) {
                   isJump = true;
@@ -203,6 +200,10 @@ public class GameView extends SurfaceView implements Runnable {
         background2.x = screenX;
         onPlatform = false;
         yDir = 0;
+        isDrawn = 0;
+        currInt = null;
+        int_draw = false;
+        interact_num = 0;
     }
 
     public void backgroundMovement (int direction) {

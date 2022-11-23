@@ -23,11 +23,11 @@ public class LevelOneEnvironment extends SurfaceView{
     public int[] layout = {1,2,0,3,1,1,2,0,3,2,0,3,1,1,2,0,3,1,2,0};
     public int[] layout_2 = {1,1,1,2,0,3,2,0,3,2,1,1,1,1,1,1,1,1,2,0};
 
-    public int[] obstBuffer = {1200,1900,3600,4300,5000,14000};
-    public int[] obstWidth = {600,600,600,600,600,600};
-    public int[] obstBuffer_vert = {600,800,400,600,400,400};
+    public int[] obstBuffer = {1200,1900,3700,4400,5100};
+    public int[] obstWidth = {600,600,600,600,600};
+    public int[] obstBuffer_vert = {600,800,400,600,400};
 
-    public int[] obstacles = {1,2,2,2,2,2};
+    public int[] obstacles = {1,2,2,2,2};
 
     public Drawable empty,ice_floor, ice_cliff_left, ice_cliff_right, water, bridge;
 
