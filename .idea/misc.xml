@@ -4,9 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14" />
+        <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/drawable/border.xml" value="0.302" />
         <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/layout-land/achievements_menu.xml" value="0.2046875" />
         <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/layout-land/activity_game.xml" value="0.10104166666666667" />
+        <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/layout-land/costumes_menu.xml" value="0.2046875" />
+        <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/layout/achievements_menu.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/layout/activity_main.xml" value="0.161231884057971" />
+        <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/layout/costumes_menu.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/kfkna/AndroidStudioProjects/The_Iceburg_Game/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.14" />
         <entry key="..\:/Users/matth/AndroidStudioProjects/The_Iceburg/app/src/main/res/drawable/ic_exp.xml" value="0.2645" />
         <entry key="..\:/Users/matth/AndroidStudioProjects/The_Iceburg/app/src/main/res/drawable/ic_seekbar.xml" value="0.2645" />

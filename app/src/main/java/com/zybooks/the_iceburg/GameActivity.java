@@ -3,6 +3,7 @@ package com.zybooks.the_iceburg;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -32,13 +33,16 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle saveInstanceState) {
 
         super.onCreate(saveInstanceState);
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Point point = new Point();
         getWindowManager().getDefaultDisplay().getSize(point);
 
-        gameView = new GameView(this, point.x, point.y);
+        int costumeId;
+        Intent transfer = getIntent();
+        costumeId = transfer.getIntExtra(CostumesActivity.EXTRA_COSTUME, 0);
+        Log.e("CRA", String.valueOf(costumeId));
+        gameView = new GameView(this, point.x, point.y, costumeId);
         if(saveInstanceState == null) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && priorRotation == 2) {
                 priorRotation = 1;
@@ -46,7 +50,6 @@ public class GameActivity extends AppCompatActivity {
                 priorRotation = 2;
             }
         }
-        Log.e("CRA", String.valueOf(gameView.gravity));
         if(saveInstanceState != null && gameView != null) {
             gameView.progress = saveInstanceState.getInt(CURRENT_PROGRESS);
             priorRotation = saveInstanceState.getInt(LAST_ROTATION);
@@ -76,7 +79,6 @@ public class GameActivity extends AppCompatActivity {
         outState.putIntArray(SAVED_ENVIRONMENT,gameView.env.layout);
         outState.putInt(SAVED_FLOOR_COLLIDER, gameView.floorColBelow);
         outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
-        Log.e("outgravi", String.valueOf(gameView.gravity));
     }
 
     @Override

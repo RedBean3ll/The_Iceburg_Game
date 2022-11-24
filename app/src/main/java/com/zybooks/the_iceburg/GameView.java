@@ -68,10 +68,11 @@ public class GameView extends SurfaceView implements Runnable {
     public LevelOneEnvironment env;
     public Player playClass;
 
-    public GameView(Context context, int screenX, int screenY) {
+    public GameView(Context context, int screenX, int screenY, int costume) {
         super(context);
         contx = context;
 
+        costumeNum = costume;
 
         this.screenX = screenX;
         this.screenY = screenY;
