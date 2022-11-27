@@ -36,12 +36,14 @@
             android:id="@+id/costume_animal"
             android:src="@drawable/animal_idle"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/animal_avatar"/>
+            android:contentDescription="@string/animal_avatar"
+            android:onClick="onCostumeSelected"/>
         <ImageButton
             android:id="@+id/costume_moyai"
             android:src="@drawable/moyai"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/moyai_avatar"/>
+            android:contentDescription="@string/moyai_avatar"
+            android:onClick="onCostumeSelected"/>
         <ImageButton
             style="@style/imagebutton_box"/>
         <ImageButton

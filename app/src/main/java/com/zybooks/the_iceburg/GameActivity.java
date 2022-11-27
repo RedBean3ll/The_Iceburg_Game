@@ -28,6 +28,8 @@ public class GameActivity extends AppCompatActivity {
 
     private final String SAVED_INTERACTS = "savedInteracts";
     private final String SAVED_ENVIRONMENT= "savedEnvironment";
+    private final String SAVED_INT_REPLY = "savedIntProgress";
+    private final String SAVED_PROMPTS = "savedPrompts";
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -59,6 +61,8 @@ public class GameActivity extends AppCompatActivity {
             gameView.gravity = saveInstanceState.getFloat(CURRENT_GRAVITY);
             gameView.floorColBelow = saveInstanceState.getInt(SAVED_FLOOR_COLLIDER);
             gameView.obstNear = saveInstanceState.getInt(SAVED_OBSTACLE_NEARBY);
+            gameView.intables.isPrompt = saveInstanceState.getIntArray(SAVED_PROMPTS);
+            gameView.intables.response = saveInstanceState.getIntArray(SAVED_INT_REPLY);
         }
         setContentView(gameView);
     }
@@ -79,6 +83,8 @@ public class GameActivity extends AppCompatActivity {
         outState.putIntArray(SAVED_ENVIRONMENT,gameView.env.layout);
         outState.putInt(SAVED_FLOOR_COLLIDER, gameView.floorColBelow);
         outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
+        outState.putIntArray(SAVED_PROMPTS, gameView.intables.response);
+        outState.putIntArray(SAVED_INT_REPLY, gameView.intables.isPrompt);
     }
 
     @Override
@@ -103,23 +109,35 @@ public class GameActivity extends AppCompatActivity {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if((x > 30 && x < 230) &&
-                (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
-                    gameView.backgroundMovement(-1);
-                }
-                if((x > 260 && x < 460) &&
-                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
-                    gameView.backgroundMovement(1);
-                }
+                if(!gameView.prompt) {
+                    if ((x > 30 && x < 230) &&
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
+                        gameView.backgroundMovement(-1);
+                    }
+                    if ((x > 260 && x < 460) &&
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
+                        gameView.backgroundMovement(1);
+                    }
 
-                if(((x < (gameView.screenX - 30) && x > (gameView.screenX - 230)) &&
-                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30))) {
-                    gameView.setJump(true);
-                }
+                    if (((x < (gameView.screenX - 30) && x > (gameView.screenX - 230)) &&
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30))) {
+                        gameView.setJump(true);
+                    }
 
-                if((x < (gameView.screenX - 260) && x > (gameView.screenX - 460)) &&
-                        (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
-                    gameView.setInteract(true);
+                    if ((x < (gameView.screenX - 260) && x > (gameView.screenX - 460)) &&
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) {
+                        gameView.setInteract(true);
+                    }
+                }
+                else {
+                    if ((x > 30 && x < 230) &&
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30) && gameView.answered == false) {
+                        gameView.interactResult(true);
+                    }
+                    if (((x < (gameView.screenX - 30) && x > (gameView.screenX - 230)) &&
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) && gameView.answered == false) {
+                        gameView.interactResult(false);
+                    }
                 }
                 action = "ACTION_DOWN";
                 break;

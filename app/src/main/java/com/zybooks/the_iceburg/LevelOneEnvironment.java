@@ -29,6 +29,9 @@ public class LevelOneEnvironment extends SurfaceView{
 
     public int[] obstacles = {1,2,2,2,2};
 
+    public int[] barrierLocation = {2500};
+    public boolean[] barrierActive = {true};
+
     public Drawable empty,ice_floor, ice_cliff_left, ice_cliff_right, water, bridge;
 
     public LevelOneEnvironment(Context context, int screenX, int screenY) {
