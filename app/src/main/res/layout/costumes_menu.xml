@@ -18,11 +18,11 @@
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:useDefaultMargins="true"
-        android:layout_marginTop="35dp"
-        android:columnCount="4"
-        android:rowCount="2"
+        android:layout_marginTop="9pt"
+
+        android:columnCount="2"
+        android:rowCount="4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ssm_banner">
@@ -45,11 +45,23 @@
             android:contentDescription="@string/moyai_avatar"
             android:onClick="onCostumeSelected"/>
         <ImageButton
-            style="@style/imagebutton_box"/>
+            android:id="@+id/costume_mug"
+            android:src="@drawable/mattmug_idle"
+            style="@style/imagebutton_box"
+            android:contentDescription="@string/mug_avatar"
+            android:onClick="onCostumeSelected"/>
         <ImageButton
-            style="@style/imagebutton_box"/>
+            android:id="@+id/costume_harambe"
+            android:src="@drawable/harambe_idle"
+            style="@style/imagebutton_box"
+            android:contentDescription="@string/harambe_avatar"
+            android:onClick="onCostumeSelected"/>
         <ImageButton
-            style="@style/imagebutton_box"/>
+            android:id="@+id/costume_crab"
+            android:src="@drawable/crab_idle"
+            style="@style/imagebutton_box"
+            android:contentDescription="@string/crab_avatar"
+            android:onClick="onCostumeSelected"/>
         <ImageButton
             style="@style/imagebutton_box"/>
         <ImageButton

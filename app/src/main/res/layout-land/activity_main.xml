@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttone4"
         android:text="@string/mmb_start_button"
         style="@style/main_menu_button"
@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toTopOf="@id/buttone3"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttone3"
         android:text="@string/mmb_achievement_button"
         style="@style/main_menu_button"
@@ -37,7 +37,7 @@
         app:layout_constraintBottom_toTopOf="@id/buttone2"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttone2"
         android:text="@string/mmb_costumes_button"
         style="@style/main_menu_button"
@@ -48,7 +48,7 @@
         app:layout_constraintBottom_toTopOf="@id/buttone1"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttone1"
         android:text="@string/mmb_settings_button"
         style="@style/main_menu_button"

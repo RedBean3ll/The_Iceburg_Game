@@ -30,6 +30,9 @@ public class GameActivity extends AppCompatActivity {
     private final String SAVED_ENVIRONMENT= "savedEnvironment";
     private final String SAVED_INT_REPLY = "savedIntProgress";
     private final String SAVED_PROMPTS = "savedPrompts";
+    private final String SAVED_CURRENT_INTERACT = "savedCurrentInteract";
+    private final String SAVED_COLLECTIBLES = "savedCollectibles";
+    private final String SAVED_BARRIERS = "savedBarriers";
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -64,6 +67,9 @@ public class GameActivity extends AppCompatActivity {
             gameView.intables.isPrompt = saveInstanceState.getIntArray(SAVED_PROMPTS);
             gameView.intables.response = saveInstanceState.getIntArray(SAVED_INT_REPLY);
             gameView.currentLevel = saveInstanceState.getInt(SAVED_LEVEL);
+            gameView.interact_num = saveInstanceState.getInt(SAVED_CURRENT_INTERACT);
+            gameView.collectibles.layout = saveInstanceState.getIntArray(SAVED_COLLECTIBLES);
+            gameView.nextBarrier = saveInstanceState.getInt(SAVED_BARRIERS);
         }
         setContentView(gameView);
     }
@@ -84,9 +90,12 @@ public class GameActivity extends AppCompatActivity {
         outState.putIntArray(SAVED_ENVIRONMENT,gameView.env.layout);
         outState.putInt(SAVED_FLOOR_COLLIDER, gameView.floorColBelow);
         outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
-        outState.putIntArray(SAVED_PROMPTS, gameView.intables.response);
-        outState.putIntArray(SAVED_INT_REPLY, gameView.intables.isPrompt);
+        outState.putIntArray(SAVED_PROMPTS, gameView.intables.isPrompt);
+        outState.putIntArray(SAVED_INT_REPLY, gameView.intables.response);
         outState.putInt(SAVED_LEVEL, gameView.currentLevel);
+        outState.putIntArray(SAVED_COLLECTIBLES,gameView.collectibles.layout);
+        outState.putInt(SAVED_CURRENT_INTERACT,gameView.interact_num);
+        outState.putInt(SAVED_BARRIERS,gameView.nextBarrier);
     }
 
     @Override
@@ -141,6 +150,7 @@ public class GameActivity extends AppCompatActivity {
                         gameView.interactResult(false);
                     }
                 }
+
                 action = "ACTION_DOWN";
                 break;
             case MotionEvent.ACTION_MOVE:

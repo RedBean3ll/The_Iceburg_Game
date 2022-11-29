@@ -12,8 +12,8 @@
         <item name="android:background">#D9D9D9</item>
         <item name="backgroundTint">#D9D9D9</item>
 
-        <item name="android:layout_width">300dp</item>
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">135pt</item>
+        <item name="android:layout_height">22.5pt</item>
     </style>
 
     <style name="main_menu_title">
@@ -84,20 +84,20 @@
     </style>
 
     <style name="textview_box">
-        <item name="android:layout_width">150dp</item>
-        <item name="android:layout_height">150dp</item>
+        <item name="android:layout_width">60.75pt</item>
+        <item name="android:layout_height">60.75pt</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">25sp</item>
         <item name="android:textColor">@color/shaded_ice_blue</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:layout_margin">4.05pt</item>
         <item name="android:background">@drawable/border</item>
     </style>
 
     <style name="imagebutton_box">
-        <item name="android:layout_width">150dp</item>
-        <item name="android:layout_height">150dp</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:layout_width">60.75pt</item>
+        <item name="android:layout_height">60.75pt</item>
+        <item name="android:layout_margin">4.05pt</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:background">@drawable/border</item>

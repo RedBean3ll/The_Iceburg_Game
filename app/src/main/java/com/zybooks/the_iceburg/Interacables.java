@@ -11,23 +11,37 @@ public class Interacables extends SurfaceView {
 
     private int screen_x, screen_y;
 
-    public int progress = 0;
+    public int currentLevel = 0;
     public Drawable[] interacts = new Drawable[8];
-    public Drawable[] int_response = new Drawable[7];
-    public int[] isPrompt = {0,0,0,1,0,0,0,0};
-    public int[] layout = {0,0,1,6,2,2,2,4};
-    public int[] response = {1,2,3,4,0,0,0,0};
-    public int[] offsetX = {1100,1800,2500,8000,12200,12500,12800,13600};
-    public int[] offsetY = {400,400,400,400,400,400,400,400};
+    public Drawable[] int_response = new Drawable[8];
+
+    // ---------------------------------- Level 1 -----------------------------------------
+    public int[] isPrompt = {0,0,0,1,0,0,0,0,0};
+    public int[] layout = {0,0,1,6,2,2,2,4,0};
+    public int[] response = {1,2,3,4,0,0,0,0,7};
+    public int[] offsetX = {1100,1800,2500,7200,8200,8500,8800,9300,14200};
+    public int[] offsetY = {400,400,400,400,400,400,400,400,400};
+
+    // ---------------------------------- Level 2 -----------------------------------------
+    public int[] isPrompt_2 = {};
+    public int[] layout_2 = {};
+    public int[] response_2 = {};
+    public int[] offsetX_2 = {};
+    public int[] offsetY_2 = {};
+    // ---------------------------------- Level 3 -----------------------------------------
+    // ---------------------------------- Level 4 -----------------------------------------
+    // ---------------------------------- Level 5 -----------------------------------------
     public Drawable sign_1,bob,lever_up,lever_down,button,button_pressed,skyman;
-    public Drawable sign_response_1,rotation_tutorial,bob_resp_1,sky_response;
+    public Drawable sign_response_1,rotation_tutorial,bob_resp_1,sky_response,end_1;
     public Drawable yes,no;
     public Context contx;
 
-    public int solution1[] = {0,0,0,0,1,2,1,0};
-    public Interacables(Context context, int screenX, int screenY) {
+    public int solution1[] = {0,0,0,0,1,2,1,0,0};
+
+    public Interacables(Context context, int screenX, int screenY, int currentLevel) {
         super(context);
 
+        this.currentLevel = currentLevel;
         contx = context;
         screen_x = screenX;
         screen_y = screenY;
@@ -47,6 +61,7 @@ public class Interacables extends SurfaceView {
         sky_response = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sky_question, null);
         yes = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.correct, null);
         no = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.wrong, null);
+        end_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_end_level_one, null);
 
         interacts[0] = sign_1;
         interacts[1] = bob;
@@ -63,6 +78,7 @@ public class Interacables extends SurfaceView {
         int_response[4] = sky_response;
         int_response[5] = yes;
         int_response[6] = no;
+        int_response[7] = end_1;
     }
 
     public boolean leverPuzzle (int bridgeNum, boolean lever1, boolean lever2, boolean lever3) {
@@ -95,5 +111,17 @@ public class Interacables extends SurfaceView {
                 return true;
         }
         return true;
+    }
+
+    public void NewLevel () {
+        switch (currentLevel) {
+            case 2:
+                isPrompt = isPrompt_2;
+                layout = layout_2;
+                response = response_2;
+                offsetX = offsetX_2;
+                offsetY = offsetY_2;
+                break;
+        }
     }
 }
