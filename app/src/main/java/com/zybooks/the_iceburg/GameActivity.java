@@ -25,7 +25,7 @@ public class GameActivity extends AppCompatActivity {
     private final String SAVED_FLOOR_COLLIDER = "savedFloorCol";
     private final String SAVED_GROUNDED_STATE = "savedGrounded";
     private final String SAVED_OBSTACLE_NEARBY = "savedObstacleNear";
-
+    private final String SAVED_LEVEL = "savedLevel";
     private final String SAVED_INTERACTS = "savedInteracts";
     private final String SAVED_ENVIRONMENT= "savedEnvironment";
     private final String SAVED_INT_REPLY = "savedIntProgress";
@@ -63,6 +63,7 @@ public class GameActivity extends AppCompatActivity {
             gameView.obstNear = saveInstanceState.getInt(SAVED_OBSTACLE_NEARBY);
             gameView.intables.isPrompt = saveInstanceState.getIntArray(SAVED_PROMPTS);
             gameView.intables.response = saveInstanceState.getIntArray(SAVED_INT_REPLY);
+            gameView.currentLevel = saveInstanceState.getInt(SAVED_LEVEL);
         }
         setContentView(gameView);
     }
@@ -85,6 +86,7 @@ public class GameActivity extends AppCompatActivity {
         outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
         outState.putIntArray(SAVED_PROMPTS, gameView.intables.response);
         outState.putIntArray(SAVED_INT_REPLY, gameView.intables.isPrompt);
+        outState.putInt(SAVED_LEVEL, gameView.currentLevel);
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.content.Context;
 
 import androidx.core.content.res.ResourcesCompat;
 
-public class LevelOneEnvironment extends SurfaceView{
+public class LevelEnvironment extends SurfaceView{
 
     //This number will go up and down depending on the location from left to right
 
@@ -20,8 +20,8 @@ public class LevelOneEnvironment extends SurfaceView{
     public Drawable[] levelElement = new Drawable[5];
     public Drawable[] levelObstacle = new Drawable[2];
 
-    public int[] layout = {1,2,0,3,1,1,2,0,3,2,0,3,1,1,2,0,3,1,2,0};
-    public int[] layout_2 = {1,1,1,2,0,3,2,0,3,2,1,1,1,1,1,1,1,1,2,0};
+    public int[] layout = {1,2,0,3,1,1,2,0,3,2,0};
+    public int[] layout_2 = {1,1,1,2,0,3,2,0,3,2,1,1,1,1,1,1,2,0};
 
     public int[] obstBuffer = {1200,1900,3700,4400,5100};
     public int[] obstWidth = {600,600,600,600,600};
@@ -29,12 +29,14 @@ public class LevelOneEnvironment extends SurfaceView{
 
     public int[] obstacles = {1,2,2,2,2};
 
-    public int[] barrierLocation = {2500};
-    public boolean[] barrierActive = {true};
+    public int[] barrierLocation = {2500,37700,37700};
+    public boolean[] barrierActive = {true,false};
+
+    public int[] levelEnds = {19000,37700};
 
     public Drawable empty,ice_floor, ice_cliff_left, ice_cliff_right, water, bridge;
 
-    public LevelOneEnvironment(Context context, int screenX, int screenY) {
+    public LevelEnvironment(Context context, int screenX, int screenY) {
         super(context);
 
         screen_x = screenX;

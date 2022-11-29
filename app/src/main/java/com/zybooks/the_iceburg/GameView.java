@@ -31,20 +31,21 @@ public class GameView extends SurfaceView implements Runnable {
     private Thread thread_secondary;
     private boolean isPlaying;
     private final float SCREEN_RATIO_X, SCREEN_RATIO_Y;
-    private final Paint paint;
-    private final GameBackground background1, background2;
+    private Paint paint;
+    private GameBackground background1, background2;
     private int dir, lastDir = 1;
     private Drawable player;
     private boolean overlay;
 
     public int screenX, screenY;
     public int costumeNum = 0;
+    public int levelEnd;
 
     // -------- Collision ----------
     private boolean isJump = false;
     private int yDir = 0;
     private int acceleration = 0;
-    private LevelOneEnvironment envi;
+    private LevelEnvironment envi;
     private int currentObst = 1;
     private int closestFloorHeight;
 
@@ -80,7 +81,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     // -------- Classes ----------
     public Interacables intables;
-    public LevelOneEnvironment env;
+    public LevelEnvironment env;
     public Player playClass;
     public Collectibles collectibles;
 
@@ -95,14 +96,13 @@ public class GameView extends SurfaceView implements Runnable {
         SCREEN_RATIO_X = 1920 / screenX;
         SCREEN_RATIO_Y = 1080 /screenY;
 
-        Log.e("CurrentLeve", String.valueOf(currentLevel));
         background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
         background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
 
         background2.x = screenX;
 
         intables = new Interacables(contx, screenX, screenY);
-        env = new LevelOneEnvironment(contx, screenX, screenY);
+        env = new LevelEnvironment(contx, screenX, screenY);
         playClass = new Player(contx, costumeNum);
         collectibles = new Collectibles(contx,screenX, screenY);
         paint = new Paint();
@@ -111,6 +111,10 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     public void run() {
       while (isPlaying) {
+
+          Log.e("CurrentLeve", String.valueOf(currentLevel));
+          levelEnd = env.levelEnds[currentLevel - 1];
+
           progress_landscape = progress + 370;
           progress_portrait = progress - 370;
 
@@ -123,6 +127,7 @@ public class GameView extends SurfaceView implements Runnable {
 
           draw();
           ResultUpdater();
+          Barriers();
 
           if(dead) {
               deathTimer += 0.1f;
@@ -149,11 +154,11 @@ public class GameView extends SurfaceView implements Runnable {
 
          // Log.e("JUMP???", String.valueOf(jump));
 
-          if(gravity > 700 && progress < 37000) {
+          if(gravity > 700 && progress < levelEnd) {
               dead = true;
               gravity = 0;
           }
-          else if(gravity > 700 && progress > 37000) {
+          else if(gravity > 700 && progress > levelEnd) {
               TransitionLevel();
           }
 
@@ -201,6 +206,15 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    private void Barriers() {
+        if(collectibles.layout[0] == 0) {
+            nextBarrier = env.barrierLocation[1];
+        }
+        else {
+            nextBarrier = env.barrierLocation[0];
+        }
+    }
+
     private void TransitionLevel() {
         if(transitionTimer <= 5) {
             transitionTimer += 0.1f;
@@ -208,6 +222,16 @@ public class GameView extends SurfaceView implements Runnable {
         else {
             currentLevel = currentLevel + 1;
             transitionTimer = 0;
+            background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+            background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+
+            background2.x = screenX;
+
+            intables = new Interacables(contx, screenX, screenY);
+            env = new LevelEnvironment(contx, screenX, screenY);
+            playClass = new Player(contx, costumeNum);
+            collectibles = new Collectibles(contx,screenX, screenY);
+            paint = new Paint();
             Respawn();
         }
     }
@@ -248,7 +272,14 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
     private void right () {
-        if(progress < 37700) {
+        int factor;
+        if(orientation == 1) {
+            factor = progress_portrait;
+        }
+        else {
+            factor = progress;
+        }
+        if(factor < nextBarrier) {
             progress += 21;
             background1.x -= 5 * SCREEN_RATIO_X; //affects screen background movement!!!
             background2.x -= 5 * SCREEN_RATIO_X;
@@ -289,10 +320,11 @@ public class GameView extends SurfaceView implements Runnable {
             if(isDrawn == 0) {
                 canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
                 canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
-
-                Drawable boat = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.titanic_2, null);
-                boat.setBounds(50 - progress, screenY - 600, 900 - progress, screenY - 200);
-                boat.draw(canvas);
+                if(currentLevel == 1) {
+                    Drawable boat = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.titanic_2, null);
+                    boat.setBounds(50 - progress, screenY - 600, 900 - progress, screenY - 200);
+                    boat.draw(canvas);
+                }
                 //----------------------------------------- Scenery Loader --------------------------------------------------
                 envi = env;
                 env.progress = progress;
@@ -301,6 +333,13 @@ public class GameView extends SurfaceView implements Runnable {
                     drawOverlay(canvas);
                 }
 
+                //---------------------------------- Barriers -------------------------------------
+                if(nextBarrier != 37700) {
+                    Drawable b;
+                    b = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.barrier, null);
+                    b.setBounds(1100 + nextBarrier - 150 - progress, 0, 1100 + nextBarrier - progress, screenY);
+                    b.draw(canvas);
+                }
                 //---------------------------------- Obstacles -------------------------------------
                 drawObstacles(env,canvas);
                 //---------------------------------- Floor Loader ----------------------------------
@@ -467,7 +506,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     //======================================== DRAW METHOD START ==================================================
 
-    private void drawFloor(LevelOneEnvironment env, Canvas canvas) {
+    private void drawFloor(LevelEnvironment env, Canvas canvas) {
         for (int i = 0; i < env.layout.length; i++) {
             Drawable d;
             switch (env.layout[i]) {
@@ -500,7 +539,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    private void drawBridgeFront(LevelOneEnvironment env, Canvas canvas) {
+    private void drawBridgeFront(LevelEnvironment env, Canvas canvas) {
         for (int i = 0; i < env.layout.length; i++) {
             Drawable d;
             boolean drawIt;
@@ -523,7 +562,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    private void drawObstacles(LevelOneEnvironment env, Canvas canvas) {
+    private void drawObstacles(LevelEnvironment env, Canvas canvas) {
         for(int i = 0; i < env.obstacles.length; i++) {
             Drawable d;
             switch(env.obstacles[i]) {
@@ -555,10 +594,9 @@ public class GameView extends SurfaceView implements Runnable {
                 obstNear = 0;
             }
         }
-        // Log.e("Obst", String.valueOf(delay));
     }
 
-    private void drawPlayer(LevelOneEnvironment env, Canvas canvas) {
+    private void drawPlayer(LevelEnvironment env, Canvas canvas) {
 
         int frame = (progress % 4) + 1;
 
@@ -615,7 +653,7 @@ public class GameView extends SurfaceView implements Runnable {
         player.draw(canvas);
     }
 
-    private void drawIntResponse(LevelOneEnvironment env, Canvas canvas, Interacables intables) {
+    private void drawIntResponse(LevelEnvironment env, Canvas canvas, Interacables intables) {
         Drawable d = intables.int_response[interact_num];
         d.setBounds((screenX / 2) - 400, (screenY / 2) - 400, (screenX / 2) + 400, (screenY / 2) + 400);
         d.draw(canvas);
@@ -635,7 +673,6 @@ public class GameView extends SurfaceView implements Runnable {
 
             colec.setBounds(collectibles.offsetX[i] - progress, screenY - collectibles.offsetY[i], collectibles.offsetX[i] + 200 - progress, screenY - collectibles.offsetY[i] + 200);
 
-            Log.e("Boc", String.valueOf(colec.getBounds().bottom < gravity + screenY - 230));
             if(colec.getBounds().left < screenX / 2 && colec.getBounds().right > screenX / 2
                     && colec.getBounds().bottom > gravity + screenY - 230 && colec.getBounds().top < gravity + screenY - 230) {
                 collectibles.layout[i] = 0;
@@ -648,7 +685,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
 
-    private void collision(LevelOneEnvironment env, Canvas canvas) {
+    private void collision(LevelEnvironment env, Canvas canvas) {
 
         if(obstNear != 0 && -(gravity - 230) <= closestFloorHeight) {
             underplat = true;
@@ -837,7 +874,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
 
-    private void drawUI(LevelOneEnvironment env, Canvas canvas) {
+    private void drawUI(LevelEnvironment env, Canvas canvas) {
         //---------------------------------- Left Arrow ----------------------------------
         if (dir == 0 || dir == 1) {
             Drawable left_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.left_arrow, null);
@@ -889,7 +926,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
 
-    private void drawPrompt(LevelOneEnvironment env, Canvas canvas) {
+    private void drawPrompt(LevelEnvironment env, Canvas canvas) {
         Drawable yes = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.yes_button, null);
         yes.setBounds(30, (screenY) - 230, 230, (screenY) - 30);
         yes.draw(canvas);

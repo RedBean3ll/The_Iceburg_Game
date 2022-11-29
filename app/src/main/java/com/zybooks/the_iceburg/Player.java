@@ -30,6 +30,7 @@ public class Player extends SurfaceView {
                 break;
             case 5:
                 CostumeSix();
+                break;
             default:
                 CostumeOne();
                 break;
