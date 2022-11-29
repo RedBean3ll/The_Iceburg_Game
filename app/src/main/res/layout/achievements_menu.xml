@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:useDefaultMargins="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="6pt"
 
         android:columnCount="2"
         android:rowCount="4"
