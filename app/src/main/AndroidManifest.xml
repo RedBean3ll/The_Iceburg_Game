@@ -31,6 +31,14 @@
             android:exported="false" />
 
         <activity
+            android:name=".CostumesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AchievementsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

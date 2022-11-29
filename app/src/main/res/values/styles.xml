@@ -98,9 +98,9 @@
         <item name="android:layout_width">150dp</item>
         <item name="android:layout_height">150dp</item>
         <item name="android:layout_margin">10dp</item>
-        <item name="android:background">@drawable/border</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">@drawable/border</item>
     </style>
 
 

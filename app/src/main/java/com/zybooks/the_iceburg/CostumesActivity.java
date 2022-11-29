@@ -1,8 +1,10 @@
 package com.zybooks.the_iceburg;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.content.Context;
@@ -17,12 +19,15 @@ public class CostumesActivity extends AppCompatActivity{
     }
 
     public void onCostumeSelected(View view) {
-        int costumeId = R.drawable.defaulto_idle;
+        int costumeId = 0;
+        if (view.getId() == R.id.costume_defaulto) {
+            costumeId = 0;
+        }
         if (view.getId() == R.id.costume_animal) {
-            costumeId = R.drawable.animal_idle;
+            costumeId = 1;
         }
         else if (view.getId() == R.id.costume_moyai) {
-            costumeId = R.drawable.moyai;
+            costumeId = 2;
         }
 
         Intent intent = new Intent();
