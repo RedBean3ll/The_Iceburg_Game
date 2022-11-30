@@ -24,16 +24,16 @@ public class LevelEnvironment extends SurfaceView{
     public int[] layout_2 = {1,1,1,2,0,3,2,0,3,2,1,1,1,1,1,1,2,0};
 
     public int[] obstBuffer = {1200,1900,3700,4400,5100};
-    public int[] obstBuffer_2 = {1600,2400};
+    public int[] obstBuffer_2 = {1600,2400,3000,3600,4200};
 
     public int[] obstWidth = {600,600,600,600,600};
-    public int[] obstWidth_2 = {400,600};
+    public int[] obstWidth_2 = {400,600,600,600,600};
 
     public int[] obstBuffer_vert = {600,800,400,600,400};
-    public int[] obstBuffer_vert_2 = {400,900};
+    public int[] obstBuffer_vert_2 = {400,600,600,600,600};
 
     public int[] obstacles = {1,2,2,2,2};
-    public int[] obstacles_2 = {3,2};
+    public int[] obstacles_2 = {3,1,1,1,1};
 
     public int[] barrierLocation = {2500,22000};
     public int[] barrierLocation_2 = {15000,40000};
@@ -102,8 +102,8 @@ public class LevelEnvironment extends SurfaceView{
         }
     }
 
-    public void NewLevel () {
-        switch (currentLevel) {
+    public void NewLevel (int level) {
+        switch (level) {
             case 2:
                 layout = layout_2;
                 obstBuffer = obstBuffer_2;

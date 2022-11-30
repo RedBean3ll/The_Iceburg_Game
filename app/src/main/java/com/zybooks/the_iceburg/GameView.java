@@ -15,7 +15,7 @@ import androidx.core.content.res.ResourcesCompat;
 @SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
 
-    public int currentLevel = 1;
+    public int currentLevel;
 
     public int progress;
     public int progress_portrait;
@@ -83,22 +83,24 @@ public class GameView extends SurfaceView implements Runnable {
     public Player playClass;
     public Collectibles collectibles;
 
-    public GameView(Context context, int screenX, int screenY, int costume) {
+    public GameView(Context context, int screenX, int screenY, int costume, int currentLevel) {
         super(context);
         contx = context;
+
+        this.currentLevel = currentLevel;
 
         costumeNum = costume;
 
         this.screenX = screenX;
         this.screenY = screenY;
 
-        background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
-        background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+        background1 = new GameBackground(this.currentLevel,screenX ,screenY, getResources());
+        background2 = new GameBackground(this.currentLevel,screenX ,screenY, getResources());
 
         background2.x = screenX;
 
-        intables = new Interacables(contx, screenX, screenY,currentLevel);
-        env = new LevelEnvironment(contx, screenX, screenY, currentLevel);
+        intables = new Interacables(contx, screenX, screenY,this.currentLevel);
+        env = new LevelEnvironment(contx, screenX, screenY, this.currentLevel);
         playClass = new Player(contx, costumeNum);
         collectibles = new Collectibles(contx,screenX, screenY);
         paint = new Paint();
@@ -108,7 +110,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
       while (isPlaying) {
 
-          Log.e("CurrentLeve", String.valueOf(progress));
+          Log.e("CurrentLeve", String.valueOf(currentLevel));
           levelEnd = env.levelEnds[currentLevel - 1];
 
           progress_landscape = progress + (int)(0.20345 * screenX);
@@ -155,7 +157,7 @@ public class GameView extends SurfaceView implements Runnable {
               gravity = 0;
           }
           else if(gravity > 700 && progress > levelEnd) {
-              TransitionLevel();
+              TransitionLevel(currentLevel);
           }
 
           //Log.e("CurrentLeve", String.valueOf(progress));
@@ -214,29 +216,35 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    private void TransitionLevel() {
-        if(transitionTimer <= 5) {
-            transitionTimer += 0.1f;
-        }
-        else {
-            currentLevel = currentLevel + 1;
-            transitionTimer = 0;
-            background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
-            background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+    private void TransitionLevel(int level) {
+        switch (level) {
+            case 1:
+                if(transitionTimer <= 5) {
+                    transitionTimer += 0.1f;
+                }
+                else {
+                    currentLevel = currentLevel + 1;
+                    transitionTimer = 0;
+                    background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+                    background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
 
-            background2.x = screenX;
+                    background2.x = screenX;
 
-            intables = new Interacables(contx, screenX, screenY,currentLevel);
-            env = new LevelEnvironment(contx, screenX, screenY,currentLevel);
-            playClass = new Player(contx, costumeNum);
-            collectibles = new Collectibles(contx,screenX, screenY);
-            paint = new Paint();
+                    intables = new Interacables(contx, screenX, screenY,currentLevel);
+                    env = new LevelEnvironment(contx, screenX, screenY,currentLevel);
+                    playClass = new Player(contx, costumeNum);
+                    collectibles = new Collectibles(contx,screenX, screenY);
+                    paint = new Paint();
 
-            collectibles.NewLevel();
-            intables.NewLevel();
-            env.NewLevel();
+                    collectibles.NewLevel(currentLevel);
+                    intables.NewLevel(currentLevel);
+                    env.NewLevel(currentLevel);
 
-            Respawn();
+                    Respawn();
+                }
+                break;
+            case 2:
+                break;
         }
     }
 

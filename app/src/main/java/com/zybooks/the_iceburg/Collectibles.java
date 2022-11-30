@@ -24,8 +24,7 @@ public class Collectibles extends SurfaceView {
     public int[] offsetX_2 = {};
     public int[] offsetY_2 = {};
     // ---------------------------------- Level 3 -----------------------------------------
-    // ---------------------------------- Level 4 -----------------------------------------
-    // ---------------------------------- Level 5 -----------------------------------------
+
 
     public Collectibles(Context context, int screenX, int screenY) {
         super(context);
@@ -36,9 +35,15 @@ public class Collectibles extends SurfaceView {
 
     }
 
-    public void NewLevel() {
-        layout = layout_2;
-        offsetX = offsetX_2;
-        offsetY = offsetY_2;
+    public void NewLevel(int level) {
+        switch (level) {
+            case 2:
+                layout = layout_2;
+                offsetX = offsetX_2;
+                offsetY = offsetY_2;
+                break;
+            case 3:
+                break;
+        }
     }
 }

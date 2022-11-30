@@ -18,6 +18,7 @@ public class GameActivity extends AppCompatActivity {
     private GameView gameView;
 
     private int priorRotation;
+    private int currentLevel = 1;
 
     private final String CURRENT_PROGRESS = "currentProgress";
     private final String CURRENT_GRAVITY = "currentGravity";
@@ -33,6 +34,7 @@ public class GameActivity extends AppCompatActivity {
     private final String SAVED_CURRENT_INTERACT = "savedCurrentInteract";
     private final String SAVED_COLLECTIBLES = "savedCollectibles";
     private final String SAVED_BARRIERS = "savedBarriers";
+    private final String SAVED_OBSTACLE_LAYOUT = "savedObstLayout";
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -46,8 +48,7 @@ public class GameActivity extends AppCompatActivity {
         int costumeId;
         Intent transfer = getIntent();
         costumeId = transfer.getIntExtra(CostumesActivity.EXTRA_COSTUME, 0);
-        Log.e("CRA", String.valueOf(costumeId));
-        gameView = new GameView(this, point.x, point.y, costumeId);
+        gameView = new GameView(this, point.x, point.y, costumeId,currentLevel);
         if(saveInstanceState == null) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && priorRotation == 2) {
                 priorRotation = 1;
@@ -56,6 +57,8 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         if(saveInstanceState != null && gameView != null) {
+            currentLevel = gameView.currentLevel = saveInstanceState.getInt(SAVED_LEVEL);
+            gameView.currentLevel = currentLevel;
             gameView.progress = saveInstanceState.getInt(CURRENT_PROGRESS);
             priorRotation = saveInstanceState.getInt(LAST_ROTATION);
             gameView.grounded = saveInstanceState.getBoolean(SAVED_GROUNDED_STATE);
@@ -66,10 +69,10 @@ public class GameActivity extends AppCompatActivity {
             gameView.obstNear = saveInstanceState.getInt(SAVED_OBSTACLE_NEARBY);
             gameView.intables.isPrompt = saveInstanceState.getIntArray(SAVED_PROMPTS);
             gameView.intables.response = saveInstanceState.getIntArray(SAVED_INT_REPLY);
-            gameView.currentLevel = saveInstanceState.getInt(SAVED_LEVEL);
             gameView.interact_num = saveInstanceState.getInt(SAVED_CURRENT_INTERACT);
             gameView.collectibles.layout = saveInstanceState.getIntArray(SAVED_COLLECTIBLES);
             gameView.nextBarrier = saveInstanceState.getInt(SAVED_BARRIERS);
+            gameView.env.obstacles = saveInstanceState.getIntArray(SAVED_OBSTACLE_LAYOUT);
         }
         setContentView(gameView);
     }
@@ -86,16 +89,19 @@ public class GameActivity extends AppCompatActivity {
         outState.putBoolean(SAVED_GROUNDED_STATE,gameView.grounded);
         outState.putFloat(CURRENT_GRAVITY, gameView.gravity);
         outState.putInt(LAST_ROTATION, priorRotation);
-        outState.putIntArray(SAVED_INTERACTS,gameView.intables.layout);
-        outState.putIntArray(SAVED_ENVIRONMENT,gameView.env.layout);
         outState.putInt(SAVED_FLOOR_COLLIDER, gameView.floorColBelow);
         outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
-        outState.putIntArray(SAVED_PROMPTS, gameView.intables.isPrompt);
-        outState.putIntArray(SAVED_INT_REPLY, gameView.intables.response);
         outState.putInt(SAVED_LEVEL, gameView.currentLevel);
-        outState.putIntArray(SAVED_COLLECTIBLES,gameView.collectibles.layout);
+        currentLevel = gameView.currentLevel;
         outState.putInt(SAVED_CURRENT_INTERACT,gameView.interact_num);
         outState.putInt(SAVED_BARRIERS,gameView.nextBarrier);
+
+        outState.putIntArray(SAVED_INTERACTS,gameView.intables.layout);
+        outState.putIntArray(SAVED_ENVIRONMENT,gameView.env.layout);
+        outState.putIntArray(SAVED_COLLECTIBLES,gameView.collectibles.layout);
+        outState.putIntArray(SAVED_PROMPTS, gameView.intables.isPrompt);
+        outState.putIntArray(SAVED_INT_REPLY, gameView.intables.response);
+        outState.putIntArray(SAVED_OBSTACLE_LAYOUT,gameView.env.obstacles);
     }
 
     @Override

@@ -113,8 +113,8 @@ public class Interacables extends SurfaceView {
         return true;
     }
 
-    public void NewLevel () {
-        switch (currentLevel) {
+    public void NewLevel (int level) {
+        switch (level) {
             case 2:
                 isPrompt = isPrompt_2;
                 layout = layout_2;
