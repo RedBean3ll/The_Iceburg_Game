@@ -16,6 +16,8 @@ import androidx.core.content.res.ResourcesCompat;
 public class GameView extends SurfaceView implements Runnable {
 
     public int currentLevel;
+    public int[] costumesUnlocked = {1,0,0,0,0,0,0,0};
+    public int[] advancements = {0,0,0,0,0,0,0,0};
 
     public int progress;
     public int progress_portrait;
@@ -83,11 +85,15 @@ public class GameView extends SurfaceView implements Runnable {
     public Player playClass;
     public Collectibles collectibles;
 
-    public GameView(Context context, int screenX, int screenY, int costume, int currentLevel) {
+    public GameView(Context context, int screenX, int screenY, int costume, int currentLevel, int[] savedCost, int[] savedAdv) {
         super(context);
         contx = context;
 
+        Log.e("CurrentLeve", String.valueOf(currentLevel));
         this.currentLevel = currentLevel;
+
+        advancements = savedAdv;
+        costumesUnlocked = savedCost;
 
         costumeNum = costume;
 
@@ -104,13 +110,17 @@ public class GameView extends SurfaceView implements Runnable {
         playClass = new Player(contx, costumeNum);
         collectibles = new Collectibles(contx,screenX, screenY);
         paint = new Paint();
+
+        if(currentLevel != 1) {
+            collectibles.NewLevel(currentLevel);
+            intables.NewLevel(currentLevel);
+            env.NewLevel(currentLevel);
+        }
     }
 
     @Override
     public void run() {
       while (isPlaying) {
-
-          Log.e("CurrentLeve", String.valueOf(currentLevel));
           levelEnd = env.levelEnds[currentLevel - 1];
 
           progress_landscape = progress + (int)(0.20345 * screenX);
@@ -291,7 +301,7 @@ public class GameView extends SurfaceView implements Runnable {
         else {
             factor = progress;
         }
-        if(factor < nextBarrier) {
+        if(factor < nextBarrier && transitionTimer ==0) {
             progress += 21;
             background1.x -= 5; //affects screen background movement!!!
             background2.x -= 5 ;
@@ -307,7 +317,14 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void left() {
-        if(progress > 0) {
+        int factor;
+        if(orientation == 1) {
+            factor = progress_portrait;
+        }
+        else {
+            factor = progress;
+        }
+        if(progress > 0 && transitionTimer ==0) {
             progress -= 21;
             background1.x += 5; //affects screen background movement!!!
             background2.x += 5;
@@ -437,7 +454,15 @@ public class GameView extends SurfaceView implements Runnable {
                                     boolean success = intables.leverPuzzle(currentLevel,one,two,three);
                                     if(success) {
                                         //applies just for level 1, set later ones with a statement
-                                        env.layout[5] = 4;
+                                        switch (currentLevel) {
+                                            case 1:
+                                                env.layout[5] = 4;
+                                                break;
+                                            case 2:
+                                                env.layout[7] = 4;
+                                                break;
+                                        }
+
                                     }
                                     else {
                                         dead = true;
@@ -682,6 +707,9 @@ public class GameView extends SurfaceView implements Runnable {
                 case 1:
                     colec = collectibles.collectibles[1];
                     break;
+                case 2:
+                    colec = collectibles.collectibles[2];
+                    break;
                 default:
                     colec = collectibles.collectibles[0];
                     break;
@@ -691,7 +719,16 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(colec.getBounds().left < screenX / 2 && colec.getBounds().right > screenX / 2
                     && colec.getBounds().bottom > gravity + screenY - 230 && colec.getBounds().top < gravity + screenY - 230) {
-                collectibles.layout[i] = 0;
+                switch(collectibles.layout[i]) {
+
+                    case 2:
+                        collectibles.layout[i] = 0;
+                        costumesUnlocked[1] = 1;
+                        break;
+                    default:
+                        collectibles.layout[i] = 0;
+                        break;
+                }
             }
             colec.draw(canvas);
         }
@@ -762,7 +799,7 @@ public class GameView extends SurfaceView implements Runnable {
         else {
             switch(obstNear) {
                 case 1:
-                    gravity = -envi.obstBuffer_vert[currentObst] + 300;
+                    gravity = -envi.obstBuffer_vert[currentObst] + 230;
                     break;
                 case 2:
                     gravity = -envi.obstBuffer_vert[currentObst] + 200;

@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 public class CostumesActivity extends AppCompatActivity{
     public static String EXTRA_COSTUME = "costume id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

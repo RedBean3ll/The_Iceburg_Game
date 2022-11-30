@@ -12,12 +12,12 @@ public class Collectibles extends SurfaceView {
 
     private int screen_x, screen_y;
 
-    public Drawable collectibles[] = new Drawable[2];
+    public Drawable collectibles[] = new Drawable[3];
 
     //----------------------------------------- Level 1 -------------------------------------------
-    public int[] layout = {1};
-    public int[] offsetX = {2000};
-    public int[] offsetY = {1400};
+    public int[] layout = {1,2};
+    public int[] offsetX = {2000,14200};
+    public int[] offsetY = {1400,1600};
     public Context contx;
     // ---------------------------------- Level 2 -----------------------------------------
     public int[] layout_2 = {};
@@ -32,6 +32,7 @@ public class Collectibles extends SurfaceView {
 
         collectibles[0] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.empty, null);
         collectibles[1] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.key_basic, null);
+        collectibles[2] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai_t_m, null);
 
     }
 

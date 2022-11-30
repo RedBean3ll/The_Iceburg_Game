@@ -20,6 +20,12 @@ public class GameActivity extends AppCompatActivity {
     private int priorRotation;
     private int currentLevel = 1;
 
+    public int[] unlockedCostumes = {1,0,0,0,0,0,0,0};
+    public int[] achievements = {0,0,0,0,0,0,0,0};
+
+    private final String UNLOCKED_COSTUMES = "unlockedCostumes";
+    private final String ACHIEVEMENTS = "achievements";
+
     private final String CURRENT_PROGRESS = "currentProgress";
     private final String CURRENT_GRAVITY = "currentGravity";
     private final String LAST_ROTATION = "lastOrientation";
@@ -48,7 +54,12 @@ public class GameActivity extends AppCompatActivity {
         int costumeId;
         Intent transfer = getIntent();
         costumeId = transfer.getIntExtra(CostumesActivity.EXTRA_COSTUME, 0);
-        gameView = new GameView(this, point.x, point.y, costumeId,currentLevel);
+        if(saveInstanceState != null) {
+            currentLevel = saveInstanceState.getInt(SAVED_LEVEL);
+            unlockedCostumes = saveInstanceState.getIntArray(UNLOCKED_COSTUMES);
+            achievements = saveInstanceState.getIntArray(ACHIEVEMENTS);
+        }
+        gameView = new GameView(this, point.x, point.y, costumeId,currentLevel, unlockedCostumes,achievements);
         if(saveInstanceState == null) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && priorRotation == 2) {
                 priorRotation = 1;
@@ -57,8 +68,6 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         if(saveInstanceState != null && gameView != null) {
-            currentLevel = gameView.currentLevel = saveInstanceState.getInt(SAVED_LEVEL);
-            gameView.currentLevel = currentLevel;
             gameView.progress = saveInstanceState.getInt(CURRENT_PROGRESS);
             priorRotation = saveInstanceState.getInt(LAST_ROTATION);
             gameView.grounded = saveInstanceState.getBoolean(SAVED_GROUNDED_STATE);
@@ -86,13 +95,18 @@ public class GameActivity extends AppCompatActivity {
         else {
             outState.putInt(CURRENT_PROGRESS, gameView.progress_landscape);
         }
+        outState.putIntArray(UNLOCKED_COSTUMES, gameView.costumesUnlocked);
+        outState.putIntArray(ACHIEVEMENTS, gameView.advancements);
+        unlockedCostumes = gameView.costumesUnlocked;
+        achievements = gameView.advancements;
+
+        currentLevel = gameView.currentLevel;
+        outState.putInt(SAVED_LEVEL, currentLevel);
         outState.putBoolean(SAVED_GROUNDED_STATE,gameView.grounded);
         outState.putFloat(CURRENT_GRAVITY, gameView.gravity);
         outState.putInt(LAST_ROTATION, priorRotation);
         outState.putInt(SAVED_FLOOR_COLLIDER, gameView.floorColBelow);
         outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
-        outState.putInt(SAVED_LEVEL, gameView.currentLevel);
-        currentLevel = gameView.currentLevel;
         outState.putInt(SAVED_CURRENT_INTERACT,gameView.interact_num);
         outState.putInt(SAVED_BARRIERS,gameView.nextBarrier);
 

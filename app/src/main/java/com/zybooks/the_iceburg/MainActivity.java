@@ -18,6 +18,8 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     private int costumeNum;
+    private int[] unlockedCostumes = {1,0,0,0,0,0,0,0};
+    private int[] unlockedAchievements = {0,0,0,0,0,0,0,0};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         start.putExtra(CostumesActivity.EXTRA_COSTUME, costumeNum);
         startActivity(start);
     }
+
 
     public void onAchievementsClick (View view) {
         Intent achievements = new Intent(this, AchievementsActivity.class);

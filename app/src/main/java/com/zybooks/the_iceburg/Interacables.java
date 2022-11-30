@@ -19,7 +19,7 @@ public class Interacables extends SurfaceView {
     public int[] isPrompt = {0,0,0,1,0,0,0,0,0};
     public int[] layout = {0,0,1,6,2,2,2,4,0};
     public int[] response = {1,2,3,4,0,0,0,0,7};
-    public int[] offsetX = {1100,1800,2500,7200,8200,8500,8800,9300,14200};
+    public int[] offsetX = {1100,1800,2500,7200,8200,8500,8800,9300,1400};
     public int[] offsetY = {400,400,400,400,400,400,400,400,400};
 
     // ---------------------------------- Level 2 -----------------------------------------
@@ -37,6 +37,7 @@ public class Interacables extends SurfaceView {
     public Context contx;
 
     public int solution1[] = {0,0,0,0,1,2,1,0,0};
+    public int solution2[] = {};
 
     public Interacables(Context context, int screenX, int screenY, int currentLevel) {
         super(context);
