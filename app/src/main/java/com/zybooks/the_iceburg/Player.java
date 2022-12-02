@@ -1,15 +1,16 @@
 package com.zybooks.the_iceburg;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.SurfaceView;
 
 import androidx.core.content.res.ResourcesCompat;
 
+@SuppressLint("ViewConstructor")
 public class Player extends SurfaceView {
 
-    public int costumeID = 1;
+    public int costumeID;
     public Drawable[] costume = new Drawable[12];
 
     public Player(Context context, int cosNum) {
@@ -30,6 +31,9 @@ public class Player extends SurfaceView {
                 break;
             case 5:
                 CostumeSix();
+                break;
+            case 6:
+                CostumeSeven();
                 break;
             default:
                 CostumeOne();
@@ -150,5 +154,24 @@ public class Player extends SurfaceView {
         //Jump
         costume[10] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.crab_jump, null);
         costume[11] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.crab_jump, null);
+    }
+
+    public void CostumeSeven () {
+        // Idle
+        costume[0] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[1] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        // Walk right
+        costume[2] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[3] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[4] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[5] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        // Walk left
+        costume[6] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[7] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[8] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[9] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        //Jump
+        costume[10] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+        costume[11] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
     }
 }

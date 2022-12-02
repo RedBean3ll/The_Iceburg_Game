@@ -30,40 +30,37 @@
             android:id="@+id/costume_defaulto"
             android:src="@drawable/defaulto_idle"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/defaulto_avatar"
-            android:onClick="onCostumeSelected"/>
+            android:contentDescription="@string/defaulto_avatar" />
         <ImageButton
             android:id="@+id/costume_animal"
             android:src="@drawable/animal_idle"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/animal_avatar"
-            android:onClick="onCostumeSelected"/>
+            android:contentDescription="@string/animal_avatar" />
         <ImageButton
             android:id="@+id/costume_moyai"
             android:src="@drawable/moyai"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/moyai_avatar"
-            android:onClick="onCostumeSelected"/>
+            android:contentDescription="@string/moyai_avatar" />
         <ImageButton
             android:id="@+id/costume_mug"
             android:src="@drawable/mattmug_idle"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/mug_avatar"
-            android:onClick="onCostumeSelected"/>
+            android:contentDescription="@string/mug_avatar" />
         <ImageButton
             android:id="@+id/costume_harambe"
             android:src="@drawable/harambe_idle"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/harambe_avatar"
-            android:onClick="onCostumeSelected"/>
+            android:contentDescription="@string/harambe_avatar" />
         <ImageButton
             android:id="@+id/costume_crab"
             android:src="@drawable/crab_idle"
             style="@style/imagebutton_box"
-            android:contentDescription="@string/crab_avatar"
-            android:onClick="onCostumeSelected"/>
+            android:contentDescription="@string/crab_avatar" />
         <ImageButton
-            style="@style/imagebutton_box"/>
+            android:id="@+id/costume_pill"
+            android:src="@drawable/pill_no"
+            style="@style/imagebutton_box"
+            android:contentDescription="@string/pill_avatar" />
         <ImageButton
             style="@style/imagebutton_box"/>
     </GridLayout>

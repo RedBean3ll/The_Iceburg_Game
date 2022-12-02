@@ -15,9 +15,11 @@ import androidx.core.content.res.ResourcesCompat;
 @SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
 
+    public int jumpCount;
+
     public int currentLevel;
-    public int[] costumesUnlocked = {1,0,0,0,0,0,0,0};
-    public int[] advancements = {0,0,0,0,0,0,0,0};
+    public int[] costumesUnlocked;
+    public int[] advancements;
 
     public int progress;
     public int progress_portrait;
@@ -34,11 +36,10 @@ public class GameView extends SurfaceView implements Runnable {
     private Paint paint;
     private GameBackground background1, background2;
     private int dir, lastDir = 1;
-    private Drawable player;
     private boolean overlay;
 
     public int screenX, screenY;
-    public int costumeNum = 0;
+    public int costumeNum;
     public int levelEnd;
 
     // -------- Collision ----------
@@ -105,10 +106,10 @@ public class GameView extends SurfaceView implements Runnable {
 
         background2.x = screenX;
 
-        intables = new Interacables(contx, screenX, screenY,this.currentLevel);
-        env = new LevelEnvironment(contx, screenX, screenY, this.currentLevel);
+        intables = new Interacables(contx, this.currentLevel);
+        env = new LevelEnvironment(contx, this.currentLevel);
         playClass = new Player(contx, costumeNum);
-        collectibles = new Collectibles(contx,screenX, screenY);
+        collectibles = new Collectibles(contx);
         paint = new Paint();
 
         if(currentLevel != 1) {
@@ -121,6 +122,11 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     public void run() {
       while (isPlaying) {
+
+          if(jumpCount > 300) {
+              advancements[7] = 1;
+          }
+
           levelEnd = env.levelEnds[currentLevel - 1];
 
           progress_landscape = progress + (int)(0.20345 * screenX);
@@ -161,18 +167,30 @@ public class GameView extends SurfaceView implements Runnable {
           }
 
          // Log.e("JUMP???", String.valueOf(jump));
-
-          if(gravity > 700 && progress < levelEnd) {
-              dead = true;
-              gravity = 0;
+          if(currentLevel != 3) {
+              if (gravity > 700 && progress < levelEnd) {
+                  dead = true;
+                  gravity = 0;
+              } else if (gravity > 700 && progress > levelEnd) {
+                  TransitionLevel();
+              }
           }
-          else if(gravity > 700 && progress > levelEnd) {
-              TransitionLevel(currentLevel);
+          else {
+              if (gravity > 700 && progress < levelEnd) {
+                  dead = true;
+                  gravity = 0;
+              } else if (gravity > 700 && progress > 19000) {
+                  BadEnding();
+              }
+              else if (gravity > 700 && progress > levelEnd) {
+                  TrueEnding();
+              }
           }
 
           //Log.e("CurrentLeve", String.valueOf(progress));
           if (grounded) {
               if (jump) {
+                  jumpCount++;
                   isJump = true;
                   acceleration = 15;
                   onPlatform = false;
@@ -223,40 +241,47 @@ public class GameView extends SurfaceView implements Runnable {
                     nextBarrier = env.barrierLocation[0];
                 }
                 break;
-        }
-    }
-
-    private void TransitionLevel(int level) {
-        switch (level) {
-            case 1:
-                if(transitionTimer <= 5) {
-                    transitionTimer += 0.1f;
+            case 2:
+                if (collectibles.layout[0] == 0) {
+                    nextBarrier = env.barrierLocation[1];
+                }
+                else if (collectibles.layout[2] == 0) {
+                    nextBarrier = env.barrierLocation[2];
                 }
                 else {
-                    currentLevel = currentLevel + 1;
-                    transitionTimer = 0;
-                    background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
-                    background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
-
-                    background2.x = screenX;
-
-                    intables = new Interacables(contx, screenX, screenY,currentLevel);
-                    env = new LevelEnvironment(contx, screenX, screenY,currentLevel);
-                    playClass = new Player(contx, costumeNum);
-                    collectibles = new Collectibles(contx,screenX, screenY);
-                    paint = new Paint();
-
-                    collectibles.NewLevel(currentLevel);
-                    intables.NewLevel(currentLevel);
-                    env.NewLevel(currentLevel);
-
-                    Respawn();
+                    nextBarrier = env.barrierLocation[0];
                 }
                 break;
-            case 2:
+            case 3:
                 break;
         }
     }
+
+    private void TransitionLevel() {
+        if(transitionTimer <= 5) {
+            transitionTimer += 0.1f;
+        }
+        else {
+            currentLevel = currentLevel + 1;
+            transitionTimer = 0;
+            background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+            background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
+
+            background2.x = screenX;
+
+            intables = new Interacables(contx, currentLevel);
+            env = new LevelEnvironment(contx, currentLevel);
+            playClass = new Player(contx, costumeNum);
+            collectibles = new Collectibles(contx);
+            paint = new Paint();
+
+            collectibles.NewLevel(currentLevel);
+            intables.NewLevel(currentLevel);
+            env.NewLevel(currentLevel);
+
+            Respawn();
+            }
+        }
 
     private void Respawn() {
         deathTimer = 0;
@@ -276,15 +301,15 @@ public class GameView extends SurfaceView implements Runnable {
         int_draw = false;
         interact_num = 0;
         prompt = false;
+        transitionTimer = 0;
     }
 
     public void backgroundMovement (int direction) {
         dir = direction;
         if (direction == 0) {
-                background1.x -= 0; //affects screen background movement!!!
-                background2.x -= 0;
+            //affects screen background movement!!!
 
-                if(background1.x + background1.background.getWidth() <= 0) {
+            if(background1.x + background1.background.getWidth() <= 0) {
                     background1.x = screenX;
                 }
 
@@ -317,13 +342,6 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void left() {
-        int factor;
-        if(orientation == 1) {
-            factor = progress_portrait;
-        }
-        else {
-            factor = progress;
-        }
         if(progress > 0 && transitionTimer ==0) {
             progress -= 21;
             background1.x += 5; //affects screen background movement!!!
@@ -351,6 +369,7 @@ public class GameView extends SurfaceView implements Runnable {
                 canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
                 if(currentLevel == 1) {
                     Drawable boat = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.titanic_2, null);
+                    assert boat != null;
                     boat.setBounds(50 - progress, screenY - 600, 900 - progress, screenY - 200);
                     boat.draw(canvas);
                 }
@@ -366,6 +385,7 @@ public class GameView extends SurfaceView implements Runnable {
                 if(nextBarrier != 37700) {
                     Drawable b;
                     b = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.barrier, null);
+                    assert b != null;
                     b.setBounds(1100 + nextBarrier - 150 - progress, 0, 1100 + nextBarrier - progress, screenY);
                     b.draw(canvas);
                 }
@@ -395,6 +415,9 @@ public class GameView extends SurfaceView implements Runnable {
                         case 6:
                             itr = intables.interacts[6];
                             break;
+                        case 7:
+                            itr = intables.interacts[7];
+                            break;
                         default:
                             itr = intables.interacts[0];
                             break;
@@ -403,6 +426,7 @@ public class GameView extends SurfaceView implements Runnable {
                     switch (intables.layout[i]) {
                         case 1:
                         case 6:
+                        case 7:
                             itr.setBounds(intables.offsetX[i] - progress, screenY - intables.offsetY[i] - 110, intables.offsetX[i] + 200 - progress, screenY - intables.offsetY[i] + 200);
                             break;
                         case 2:
@@ -432,24 +456,9 @@ public class GameView extends SurfaceView implements Runnable {
                             if (invoke_interaction) {
                                 if(intables.layout[i] == 4) {
                                     boolean one,two,three;
-                                    if (intables.layout[i - 1] == 3) {
-                                        three = true;
-                                    }
-                                    else {
-                                        three = false;
-                                    }
-                                    if (intables.layout[i - 2] == 3) {
-                                        two = true;
-                                    }
-                                    else {
-                                        two = false;
-                                    }
-                                    if (intables.layout[i - 3] == 3) {
-                                        one = true;
-                                    }
-                                    else {
-                                        one = false;
-                                    }
+                                    three = intables.layout[i - 1] == 3;
+                                    two = intables.layout[i - 2] == 3;
+                                    one = intables.layout[i - 3] == 3;
 
                                     boolean success = intables.leverPuzzle(currentLevel,one,two,three);
                                     if(success) {
@@ -459,7 +468,8 @@ public class GameView extends SurfaceView implements Runnable {
                                                 env.layout[5] = 4;
                                                 break;
                                             case 2:
-                                                env.layout[7] = 4;
+                                                env.layout[12] = 4;
+                                                env.layout[13] = 4;
                                                 break;
                                         }
 
@@ -485,6 +495,7 @@ public class GameView extends SurfaceView implements Runnable {
                             else {
                                 arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.arrow_up, null);
                             }
+                            assert arrow != null;
                             arrow.setBounds(itr.getBounds().left,itr.getBounds().top - 1000, itr.getBounds().right, itr.getBounds().bottom - 1100);
                             arrow.draw(canvas);
                         }
@@ -494,29 +505,28 @@ public class GameView extends SurfaceView implements Runnable {
 
                 //---------------------------------- Collectibles ----------------------------------
                 drawCollectibles(canvas);
-                drawCollectibleReactors(canvas);
                 //Draw everything UI and player here, icons, player
 
                 //---------------------------------- Player ----------------------------------
-                drawPlayer(env,canvas);
+                drawPlayer(canvas);
 
                 //------------------------------------ Draws split elements ----------------------------
 
                 drawBridgeFront(env,canvas);
                 //-------------------------------------------- COLLISION -------------------------------------------
 
-                collision(env,canvas);
+                collision(env);
 
                 // ----- Handles interactions ------
                 if(int_draw) {
-                    drawIntResponse(env,canvas,intables);
+                    drawIntResponse(canvas,intables);
                 }
 
                 if(!prompt) {
-                    drawUI(env, canvas);
+                    drawUI(canvas);
                 }
                 else {
-                    drawPrompt(env,canvas);
+                    drawPrompt(canvas);
                 }
 
                 //---------------------------------- BSOD ----------------------------------
@@ -524,6 +534,7 @@ public class GameView extends SurfaceView implements Runnable {
                 if (dead) {
                     canvas.drawColor(0, PorterDuff.Mode.CLEAR);
                     Drawable bsod = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.bsod, null);
+                    assert bsod != null;
                     bsod.setBounds(0, 0, screenX, screenY);
                     bsod.draw(canvas);
                 }
@@ -536,6 +547,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void drawOverlay(Canvas canvas) {
         Drawable d = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.textureless, null);
+        assert d != null;
         d.setBounds(0,0,screenX,screenY);
         d.draw(canvas);
     }
@@ -580,14 +592,12 @@ public class GameView extends SurfaceView implements Runnable {
         for (int i = 0; i < env.layout.length; i++) {
             Drawable d;
             boolean drawIt;
-            switch (env.layout[i]) {
-                case 4:
-                    drawIt = true;
-                    d = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.bridge_front, null);
-                    break;
-                default:
-                    drawIt = false;
-                    d = env.empty;
+            if (env.layout[i] == 4) {
+                drawIt = true;
+                d = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.bridge_front, null);
+            } else {
+                drawIt = false;
+                d = env.empty;
             }
             assert d != null;
             if(drawIt) {
@@ -605,28 +615,27 @@ public class GameView extends SurfaceView implements Runnable {
             switch(env.obstacles[i]) {
                 case 1:
                     d = env.short_ledge;
-                    d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY);
+                    d.setBounds((i + env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY);
                     break;
                 case 2:
                     d = env.float_ledge;
-                    d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY - env.obstBuffer_vert[i] + 140);
+                    d.setBounds((i + env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY - env.obstBuffer_vert[i] + 140);
                     break;
                 case 3:
                     d = env.move_box;
-                    d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY);
+                    d.setBounds((i + env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + env.obstBuffer[i]) + env.obstWidth[i] - progress, screenY);
                     break;
                 default:
                     d = env.empty;
-                    d.setBounds((i + 1 * env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + 1* env.obstBuffer[i]) + 0 - progress, screenY);
+                    d.setBounds((i + env.obstBuffer[i]) - progress, screenY - env.obstBuffer_vert[i], (i + env.obstBuffer[i]) - progress, screenY);
             }
-            assert d != null;
             if (d.getBounds().left < screenX && d.getBounds().right > 0) {
                 d.draw(canvas);
             }
         }
         for(int i = 0; i < env.obstacles.length; i++) {
-            if (i + 1 * env.obstBuffer[i] - progress < screenX / 2 &&
-                    (i + 1 * env.obstBuffer[i]) + env.obstWidth[i] - progress > screenX / 2) {
+            if (i + env.obstBuffer[i] - progress < screenX / 2 &&
+                    (i + env.obstBuffer[i]) + env.obstWidth[i] - progress > screenX / 2) {
                 obstNear = env.obstacles[i];
                 currentObst = i;
                 break;
@@ -637,10 +646,11 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    private void drawPlayer(LevelEnvironment env, Canvas canvas) {
+    private void drawPlayer(Canvas canvas) {
 
         int frame = (progress % 4) + 1;
 
+        Drawable player;
         switch (dir) {
             case 1:
                 lastDir = 1;
@@ -694,7 +704,7 @@ public class GameView extends SurfaceView implements Runnable {
         player.draw(canvas);
     }
 
-    private void drawIntResponse(LevelEnvironment env, Canvas canvas, Interacables intables) {
+    private void drawIntResponse(Canvas canvas, Interacables intables) {
         Drawable d = intables.int_response[interact_num];
         d.setBounds((screenX / 2) - 400, (screenY / 2) - 400, (screenX / 2) + 400, (screenY / 2) + 400);
         d.draw(canvas);
@@ -710,6 +720,12 @@ public class GameView extends SurfaceView implements Runnable {
                 case 2:
                     colec = collectibles.collectibles[2];
                     break;
+                case 3:
+                    colec = collectibles.collectibles[3];
+                    break;
+                case 4:
+                    colec = collectibles.collectibles[4];
+                    break;
                 default:
                     colec = collectibles.collectibles[0];
                     break;
@@ -720,7 +736,6 @@ public class GameView extends SurfaceView implements Runnable {
             if(colec.getBounds().left < screenX / 2 && colec.getBounds().right > screenX / 2
                     && colec.getBounds().bottom > gravity + screenY - 230 && colec.getBounds().top < gravity + screenY - 230) {
                 switch(collectibles.layout[i]) {
-
                     case 2:
                         collectibles.layout[i] = 0;
                         costumesUnlocked[1] = 1;
@@ -734,33 +749,21 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    private void drawCollectibleReactors(Canvas canvas) {
-    }
+    private void collision(LevelEnvironment env) {
 
-
-    private void collision(LevelEnvironment env, Canvas canvas) {
-
-        if(obstNear != 0 && -(gravity - 230) <= closestFloorHeight) {
-            underplat = true;
-        }
-        else {
-            underplat = false;
-        }
+        underplat = obstNear != 0 && -(gravity - 230) <= closestFloorHeight;
 
         //============================== Sets where to land ==============================
 
         if(floorColBelow != 0 || obstNear !=0) {
-            if(obstNear == 0 && floorColBelow !=0){
+            if(obstNear == 0){
                 closestFloorHeight = 230;
             }
-            else if(obstNear != 0 && !underplat){
+            else if(!underplat){
                 closestFloorHeight = env.obstBuffer_vert[currentObst];
             }
         }
-        else if(floorColBelow == 0 && obstNear !=0 && underplat && acceleration == 0) {
-            closestFloorHeight = 0;
-        }
-        else if(floorColBelow == 0 && obstNear == 0 && acceleration == 0) {
+        else if(acceleration == 0) {
             closestFloorHeight = 0;
         }
         //================================= True collision =====================================
@@ -812,7 +815,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
 
-    private void drawUI(LevelEnvironment env, Canvas canvas) {
+    private void drawUI(Canvas canvas) {
         //---------------------------------- Left Arrow ----------------------------------
         if (dir == 0 || dir == 1) {
             Drawable left_arrow = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.left_arrow, null);
@@ -864,13 +867,15 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
 
-    private void drawPrompt(LevelEnvironment env, Canvas canvas) {
+    private void drawPrompt(Canvas canvas) {
         Drawable yes = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.yes_button, null);
+        assert yes != null;
         yes.setBounds(30, (screenY) - 230, 230, (screenY) - 30);
         yes.draw(canvas);
 
         Drawable no;
         no = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.no_button, null);
+        assert no != null;
         no.setBounds((screenX) - 230, (screenY) - 230, (screenX) - 30, (screenY) - 30);
         no.draw(canvas);
     }
@@ -879,8 +884,8 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void sleep () {
         try {
-            thread.sleep(17); // Speed at which elements are drawn !!! IMPORTANT !!! (larger is slower)
-            thread_secondary.sleep(17);
+            Thread.sleep(17); // Speed at which elements are drawn !!! IMPORTANT !!! (larger is slower)
+            Thread.sleep(17);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -928,34 +933,68 @@ public class GameView extends SurfaceView implements Runnable {
                 intables.response[3] = 5;
             }
         }
+        if(currentLevel == 2) {
+            if (correct) {
+                yn = 2;
+                answered = true;
+                intables.response[0] = 5;
+            }
+            else {
+                yn = 1;
+                answered = true;
+                intables.response[0] = 6;
+            }
+        }
     }
 
     public void ResultUpdater () {
-        if(yn == 1) {
-            if(interactTransitionTimer < 0) {
-                prompt = false;
-                overlay = false;
-                answered = false;
-                intables.isPrompt[3] = 0;
+        if(currentLevel == 1) {
+            if (yn == 1) {
+                if (interactTransitionTimer < 0) {
+                    prompt = false;
+                    overlay = false;
+                    answered = false;
+                    intables.isPrompt[3] = 0;
+                    interactTransitionTimer = 20;
+                    yn = 0;
+                }
+            } else if (yn == 2) {
+                if (interactTransitionTimer < 0) {
+                    intables.response[3] = 5;
+                    overlay = false;
+                    answered = false;
+                    prompt = false;
+                    interactTransitionTimer = 20;
+                    yn = 0;
+                    dead = true;
+                }
+            } else {
                 interactTransitionTimer = 20;
                 yn = 0;
-                return;
             }
         }
-        else if (yn == 2){
-            if(interactTransitionTimer < 0) {
-                intables.response[3] = 5;
-                overlay = false;
-                answered = false;
-                prompt = false;
+        if(currentLevel == 2) {
+            if (yn == 2) {
+                if (interactTransitionTimer < 0) {
+                    prompt = false;
+                    answered = false;
+                    intables.isPrompt[0] = 0;
+                    interactTransitionTimer = 20;
+                    yn = 0;
+                }
+            } else if (yn == 1) {
+                if (interactTransitionTimer < 0) {
+                    intables.response[0] = 8;
+                    answered = false;
+                    prompt = false;
+                    interactTransitionTimer = 20;
+                    yn = 0;
+                    dead = true;
+                }
+            } else {
                 interactTransitionTimer = 20;
                 yn = 0;
-                dead = true;
             }
-        }
-        else {
-            interactTransitionTimer = 20;
-            yn = 0;
         }
     }
 
@@ -977,5 +1016,17 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    public void BadEnding () {
+        advancements[0] = 1;
+        advancements[2] = 1;
+    }
+
+    public void TrueEnding () {
+        advancements[3] = 1;
+    }
+
+    public void GoodEnding() {
+        advancements[1] = 1;
+    }
 }
 

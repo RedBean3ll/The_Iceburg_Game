@@ -46,13 +46,13 @@
             android:text="@string/collector"
             style="@style/textview_box"/>
         <TextView
-            android:text="Test"
+            android:text="Sky Color"
             style="@style/textview_box"/>
         <TextView
-            android:text="Test"
+            android:text="Nerd!!!"
             style="@style/textview_box"/>
         <TextView
-            android:text="Test"
+            android:text="I am Frog"
             style="@style/textview_box"/>
     </GridLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,10 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
 
 public class GameActivity extends AppCompatActivity {
@@ -67,7 +64,7 @@ public class GameActivity extends AppCompatActivity {
                 priorRotation = 2;
             }
         }
-        if(saveInstanceState != null && gameView != null) {
+        if(saveInstanceState != null) {
             gameView.progress = saveInstanceState.getInt(CURRENT_PROGRESS);
             priorRotation = saveInstanceState.getInt(LAST_ROTATION);
             gameView.grounded = saveInstanceState.getBoolean(SAVED_GROUNDED_STATE);
@@ -133,7 +130,6 @@ public class GameActivity extends AppCompatActivity {
     @Override
 
     public boolean onTouchEvent(MotionEvent event){
-        String action = "";
 
         int x = (int)event.getX();
         int y = (int)event.getY();
@@ -162,33 +158,25 @@ public class GameActivity extends AppCompatActivity {
                 }
                 else {
                     if ((x > 30 && x < 230) &&
-                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30) && gameView.answered == false) {
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30) && !gameView.answered) {
                         gameView.interactResult(true);
                     }
                     if (((x < (gameView.screenX - 30) && x > (gameView.screenX - 230)) &&
-                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) && gameView.answered == false) {
+                            (y > (gameView.screenY - 230)) && y < (gameView.screenY - 30)) && !gameView.answered) {
                         gameView.interactResult(false);
                     }
                 }
 
-                action = "ACTION_DOWN";
                 break;
             case MotionEvent.ACTION_MOVE:
-                action = "ACTION_MOVE";
+            case MotionEvent.ACTION_CANCEL:
                 break;
             case MotionEvent.ACTION_UP:
-                action = "ACTION_UP";
                 gameView.backgroundMovement(0);
                 gameView.setJump(false);
                 gameView.setInteract(false);
                 break;
-            case MotionEvent.ACTION_CANCEL:
-                action = "ACTION_CANCEL";
-                break;
         }
-
-       /* Log.d("Touched Location", action + " x = " + event.getX() +
-                " y = " + event.getY());*/
         return true;
     }
 }

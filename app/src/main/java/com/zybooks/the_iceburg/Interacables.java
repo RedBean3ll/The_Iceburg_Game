@@ -1,51 +1,51 @@
 package com.zybooks.the_iceburg;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.SurfaceView;
-
 import androidx.core.content.res.ResourcesCompat;
 
+@SuppressLint("ViewConstructor")
 public class Interacables extends SurfaceView {
 
-    private int screen_x, screen_y;
-
-    public int currentLevel = 0;
+    public int currentLevel;
     public Drawable[] interacts = new Drawable[8];
-    public Drawable[] int_response = new Drawable[8];
+    public Drawable[] int_response = new Drawable[12];
 
     // ---------------------------------- Level 1 -----------------------------------------
     public int[] isPrompt = {0,0,0,1,0,0,0,0,0};
     public int[] layout = {0,0,1,6,2,2,2,4,0};
     public int[] response = {1,2,3,4,0,0,0,0,7};
-    public int[] offsetX = {1100,1800,2500,7200,8200,8500,8800,9300,1400};
+    public int[] offsetX = {1100,1800,2500,7200,8200,8500,8800,9300,14200};
     public int[] offsetY = {400,400,400,400,400,400,400,400,400};
 
     // ---------------------------------- Level 2 -----------------------------------------
-    public int[] isPrompt_2 = {};
-    public int[] layout_2 = {};
-    public int[] response_2 = {};
-    public int[] offsetX_2 = {};
-    public int[] offsetY_2 = {};
+    public int[] isPrompt_2 = {1,0,0,0};
+    public int[] layout_2 = {7,0,0,0};
+    public int[] response_2 = {8,9,10,11};
+    public int[] offsetX_2 = {4800,7000,11000,13000};
+    public int[] offsetY_2 = {400,400,400,400,400};
     // ---------------------------------- Level 3 -----------------------------------------
-    // ---------------------------------- Level 4 -----------------------------------------
-    // ---------------------------------- Level 5 -----------------------------------------
-    public Drawable sign_1,bob,lever_up,lever_down,button,button_pressed,skyman;
-    public Drawable sign_response_1,rotation_tutorial,bob_resp_1,sky_response,end_1;
+    public int[] isPrompt_3 = {};
+    public int[] layout_3 = {};
+    public int[] response_3 = {};
+    public int[] offsetX_3 = {};
+    public int[] offsetY_3 = {};
+
+
+    public Drawable sign_1,bob,lever_up,lever_down,button,button_pressed,skyman,nerd;
+    public Drawable sign_response_1,rotation_tutorial,bob_resp_1,sky_response,end_1,nerd_response,sign_response_2,sign_response_3,sign_response_4;
     public Drawable yes,no;
     public Context contx;
 
-    public int solution1[] = {0,0,0,0,1,2,1,0,0};
-    public int solution2[] = {};
+    public int[] solution1 = {0,0,0,0,1,2,1,0,0};
+    public int[] solution2 = {0};
 
-    public Interacables(Context context, int screenX, int screenY, int currentLevel) {
+    public Interacables(Context context, int currentLevel) {
         super(context);
 
         this.currentLevel = currentLevel;
         contx = context;
-        screen_x = screenX;
-        screen_y = screenY;
 
         sign_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign, null);
         bob = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.bob, null);
@@ -54,7 +54,7 @@ public class Interacables extends SurfaceView {
         button = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.button_unpressed, null);
         button_pressed = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.button_pressed, null);
         skyman = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sky_lover, null);
-
+        nerd = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.cave_nerd, null);
 
         sign_response_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_tutorial, null);
         rotation_tutorial = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.rotation_advice, null);
@@ -63,6 +63,10 @@ public class Interacables extends SurfaceView {
         yes = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.correct, null);
         no = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.wrong, null);
         end_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_end_level_one, null);
+        nerd_response = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.nerd_puzzle, null);
+        sign_response_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_resp_2, null);
+        sign_response_2 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_resp_3, null);
+        sign_response_3 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_resp_4, null);
 
         interacts[0] = sign_1;
         interacts[1] = bob;
@@ -71,6 +75,7 @@ public class Interacables extends SurfaceView {
         interacts[4] = button;
         interacts[5] = button_pressed;
         interacts[6] = skyman;
+        interacts[7] = nerd;
 
         int_response[0] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.empty, null);
         int_response[1] = sign_response_1;
@@ -80,10 +85,13 @@ public class Interacables extends SurfaceView {
         int_response[5] = yes;
         int_response[6] = no;
         int_response[7] = end_1;
+        int_response[8] = nerd_response;
+        int_response[9] = sign_response_2;
+        int_response[10] = sign_response_3;
+        int_response[11] = sign_response_4;
     }
 
     public boolean leverPuzzle (int bridgeNum, boolean lever1, boolean lever2, boolean lever3) {
-        boolean correct = false;
         switch(bridgeNum) {
             case 1 :
                 if(lever1 && !lever2 && lever3) {
@@ -99,19 +107,17 @@ public class Interacables extends SurfaceView {
         return false;
     }
 
-    public boolean flip (int index) {
+    public void flip (int index) {
         switch (layout[index]) {
             case 2:
                 layout[index] = 3;
-                return true;
+                return;
             case 3:
                 layout[index] = 2;
-                return true;
+                return;
             case 4:
                 layout[index] = 5;
-                return true;
         }
-        return true;
     }
 
     public void NewLevel (int level) {
@@ -122,6 +128,13 @@ public class Interacables extends SurfaceView {
                 response = response_2;
                 offsetX = offsetX_2;
                 offsetY = offsetY_2;
+                break;
+            case 3:
+                isPrompt = isPrompt_3;
+                layout = layout_3;
+                response = response_3;
+                offsetX = offsetX_3;
+                offsetY = offsetY_3;
                 break;
         }
     }
