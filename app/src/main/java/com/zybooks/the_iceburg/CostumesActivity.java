@@ -4,8 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.ImageButton;
 import android.os.Bundle;
+
+import com.zybooks.the_iceburg.GameDataTool;
+
+import java.util.ArrayList;
 
 public class CostumesActivity extends AppCompatActivity{
     public static String EXTRA_COSTUME = "costume id";
@@ -33,14 +38,20 @@ public class CostumesActivity extends AppCompatActivity{
         pill = findViewById(R.id.costume_pill);
         space = findViewById(R.id.costume_space);
 
+        initial();
+    }
+
+    public void initial() {
+        SharedPreferences gameStorage = getApplicationContext().getSharedPreferences(getString(R.string.shared_storage_name), MODE_PRIVATE);
+
         setCostumeDetail(0);
-        if(true) { setCostumeDetail(1); }
-        if(true) { setCostumeDetail(2); }
-        if(true) { setCostumeDetail(3); }
-        if(true) { setCostumeDetail(4); }
-        if(true) { setCostumeDetail(5); }
-        if(true) { setCostumeDetail(6); }
-        if(true) { setCostumeDetail(7); }
+        if(gameStorage.getBoolean(getString(R.string.flag_costume_1), false)) { setCostumeDetail(1); }
+        if(gameStorage.getBoolean(getString(R.string.flag_costume_2), false)) { setCostumeDetail(2); }
+        if(gameStorage.getBoolean(getString(R.string.flag_costume_3), false)) { setCostumeDetail(3); }
+        if(gameStorage.getBoolean(getString(R.string.flag_costume_4), false)) { setCostumeDetail(4); }
+        if(gameStorage.getBoolean(getString(R.string.flag_costume_5), false)) { setCostumeDetail(5); }
+        if(gameStorage.getBoolean(getString(R.string.flag_costume_6), false)) { setCostumeDetail(6); }
+        if(gameStorage.getBoolean(getString(R.string.flag_costume_7), false)) { setCostumeDetail(7); }
     }
 
     public void setCostumeDetail(int costumeNumber) {
@@ -79,7 +90,6 @@ public class CostumesActivity extends AppCompatActivity{
                 space.setOnClickListener(viewC -> {otnCostumeSelected(7);});
                 space.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.spaceman_idle));
                 space.setBackgroundTintList(null);
-                break;
             default:
                 defaulto.setOnClickListener(viewC -> {otnCostumeSelected(0);});
                 defaulto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.defaulto_idle));

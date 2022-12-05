@@ -8,7 +8,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 public class Collectibles extends SurfaceView {
 
-    public Drawable[] collectibles = new Drawable[5];
+    public Drawable[] collectibles = new Drawable[7];
 
     //----------------------------------------- Level 1 -------------------------------------------
     public int[] layout = {1,2};
@@ -20,9 +20,9 @@ public class Collectibles extends SurfaceView {
     public int[] offsetX_2 = {4000,9500,16000,26000};
     public int[] offsetY_2 = {1600,1500,1600,1600};
     // ---------------------------------- Level 3 -----------------------------------------
-    public int[] layout_3 = {};
-    public int[] offsetX_3 = {};
-    public int[] offsetY_3 = {};
+    public int[] layout_3 = {5,6};
+    public int[] offsetX_3 = {6000,12000};
+    public int[] offsetY_3 = {1500,1000};
 
     public Collectibles(Context context) {
         super(context);
@@ -33,7 +33,8 @@ public class Collectibles extends SurfaceView {
         collectibles[2] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.moyai_t_m, null);
         collectibles[3] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.animal_idle_m, null);
         collectibles[4] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.mattmug_idle, null);
-
+        collectibles[5] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.harambe_idle, null);
+        collectibles[6] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.crabcycle, null);
     }
 
     public void NewLevel(int level) {

@@ -60,18 +60,19 @@
             android:backgroundTint="@color/costume_menu_lock_tint"
             style="@style/imagebutton_box"
             android:contentDescription="@string/crab_avatar" />
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/costume_pill"
+            style="@style/imagebutton_box"
             android:src="@drawable/lock"
             android:backgroundTint="@color/costume_menu_lock_tint"
-            style="@style/imagebutton_box"
             android:contentDescription="@string/pill_avatar" />
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/costume_space"
+            style="@style/imagebutton_box"
             android:src="@drawable/lock"
             android:backgroundTint="@color/costume_menu_lock_tint"
-            style="@style/imagebutton_box"
             android:contentDescription="@string/space_avatar" />
+
     </GridLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

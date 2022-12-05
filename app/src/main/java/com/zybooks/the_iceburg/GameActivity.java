@@ -39,6 +39,7 @@ public class GameActivity extends AppCompatActivity {
     private final String SAVED_BARRIERS = "savedBarriers";
     private final String SAVED_OBSTACLE_LAYOUT = "savedObstLayout";
     private final String SAVED_INITIAL_3 = "savedlevel3obstactles";
+    private final String ENDING = "ending";
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
@@ -81,6 +82,7 @@ public class GameActivity extends AppCompatActivity {
             gameView.nextBarrier = saveInstanceState.getInt(SAVED_BARRIERS);
             gameView.env.obstacles = saveInstanceState.getIntArray(SAVED_OBSTACLE_LAYOUT);
             gameView.env.initialLevel3Obst = saveInstanceState.getIntArray(SAVED_INITIAL_3);
+            gameView.gameEnd = saveInstanceState.getInt(ENDING);
         }
         setContentView(gameView);
     }
@@ -108,6 +110,7 @@ public class GameActivity extends AppCompatActivity {
         outState.putInt(SAVED_OBSTACLE_NEARBY, gameView.obstNear);
         outState.putInt(SAVED_CURRENT_INTERACT,gameView.interact_num);
         outState.putInt(SAVED_BARRIERS,gameView.nextBarrier);
+        outState.putInt(ENDING,gameView.gameEnd);
 
         outState.putIntArray(SAVED_INTERACTS,gameView.intables.layout);
         outState.putIntArray(SAVED_ENVIRONMENT,gameView.env.layout);

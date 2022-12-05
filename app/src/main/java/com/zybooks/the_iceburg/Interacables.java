@@ -9,8 +9,8 @@ import androidx.core.content.res.ResourcesCompat;
 public class Interacables extends SurfaceView {
 
     public int currentLevel;
-    public Drawable[] interacts = new Drawable[10];
-    public Drawable[] int_response = new Drawable[15];
+    public Drawable[] interacts = new Drawable[11];
+    public Drawable[] int_response = new Drawable[18];
 
     // ---------------------------------- Level 1 -----------------------------------------
     public int[] isPrompt = {0,0,0,1,0,0,0,0,0};
@@ -26,15 +26,15 @@ public class Interacables extends SurfaceView {
     public int[] offsetX_2 = {4800,7000,12000,13700,18000,18300,18600,19100,30000};
     public int[] offsetY_2 = {400,400,400,400,400,400,400,400,400};
     // ---------------------------------- Level 3 -----------------------------------------
-    public int[] isPrompt_3 = {0,0};
-    public int[] layout_3 = {8,9};
-    public int[] response_3 = {13,14};
-    public int[] offsetX_3 = {2500,7500};
-    public int[] offsetY_3 = {400,400};
+    public int[] isPrompt_3 = {0,0,1,0,0};
+    public int[] layout_3 = {8,9,10,4,0};
+    public int[] response_3 = {13,14,15,0,17};
+    public int[] offsetX_3 = {2500,7500,16000,18000,23000};
+    public int[] offsetY_3 = {400,400,400,1600,400};
 
 
-    public Drawable sign_1,bob,lever_up,lever_down,button,button_pressed,skyman,nerd,incognito,squid;
-    public Drawable sign_response_1,rotation_tutorial,bob_resp_1,sky_response,end_1,nerd_response,sign_response_2,sign_response_3,sign_response_4,sign_response_5,incog_resp, squid_resp;
+    public Drawable sign_1,bob,lever_up,lever_down,button,button_pressed,skyman,nerd,incognito,squid,bob_corrupt;
+    public Drawable sign_response_1,rotation_tutorial,bob_resp_1,sky_response,end_1,nerd_response,sign_response_2,sign_response_3,sign_response_4,sign_response_5,incog_resp, squid_resp,bob_resp_2,denial,ending;
     public Drawable yes,no;
     public Context contx;
 
@@ -58,6 +58,7 @@ public class Interacables extends SurfaceView {
         nerd = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.cave_nerd, null);
         incognito = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.incognito_man, null);
         squid = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.squid_game, null);
+        bob_corrupt = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.bob_corrupt, null);
 
         sign_response_1 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_tutorial, null);
         rotation_tutorial = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.rotation_advice, null);
@@ -73,6 +74,10 @@ public class Interacables extends SurfaceView {
         sign_response_5 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.sign_resp_5, null);
         incog_resp = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.incog_resp, null);
         squid_resp = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.squid_resp, null);
+        bob_resp_2 = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.blueberry_puzzle, null);
+        denial = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.blueberry_correct, null);
+        ending = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.the_end, null);
+
 
         interacts[0] = sign_1;
         interacts[1] = bob;
@@ -84,6 +89,7 @@ public class Interacables extends SurfaceView {
         interacts[7] = nerd;
         interacts[8] = incognito;
         interacts[9] = squid;
+        interacts[10] = bob_corrupt;
 
         int_response[0] = ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.empty, null);
         int_response[1] = sign_response_1;
@@ -100,6 +106,9 @@ public class Interacables extends SurfaceView {
         int_response[12] = sign_response_5;
         int_response[13] = incog_resp;
         int_response[14] = squid_resp;
+        int_response[15] = bob_resp_2;
+        int_response[16] = denial;
+        int_response[17] = ending;
     }
 
     public boolean leverPuzzle (int bridgeNum, boolean lever1, boolean lever2, boolean lever3) {

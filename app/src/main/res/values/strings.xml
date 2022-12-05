@@ -29,6 +29,42 @@
     <string name="sky_color">Sky Color</string>
     <string name="nerd">Nerd!!!</string>
     <string name="i_am_frog">I am Frog</string>
-    <string name="shared_storage_name">ice_bucket_challenge</string>
+    <string name="flag_costume_0">normie</string>
     <string name="space_avatar" />
+    <string name="flag_game_complete">game_complete</string>
+    <string name="flag_all_skins">all_skins_unlocked</string>
+    <string name="flag_solve_sky_puzzle">solved_sky_puzzle</string>
+    <string name="flag_solve_nerd_puzzle">solved_nerd_puzzle</string>
+    <string name="flag_take_the_blueberry">took_the_blueberry</string>
+    <string name="mad_tasty_blueberry">Mad Tasty Blueberry</string>
+    <string name="good_ending_text">Good Ending Achieved</string>
+    <string name="bad_ending_text">Bad Ending Achieved</string>
+    <string name="secret_ending_text">True Ending Achieved</string>
+    <string name="game_complete_text">Game Complete</string>
+    <string name="ulocked_all_costume_text">Costume Master</string>
+    <string name="completed_sky_puzzle_text">No Texture, No Problem!</string>
+    <string name="completed_nerd_puzzle_text">Nerd!</string>
+    <string name="accepted_blueberry_text">Wicked Mad Blueberry</string>
+
+    <string name="shared_storage_name">ice_bucket_challenge</string>
+    <!-- SETTINGS DATA -->
+    <string name="settings_sfx">sfx</string>
+    <string name="settings_sound">sound</string>
+
+    <!-- GAME SAVE -->
+    <string name="current_stage">current_stage</string>
+
+    <!-- COSTUME FLAGS -->
+    <string name="flag_costume_1">animal</string>
+    <string name="flag_costume_2">moyai</string>
+    <string name="flag_costume_3">harambe</string>
+    <string name="flag_costume_4">mug</string>
+    <string name="flag_costume_5">crab</string>
+    <string name="flag_costume_6">pill</string>
+    <string name="flag_costume_7">spaceman</string>
+
+    <!-- ENDING FLAGS -->
+    <string name="flag_ending_1">good_ending</string>
+    <string name="flag_ending_2">bad_ending</string>
+    <string name="flag_ending_3">secret_ending</string>
 </resources>

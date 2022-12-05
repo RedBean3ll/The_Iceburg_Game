@@ -38,13 +38,13 @@
             android:text="@string/ssm_sound_effect_label"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/toggleButton2"
+            app:layout_constraintEnd_toStartOf="@id/toggleButton"
             app:layout_constraintTop_toTopOf="parent"
             />
 
         <androidx.appcompat.widget.SwitchCompat
             style="@style/submenu_switch"
-            android:id="@+id/toggleButton2"
+            android:id="@+id/toggleButton"
             android:layout_marginStart="5dp"
 
             app:layout_constraintBottom_toBottomOf="@id/sm_sfx_label"
@@ -86,16 +86,20 @@
             app:layout_constraintTop_toTopOf="@id/sm_volume_label" />
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/deleteSaveButton"
             style="@style/submenu_button"
-            android:text="@string/ssm_clear_save_button"
-
             android:layout_marginTop="25dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/seekBar"
+
+            android:text="@string/ssm_clear_save_button"
+            android:backgroundTint="#FFFF0000"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/seekBar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
