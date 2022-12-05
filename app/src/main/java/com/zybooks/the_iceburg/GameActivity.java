@@ -6,13 +6,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements SensorEventListener {
 
     private GameView gameView;
+
+    private SensorManager sensorManager;
 
     private int priorRotation;
     private int currentLevel = 1;
@@ -85,6 +92,13 @@ public class GameActivity extends AppCompatActivity {
             gameView.gameEnd = saveInstanceState.getInt(ENDING);
         }
         setContentView(gameView);
+        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        if(sensorManager !=null) {
+            Sensor ss = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            if (ss != null) {
+                sensorManager.registerListener(this, ss, SensorManager.SENSOR_DELAY_NORMAL);
+            }
+        }
     }
 
     @Override
@@ -184,5 +198,20 @@ public class GameActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER && gameView.currentLevel == 1) {
+            if(event.values[1] < -8.7) {
+                gameView.toSpace = true;
+            }
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

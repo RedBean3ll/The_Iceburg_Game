@@ -62,7 +62,7 @@ public class GameView extends SurfaceView implements Runnable {
     public float gravity;
     public boolean onPlatform = false;
     public boolean grounded = true;
-
+    public boolean toSpace = false;
     // -------- Interacts ----------
     private int yn = 0;
 
@@ -137,11 +137,13 @@ public class GameView extends SurfaceView implements Runnable {
           else {
               orientation = 2;
           }
-
           draw();
           ResultUpdater();
           Barriers();
 
+          if(toSpace) {
+              SendToSpace();
+          }
           if(dead) {
               deathTimer += 0.1f;
               if (deathTimer >= 5){
@@ -161,7 +163,7 @@ public class GameView extends SurfaceView implements Runnable {
                   break;
           }
 
-          if(!dead) {
+          if(!dead && !toSpace) {
               applyGravity(yDir);
           }
 
@@ -194,7 +196,7 @@ public class GameView extends SurfaceView implements Runnable {
           }
 
           //Log.e("CurrentLeve", String.valueOf(progress));
-          if (grounded) {
+          if (grounded && !toSpace) {
               if (jump) {
                   jumpCount++;
                   isJump = true;
@@ -220,7 +222,7 @@ public class GameView extends SurfaceView implements Runnable {
               }
           }
 
-          if(!grounded) {
+          if(!grounded && !toSpace) {
               if(!jump && acceleration == 0) {
                   yDir = 1;
                   deltaT = 3;
@@ -1148,6 +1150,12 @@ public class GameView extends SurfaceView implements Runnable {
                 }
                 break;
         }
+    }
+
+    public void SendToSpace () {
+        acceleration = 17;
+        gravity -= acceleration;
+        grounded = false;
     }
 
     public void BadEnding () {
