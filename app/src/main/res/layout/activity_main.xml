@@ -29,47 +29,40 @@
         app:layout_constraintTop_toBottomOf="@id/title_sectA" />
 
     <Button
-        android:id="@+id/buttone4"
+        android:id="@+id/start_button"
         android:text="@string/mmb_start_button"
         style="@style/main_menu_button"
 
-        android:onClick="onGameStartClick"
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
-        app:layout_constraintStart_toStartOf="@id/buttone3"
-        app:layout_constraintBottom_toTopOf="@id/buttone3"
+        app:layout_constraintStart_toStartOf="@id/achievements_button"
+        app:layout_constraintBottom_toTopOf="@id/achievements_button"
         android:gravity="center_horizontal"
         />
 
     <Button
-        android:id="@+id/buttone3"
+        android:id="@+id/achievements_button"
         android:text="@string/mmb_achievement_button"
         style="@style/main_menu_button"
-
-        android:onClick="onAchievementsClick"
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
-        app:layout_constraintStart_toStartOf="@id/buttone2"
-        app:layout_constraintBottom_toTopOf="@id/buttone2"
+        app:layout_constraintStart_toStartOf="@id/costumes_button"
+        app:layout_constraintBottom_toTopOf="@id/costumes_button"
         android:gravity="center_horizontal"
         />
 
     <Button
-        android:id="@+id/buttone2"
+        android:id="@+id/costumes_button"
         android:text="@string/mmb_costumes_button"
         style="@style/main_menu_button"
-
-        android:onClick="onChangeCostumeClick"
         android:layout_marginBottom="@dimen/mmb_marginBottomVert"
-        app:layout_constraintStart_toStartOf="@id/buttone1"
-        app:layout_constraintBottom_toTopOf="@id/buttone1"
+        app:layout_constraintStart_toStartOf="@id/settings_button"
+        app:layout_constraintBottom_toTopOf="@id/settings_button"
         android:gravity="center_horizontal"
         />
 
     <Button
-        android:id="@+id/buttone1"
+        android:id="@+id/settings_button"
         android:text="@string/mmb_settings_button"
         style="@style/main_menu_button"
-
-        android:onClick="onSettingsClick"
         android:layout_marginStart="50dp"
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"

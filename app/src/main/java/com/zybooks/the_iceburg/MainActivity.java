@@ -1,4 +1,3 @@
-
 package com.zybooks.the_iceburg;
 
 import androidx.activity.result.ActivityResult;
@@ -9,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.Button;
@@ -20,27 +17,40 @@ public class MainActivity extends AppCompatActivity {
     private int costumeNum;
     private int[] unlockedCostumes = {1,0,0,0,0,0,0,0};
     private int[] unlockedAchievements = {0,0,0,0,0,0,0,0};
+    Button startButton;
+    Button achievementsButton;
+    Button costumesButton;
+    Button settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         costumeNum = 0;
         setContentView(R.layout.activity_main);
+
+        startButton = findViewById(R.id.start_button);
+        achievementsButton = findViewById(R.id.achievements_button);
+        costumesButton = findViewById(R.id.costumes_button);
+        settingsButton = findViewById(R.id.settings_button);
+
+        startButton.setOnClickListener( view -> onGameStartClick());
+        achievementsButton.setOnClickListener( view -> onAchievementsClick());
+        costumesButton.setOnClickListener( view -> onCostumesClick());
+        settingsButton.setOnClickListener( view -> onSettingsClick());
     }
 
-    public void onGameStartClick (View view) {
+    public void onGameStartClick() {
         Intent start = new Intent(this, GameActivity.class);
         start.putExtra(CostumesActivity.EXTRA_COSTUME, costumeNum);
         startActivity(start);
     }
 
-
-    public void onAchievementsClick (View view) {
+    public void onAchievementsClick() {
         Intent achievements = new Intent(this, AchievementsActivity.class);
         startActivity(achievements);
     }
 
-    public void onChangeCostumeClick (View view) {
+    public void onCostumesClick() {
         Intent costumes = new Intent(this, CostumesActivity.class);
         costumeLauncher.launch(costumes);
     }
@@ -60,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-    public void onSettingsClick (View view) {
+    public void onSettingsClick() {
         Intent settings = new Intent(this, SettingsActivity.class);
         startActivity(settings);
     }

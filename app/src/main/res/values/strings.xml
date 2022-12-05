@@ -29,4 +29,6 @@
     <string name="sky_color">Sky Color</string>
     <string name="nerd">Nerd!!!</string>
     <string name="i_am_frog">I am Frog</string>
+    <string name="shared_storage_name">ice_bucket_challenge</string>
+    <string name="space_avatar" />
 </resources>

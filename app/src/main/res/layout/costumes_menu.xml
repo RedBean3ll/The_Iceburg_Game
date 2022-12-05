@@ -6,11 +6,10 @@
     android:layout_height="match_parent"
     android:background="@drawable/the_iceberg_splash_distant_vert">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/ssm_banner"
         style="@style/menu_page_banner"
         android:text="@string/ssm_costumes_label"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,49 +19,59 @@
         android:layout_height="wrap_content"
         android:useDefaultMargins="true"
         android:layout_marginTop="9pt"
-
         android:columnCount="2"
         android:rowCount="4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ssm_banner">
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
+            style="@style/imagebutton_box"
             android:id="@+id/costume_defaulto"
-            android:src="@drawable/defaulto_idle"
-            style="@style/imagebutton_box"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
             android:contentDescription="@string/defaulto_avatar" />
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
+            style="@style/imagebutton_box"
             android:id="@+id/costume_animal"
-            android:src="@drawable/animal_idle"
-            style="@style/imagebutton_box"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
             android:contentDescription="@string/animal_avatar" />
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
+            style="@style/imagebutton_box"
             android:id="@+id/costume_moyai"
-            android:src="@drawable/moyai"
-            style="@style/imagebutton_box"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
             android:contentDescription="@string/moyai_avatar" />
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
+            style="@style/imagebutton_box"
             android:id="@+id/costume_mug"
-            android:src="@drawable/mattmug_idle"
-            style="@style/imagebutton_box"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
             android:contentDescription="@string/mug_avatar" />
-        <ImageButton
-            android:id="@+id/costume_harambe"
-            android:src="@drawable/harambe_idle"
+        <androidx.appcompat.widget.AppCompatImageButton
             style="@style/imagebutton_box"
+            android:id="@+id/costume_harambe"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
             android:contentDescription="@string/harambe_avatar" />
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/costume_crab"
-            android:src="@drawable/crab_idle"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
             style="@style/imagebutton_box"
             android:contentDescription="@string/crab_avatar" />
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/costume_pill"
-            android:src="@drawable/pill_no"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
             style="@style/imagebutton_box"
             android:contentDescription="@string/pill_avatar" />
-        <ImageButton
-            style="@style/imagebutton_box"/>
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/costume_space"
+            android:src="@drawable/lock"
+            android:backgroundTint="@color/costume_menu_lock_tint"
+            style="@style/imagebutton_box"
+            android:contentDescription="@string/space_avatar" />
     </GridLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

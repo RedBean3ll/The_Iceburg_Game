@@ -35,6 +35,9 @@ public class Player extends SurfaceView {
             case 6:
                 CostumeSeven();
                 break;
+            case 7:
+                CostumeEight();
+                break;
             default:
                 CostumeOne();
                 break;
@@ -50,12 +53,12 @@ public class Player extends SurfaceView {
         costume[2] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk, null);
         costume[3] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_1, null);
         costume[4] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_2, null);
-        costume[5] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk, null);
+        costume[5] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_1, null);
         // Walk left
         costume[6] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_m, null);
         costume[7] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_1_m, null);
         costume[8] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_2_m, null);
-        costume[9] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_m, null);
+        costume[9] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_walk_1_m, null);
         // Jump
         costume[10] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_jump, null);
         costume[11] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.defaulto_jump_m, null);
@@ -173,5 +176,24 @@ public class Player extends SurfaceView {
         //Jump
         costume[10] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
         costume[11] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.pill_no, null);
+    }
+
+    public void CostumeEight () {
+        // Idle
+        costume[0] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_idle, null);
+        costume[1] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_idle_m, null);
+        // Walk right
+        costume[2] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk, null);
+        costume[3] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk_1, null);
+        costume[4] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk_2, null);
+        costume[5] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk_1, null);
+        // Walk left
+        costume[6] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk_m, null);
+        costume[7] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk_1_m, null);
+        costume[8] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk_2_m, null);
+        costume[9] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_walk_1_m, null);
+        //Jump
+        costume[10] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_jump, null);
+        costume[11] =  ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.spaceman_jump, null);
     }
 }
