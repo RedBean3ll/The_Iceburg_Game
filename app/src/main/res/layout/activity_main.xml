@@ -8,7 +8,7 @@
     tools:context=".MainActivity"
     android:background="@drawable/the_iceberg_splash_vert" >
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_sectA"
         android:text="@string/mmt_titleA"
         style="@style/main_menu_title"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textView"
         style="@style/main_menu_title"
 
@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_sectA" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/start_button"
         android:text="@string/mmb_start_button"
         style="@style/main_menu_button"
@@ -39,7 +39,7 @@
         android:gravity="center_horizontal"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/achievements_button"
         android:text="@string/mmb_achievement_button"
         style="@style/main_menu_button"
@@ -49,7 +49,7 @@
         android:gravity="center_horizontal"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/costumes_button"
         android:text="@string/mmb_costumes_button"
         style="@style/main_menu_button"
@@ -59,7 +59,7 @@
         android:gravity="center_horizontal"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/settings_button"
         android:text="@string/mmb_settings_button"
         style="@style/main_menu_button"

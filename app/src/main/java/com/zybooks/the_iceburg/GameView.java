@@ -14,6 +14,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 @SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
+    // --- MUSIC ---
+    public SoundMixer mixer;
 
     public int gameEnd = 0;
 
@@ -94,7 +96,8 @@ public class GameView extends SurfaceView implements Runnable {
         super(context);
         contx = context;
 
-       // Log.e("CurrentLeve", String.valueOf(currentLevel));
+
+        // Log.e("CurrentLeve", String.valueOf(currentLevel));
         this.currentLevel = currentLevel;
 
         advancements = savedAdv;
@@ -116,6 +119,10 @@ public class GameView extends SurfaceView implements Runnable {
         collectibles = new Collectibles(contx);
         paint = new Paint();
 
+        mixer = new SoundMixer(contx);
+        mixer.setPlayerAndStart(currentLevel, dataTool.getVolume(contx));
+        mixer.play();
+
         if(currentLevel != 1) {
             collectibles.NewLevel(currentLevel);
             intables.NewLevel(currentLevel);
@@ -125,118 +132,121 @@ public class GameView extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
-      while (isPlaying) {
-          levelEnd = env.levelEnds[currentLevel - 1];
+        while (isPlaying) {
 
-          progress_landscape = progress + (int)(0.20345 * screenX);
-          progress_portrait = progress - (int)(0.20345 * screenY);
+            levelEnd = env.levelEnds[currentLevel - 1];
 
-          if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-              orientation = 1;
-          }
-          else {
-              orientation = 2;
-          }
-          draw();
-          ResultUpdater();
-          Barriers();
+            progress_landscape = progress + (int)(0.20345 * screenX);
+            progress_portrait = progress - (int)(0.20345 * screenY);
 
-          if(toSpace) {
-              SendToSpace();
-          }
-          if(dead) {
-              deathTimer += 0.1f;
-              if (deathTimer >= 5){
-                  Respawn();
-              }
-          }
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                orientation = 1;
+            }
+            else {
+                orientation = 2;
+            }
+            draw();
+            ResultUpdater();
+            Barriers();
 
-          switch (dir) {
-              case 1:
-                  right();
-                  sleep();
-                  break;
+            if(toSpace) {
+                SendToSpace();
+            }
+            if(dead) {
+                deathTimer += 0.1f;
+                if (deathTimer >= 5){
+                    Respawn();
+                }
+            }
 
-              case -1:
-                  left();
-                  sleep();
-                  break;
-          }
+            switch (dir) {
+                case 1:
+                    right();
+                    sleep();
+                    break;
 
-          if(!dead && !toSpace) {
-              applyGravity(yDir);
-          }
+                case -1:
+                    left();
+                    sleep();
+                    break;
+            }
 
-          if(currentLevel != 3) {
-              if (gravity > 700 && progress < levelEnd) {
-                  dead = true;
-                  gravity = 0;
-              } else if (gravity > 700 && progress > levelEnd) {
-                  TransitionLevel();
-              }
-          }
-          else if(currentLevel == 3) {
-              if (gravity > 700 && progress < 18000) {
-                  gravity = 0;
-                  dead = true;
-              } else if (gravity > 700 && progress > 18500 && progress < 21000 && pastLevel) {
-                  BadEnding();
-              }
-              else if (gravity > 700 && progress > 23000 && pastLevel) {
-                  TrueEnding();
-              }
-          }
+            if(!dead && !toSpace) {
+                applyGravity(yDir);
+            }
 
-          if(!pastLevel && gravity == 0 && currentLevel == 3) {
-              pastLevel = true;
-          }
+            if(currentLevel != 3) {
+                if (gravity > 700 && progress < levelEnd) {
+                    dead = true;
+                    gravity = 0;
+                } else if (gravity > 700 && progress > levelEnd) {
+                    TransitionLevel();
+                }
+            }
+            else if(currentLevel == 3) {
+                if (gravity > 700 && progress < 18000) {
+                    gravity = 0;
+                    dead = true;
+                } else if (gravity > 700 && progress > 18500 && progress < 21000 && pastLevel) {
+                    BadEnding();
+                }
+                else if (gravity > 700 && progress > 23000 && pastLevel) {
+                    TrueEnding();
+                }
+            }
 
-          if(currentLevel == 1 && gravity < -4000) {
-              GoodEnding();
-          }
+            if(!pastLevel && gravity == 0 && currentLevel == 3) {
+                pastLevel = true;
+            }
 
-          //Log.e("CurrentLeve", String.valueOf(progress));
-          if (grounded && !toSpace) {
-              if (jump) {
-                  jumpCount++;
-                  isJump = true;
-                  acceleration = 15;
-                  onPlatform = false;
-                  yDir = 1;
-                  deltaT = 3;
-                  grounded = false;
-              }
-              else {
-                  acceleration = 0;
-                  yDir = 0;
-                  isJump = false;
-              }
-              if(floorColBelow !=0 && !isJump && obstNear == 0 && gravity < 0) {
-                  onPlatform = false;
-                  grounded = false;
-                  yDir = 1;
-                  deltaT = 3;
-              }
-              else if(floorColBelow !=0 && !isJump && obstNear == 0) {
-                  gravity = 0;
-              }
-          }
+            if(currentLevel == 1 && gravity < -4000) {
+                mixer.secretEnding(contx);
+                //mixer.play();
+                GoodEnding();
+            }
 
-          if(!grounded && !toSpace) {
-              if(!jump && acceleration == 0) {
-                  yDir = 1;
-                  deltaT = 3;
-              }
-          }
-          if(progress < 0) {
-              progress = 0;
-          }
-          if(answered) {
-              interactTransitionTimer -= 0.1f;
-          }
-          else {
-              interactTransitionTimer = 5;
-          }
+            //Log.e("CurrentLeve", String.valueOf(progress));
+            if (grounded && !toSpace) {
+                if (jump) {
+                    jumpCount++;
+                    isJump = true;
+                    acceleration = 15;
+                    onPlatform = false;
+                    yDir = 1;
+                    deltaT = 3;
+                    grounded = false;
+                }
+                else {
+                    acceleration = 0;
+                    yDir = 0;
+                    isJump = false;
+                }
+                if(floorColBelow !=0 && !isJump && obstNear == 0 && gravity < 0) {
+                    onPlatform = false;
+                    grounded = false;
+                    yDir = 1;
+                    deltaT = 3;
+                }
+                else if(floorColBelow !=0 && !isJump && obstNear == 0) {
+                    gravity = 0;
+                }
+            }
+
+            if(!grounded && !toSpace) {
+                if(!jump && acceleration == 0) {
+                    yDir = 1;
+                    deltaT = 3;
+                }
+            }
+            if(progress < 0) {
+                progress = 0;
+            }
+            if(answered) {
+                interactTransitionTimer -= 0.1f;
+            }
+            else {
+                interactTransitionTimer = 5;
+            }
         }
     }
 
@@ -274,6 +284,8 @@ public class GameView extends SurfaceView implements Runnable {
         }
         else {
             currentLevel = currentLevel + 1;
+
+            //mixer.changeTrack(currentLevel);
             transitionTimer = 0;
             background1 = new GameBackground(currentLevel,screenX ,screenY, getResources());
             background2 = new GameBackground(currentLevel,screenX ,screenY, getResources());
@@ -289,10 +301,15 @@ public class GameView extends SurfaceView implements Runnable {
             collectibles.NewLevel(currentLevel);
             intables.NewLevel(currentLevel);
             env.NewLevel(currentLevel);
+            //mixer.play();
+            mixer.stop();
+            mixer = new SoundMixer(contx);
+            mixer.setPlayerAndStart(currentLevel, dataTool.getVolume(contx));
 
             Respawn();
-            }
         }
+
+    }
 
     private void Respawn() {
         deathTimer = 0;
@@ -321,11 +338,11 @@ public class GameView extends SurfaceView implements Runnable {
             //affects screen background movement!!!
 
             if(background1.x + background1.background.getWidth() <= 0) {
-                    background1.x = screenX;
-                }
+                background1.x = screenX;
+            }
 
-                if(background2.x + background2.background.getWidth() <= 0) {
-                    background2.x = screenX;
+            if(background2.x + background2.background.getWidth() <= 0) {
+                background2.x = screenX;
             }
         }
     }
@@ -843,7 +860,6 @@ public class GameView extends SurfaceView implements Runnable {
                     && colec.getBounds().bottom > gravity + screenY - 230 && colec.getBounds().top < gravity + screenY - 230) {
                 switch(collectibles.layout[i]) {
                     case 2:
-                        // Moyai
                         collectibles.layout[i] = 0;
                         dataTool.unlockCostume(contx,2);
                         break;
@@ -860,7 +876,6 @@ public class GameView extends SurfaceView implements Runnable {
                         dataTool.unlockCostume(contx,3);
                         break;
                     case 6:
-                        // Crab
                         collectibles.layout[i] = 0;
                         playClass = new Player(contx, 5);
                         dataTool.unlockCostume(contx,5);
@@ -904,7 +919,7 @@ public class GameView extends SurfaceView implements Runnable {
            Log.e("AAAAAAAAAAAAAAAAAA", String.valueOf(underplat));
            Log.e("FLOOOOOR!!!", String.valueOf(floorColBelow));*/
 
-           if(-(gravity - 230) <= closestFloorHeight) {
+            if(-(gravity - 230) <= closestFloorHeight) {
                 if(acceleration < 0 && !grounded) {
                     if (obstNear != 0 && underplat && closestFloorHeight != 230) {
                         Land(true);
@@ -1017,6 +1032,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void resume () {
+        mixer.onResume();
         isPlaying = true;
         thread = new Thread(this);
         thread_secondary = new Thread(this);
@@ -1025,7 +1041,9 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void pause () {
+
         try {
+            mixer.onPause();
             isPlaying = false;
             thread.join();
             thread_secondary.join();
@@ -1088,52 +1106,52 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void ResultUpdater () {
-            if (yn == 1) {
-                if (interactTransitionTimer < 0) {
-                    switch(currentLevel) {
-                        case 1:
-                            intables.response[3] = 5;
-                            intables.isPrompt[3] = 0;
-                            break;
-                        case 2:
-                            intables.response[0] = 5;
-                            intables.isPrompt[0] = 0;
-                            break;
-                        case 3:
-                            intables.response[2] = 16;
-                            intables.isPrompt[2] = 0;
-                            break;
-                    }
-                    prompt = false;
-                    overlay = false;
-                    answered = false;
-                    interactTransitionTimer = 20;
-                    yn = 0;
+        if (yn == 1) {
+            if (interactTransitionTimer < 0) {
+                switch(currentLevel) {
+                    case 1:
+                        intables.response[3] = 5;
+                        intables.isPrompt[3] = 0;
+                        break;
+                    case 2:
+                        intables.response[0] = 5;
+                        intables.isPrompt[0] = 0;
+                        break;
+                    case 3:
+                        intables.response[2] = 16;
+                        intables.isPrompt[2] = 0;
+                        break;
                 }
-            } else if (yn == 2) {
-                if (interactTransitionTimer < 0) {
-                    switch(currentLevel) {
-                        case 1:
-                            intables.response[3] = 4;
-                            break;
-                        case 2:
-                            intables.response[0] = 8;
-                            break;
-                        case 3:
-                            intables.response[2] = 15;
-                            break;
-                    }
-                    overlay = false;
-                    answered = false;
-                    prompt = false;
-                    interactTransitionTimer = 20;
-                    yn = 0;
-                    dead = true;
-                }
-            } else {
+                prompt = false;
+                overlay = false;
+                answered = false;
                 interactTransitionTimer = 20;
                 yn = 0;
             }
+        } else if (yn == 2) {
+            if (interactTransitionTimer < 0) {
+                switch(currentLevel) {
+                    case 1:
+                        intables.response[3] = 4;
+                        break;
+                    case 2:
+                        intables.response[0] = 8;
+                        break;
+                    case 3:
+                        intables.response[2] = 15;
+                        break;
+                }
+                overlay = false;
+                answered = false;
+                prompt = false;
+                interactTransitionTimer = 20;
+                yn = 0;
+                dead = true;
+            }
+        } else {
+            interactTransitionTimer = 20;
+            yn = 0;
+        }
     }
 
     public void applyGravity (int dir) {
@@ -1180,6 +1198,6 @@ public class GameView extends SurfaceView implements Runnable {
         gameEnd = 2;
         dataTool.unlockAchievement(contx,3);
         dataTool.unlockAchievement(contx,0);
+
     }
 }
-
