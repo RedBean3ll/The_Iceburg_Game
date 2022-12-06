@@ -843,6 +843,7 @@ public class GameView extends SurfaceView implements Runnable {
                     && colec.getBounds().bottom > gravity + screenY - 230 && colec.getBounds().top < gravity + screenY - 230) {
                 switch(collectibles.layout[i]) {
                     case 2:
+                        // Moyai
                         collectibles.layout[i] = 0;
                         dataTool.unlockCostume(contx,2);
                         break;
@@ -852,13 +853,14 @@ public class GameView extends SurfaceView implements Runnable {
                         break;
                     case 4:
                         collectibles.layout[i] = 0;
-                        dataTool.unlockCostume(contx,3);
+                        dataTool.unlockCostume(contx,4);
                         break;
                     case 5:
                         collectibles.layout[i] = 0;
-                        dataTool.unlockCostume(contx,4);
+                        dataTool.unlockCostume(contx,3);
                         break;
                     case 6:
+                        // Crab
                         collectibles.layout[i] = 0;
                         playClass = new Player(contx, 5);
                         dataTool.unlockCostume(contx,5);
