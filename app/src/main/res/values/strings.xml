@@ -67,4 +67,5 @@
     <string name="flag_ending_1">good_ending</string>
     <string name="flag_ending_2">bad_ending</string>
     <string name="flag_ending_3">secret_ending</string>
+    <string name="current_costume">costume_current</string>
 </resources>

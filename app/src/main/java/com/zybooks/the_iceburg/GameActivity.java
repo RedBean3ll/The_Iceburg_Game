@@ -59,7 +59,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         int costumeId;
         Intent transfer = getIntent();
-        costumeId = transfer.getIntExtra(CostumesActivity.EXTRA_COSTUME, 0);
+        costumeId = getApplicationContext().getSharedPreferences(getString(R.string.shared_storage_name), MODE_PRIVATE).getInt(getString(R.string.current_costume), 0);
         if(saveInstanceState != null) {
             currentLevel = saveInstanceState.getInt(SAVED_LEVEL);
             unlockedCostumes = saveInstanceState.getIntArray(UNLOCKED_COSTUMES);
